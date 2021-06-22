@@ -4,6 +4,7 @@ projectName.iml
 /.classpath
 /.springBeans
 *.DS_Store
+.DS_Store
 *.iml
 /build
 /local.properties
