@@ -5,10 +5,13 @@
 </template>
 
 <script>
-export default {
+import { defineComponent } from 'vue';
+import { odinApi } from 'boot/axios';
+
+export default defineComponent({
 
 
-}
+});
 </script>
 
 <style scoped>
