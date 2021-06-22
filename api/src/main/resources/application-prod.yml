@@ -1,0 +1,9 @@
+
+spring:
+  devtools:
+    add-properties:false
+
+logging:
+  level:
+    org.springframework.web: INFO
+    edu.upc.essi.dtim.metadatastorage: INFO

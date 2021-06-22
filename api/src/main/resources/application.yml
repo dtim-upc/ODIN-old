@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: ODIN
+  profiles:
+    active: javier
+  data:
+    mongodb:
+      database: odin
+      port: 27017
+
+
+info:
+  component: Odin is a system that supports incremental pay-as-you-go integration of data sources into dataspaces and provides user-friendly
+    querying mechanisms on top of them
+server:
+  servlet:
+    context-path: /odin
+  port: 8082
