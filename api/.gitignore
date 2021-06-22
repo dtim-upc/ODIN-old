@@ -1,0 +1,20 @@
+.idea/
+projectName.iml
+/*.classpath
+/.classpath
+/.springBeans
+*.DS_Store
+*.iml
+/build
+/local.properties
+target/
+.gradle
+/build/
+
+#Gradle
+.gradle/
+build/
+
+# IntelliJ IDEA
+*.iws
+*.ipr
