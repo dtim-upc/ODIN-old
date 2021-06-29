@@ -1,19 +1,19 @@
-<template lang="html">
+<template>
   <q-page>
-
+      <TableWrappers/>
   </q-page>
 </template>
 
-<script>
-import { defineComponent } from 'vue';
-import { odinApi } from 'boot/axios';
 
-export default defineComponent({
+<script lang="ts">
 
+import TableWrappers from 'components/tables/TableWrappers.vue';
 
-});
+export default {
+
+  name: 'PageTableWrappers',
+  components: {TableWrappers}
+
+}
+
 </script>
-
-<style scoped>
-
-</style>

@@ -184,6 +184,7 @@ export default defineComponent({
       odinApi.get('/globalGraph')
               .then(response => {
                 if(response.status == 200) {
+                  console.log(response.data)
                   this.rows = response.data;
                 }
                });

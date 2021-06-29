@@ -28,6 +28,7 @@ public class GlobalGraph {
     }
 
     public String createNamedGraph(String name, String namespace) {
+        System.out.println("FLAG!");
         String _namespace = namespace.charAt(namespace.length()-1) == '/' ? namespace : namespace + "/";
         return _namespace + UUID.randomUUID().toString().replace("-","");
     }

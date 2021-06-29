@@ -1,0 +1,266 @@
+<template>
+  <div class="q-pa-md">
+    <q-table
+      :rows="rows"
+      :columns="columns"
+      row-key="name"
+      no-data-label="I didn't find anything for you. Consider creating a new data source."
+      no-results-label="The filter didn't uncover any results"
+    >
+      <template v-slot:top-left="props">
+        <div class="q-table__title">
+          {{ title }}
+          <q-btn
+            padding="none"
+            color="secondary"
+            icon="add"
+            @click="show_dialog = true"
+          />
+        </div>
+
+        <q-dialog v-model="show_dialog" persistent>
+          <q-card style="width: 700px; max-width: 80vw">
+            <q-card-section>
+              <div class="text-h6">Create new data source</div>
+            </q-card-section>
+
+            <q-card-section>
+              <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
+                <q-input
+                  filled
+                  v-model="newDataSources.name"
+                  label="Introduce a data source name"
+                  lazy-rules
+                  :rules="[
+                    (val) => (val && val.length > 0) || 'Please type a name',
+                  ]"
+                />
+                
+                <q-select v-model="newDataSources.type" :options="options" label="Type" />
+
+
+                <!-- <q-file
+                  outlined 
+                  v-model="uploadedFile"     
+                  multiple
+                  auto-expand
+                  :headers="{'content-type': 'multipart/form-data'}">
+                  <template v-slot:prepend>
+                    <q-icon name="attach_file" />
+                  </template>
+                </q-file> -->
+
+                <div>
+                  <q-btn label="Submit" type="submit" color="primary" />
+                  <q-btn
+                    label="Cancel"
+                    type="reset"
+                    color="primary"
+                    flat
+                    class="q-ml-sm"
+                  />
+                </div>
+              </q-form>
+            </q-card-section>
+          </q-card>
+        </q-dialog>
+      </template>
+
+      <template v-slot:top-right="props">
+        <q-btn
+          flat
+          round
+          dense
+          :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+          @click="props.toggleFullscreen"
+        >
+          <q-tooltip :disable="$q.platform.is.mobile" v-close-popup>
+            {{ props.inFullscreen ? "Exit Fullscreen" : "Toggle Fullscreen" }}
+          </q-tooltip>
+        </q-btn>
+      </template>
+
+      <template v-slot:body-cell-status="props">
+        <q-td :props="props">
+          <q-chip
+            text-color="white"
+            color="accent"
+            v-if="props.row.graphicalGraph === ''"
+          >
+            Missing Data Sources</q-chip
+          >
+          <q-chip text-color="white" color="blue" v-else> Completed</q-chip>
+        </q-td>
+      </template>
+
+      <template v-slot:body-cell-actions="props">
+        <q-td :props="props">
+          <q-btn
+            dense
+            round
+            flat
+            color="grey"
+            @click="editRow(props)"
+            icon="edit"
+          ></q-btn>
+          <q-btn
+            dense
+            round
+            flat
+            color="grey"
+            @click="deleteRow(props)"
+            icon="delete"
+          ></q-btn>
+        </q-td>
+      </template>
+
+      <template v-slot:no-data="{ icon, message, filter }">
+        <div class="full-width row flex-center text-accent q-gutter-sm">
+          <q-icon size="2em" name="sentiment_dissatisfied" />
+          <span> Well this is sad... {{ message }} </span>
+          <q-icon size="2em" :name="filter ? 'filter_b_and_w' : icon" />
+        </div>
+      </template>
+    </q-table>
+  </div>
+</template>
+
+
+
+<script lang="ts">
+import { defineComponent, ref } from "vue";
+import { odinApi } from "boot/axios";
+import { DataSources } from "components/models";
+import { QTd } from "quasar";
+export default defineComponent({
+  name: "TableDataSources",
+  // props:{
+  //   rows: {
+  //     type: Array,
+  //     default() {
+  //       return []
+  //     }
+  //   }
+  // },
+  data() {
+    const columns = [
+      {
+        name: "Name",
+        required: true,
+        label: "Name",
+        align: "center",
+        field: "name",
+        sortable: true,
+      },      
+      {
+        name: "Type",
+        required: true,
+        label: "Type",
+        align: "center",
+        field: "type",
+        sortable: true,
+      },
+      {
+        name: "#Wrappers",
+        label: "#Wrappers",
+        align: "center",
+        field: "wrappers",
+        sortable: true,
+      },
+      {
+        name: "View Metadata",
+        label: "View Metadata",
+        align: "center",
+        field: "View Metadata",
+        sortable: false,
+      },
+      {
+        name: "View Source Graph",
+        label: "View Source Graph",
+        align: "center",
+        field: "View Source Graph",
+        sortable: false,
+      },
+    ];
+    const rows: DataSources[] = [];
+    const options = [
+                "Avro",
+                "JSONFile",
+                "MongoDB",
+                "Neo4j",
+                "Parquet",
+                "RESTAPI",
+                "SQLDatabase"
+    ];
+    const title = "Data Sources";
+    const show_dialog = false;
+    const uploadedFile: File = new File([], "");
+    const newDataSources = {
+      name: "",
+      type: ""
+    };
+    return { columns, rows, options, title, show_dialog, newDataSources, uploadedFile };
+  },
+  mounted() {
+    this.retrieveData();
+  },
+  methods: {
+    // editRow(props) {
+    //   // do something
+    //   console.log(props.row)
+    // },
+
+    onSubmit() {
+      /*var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'archiveupload.sample', true);
+    xhr.upload.onprogress = function (e) {
+      console.log("Progressing...");
+    }
+    xhr.onload = function (e) {
+      if (xhr.status === 200) {
+        console.log("Success");
+      } else {
+        alert('An error occurred!');
+      }
+    };
+    xhr.send(this.uploadedFile);*/  
+      odinApi.post("/dataSources", this.newDataSources).then((response) => {
+        if (response.status == 201) {
+          this.$q.notify({
+            color: "positive",
+            textColor: "white",
+            icon: "check_circle",
+            message: `Data Source ${this.newDataSources.name} sucessfully created`,
+          });
+          this.rows.push(response.data);
+          this.show_dialog = false;
+        } else {
+          this.$q.notify({
+            message: "Something went wrong in the server.",
+            color: "negative",
+            icon: "cancel",
+            textColor: "white",
+          });
+        }
+      });
+    },
+
+    onReset() {
+      this.newDataSources.name = "";
+      this.newDataSources.type = "";
+      this.show_dialog = false;
+    },
+
+    retrieveData() {
+      odinApi.get("/dataSources").then((response) => {
+        if (response.status == 200) {
+          this.rows = response.data;
+        }
+      });
+    },
+  },
+});
+</script>
+
+<style lang="css" scoped>
+</style>

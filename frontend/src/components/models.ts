@@ -16,3 +16,15 @@ export interface GlobalGraph {
   namespace:string;
 
 }
+
+export interface DataSources {
+  name:string;
+  type:string;
+}
+
+export interface Wrapper {
+  name:string;
+  attributes:[string];
+  dataSourcesId:string;
+  dataSourcesLabel:string;
+}

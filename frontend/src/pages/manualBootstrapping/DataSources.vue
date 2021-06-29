@@ -1,19 +1,19 @@
-<template lang="html">
+<template>
   <q-page>
-
+      <TableDataSources/>
   </q-page>
 </template>
 
-<script>
-import { defineComponent } from 'vue';
-import { odinApi } from 'boot/axios';
 
-export default defineComponent({
+<script lang="ts">
 
+import TableDataSources from 'components/tables/TableDataSources.vue';
 
-});
+export default {
+
+  name: 'PageDataSources',
+  components: {TableDataSources }
+
+}
+
 </script>
-
-<style scoped>
-
-</style>
