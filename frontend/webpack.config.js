@@ -1,4 +1,4 @@
-// webpack v4
+// webpack v5
 const path = require('path');
 const webpack = require("webpack");
 // const nodeExternals = require('webpack-node-externals');
@@ -16,8 +16,8 @@ module.exports = (env, argv) => {
 
     const config = {
         entry: {
-            webvowl: "./src/components/graph/webvowl/webvowl/js/entry.js",
-            "webvowl.app": "./src/components/graph/webvowl/app/js/entry.js"
+            webvowl: "./src/components/graph/src/webvowl/js/entry.js",
+            "webvowl.app": "./src/components/graph/src/app/js/entry.js"
         },
         output: {
             path: path.resolve(__dirname, outputPath),
@@ -54,7 +54,7 @@ module.exports = (env, argv) => {
             new HtmlWebpackPlugin({
                 inject: false,
                 hash: true,
-                template: './src/components/graph/webvowl/index.html',
+                template: './src/components/graph/src/index.html',
                 filename: 'index2.html'
             }),
             new HtmlReplaceWebpackPlugin({
@@ -63,7 +63,7 @@ module.exports = (env, argv) => {
             }),
             new CopyWebpackPlugin({
               patterns: [
-                { context: "src/components/graph/webvowl/app", from: "data/**/*"},
+                { context: "src/components/graph/src/app", from: "data/**/*"},
                 { from: "node_modules/d3/d3.min.js",to: "js"}
             ]}),
             new webpack.ProvidePlugin({
