@@ -1,9 +1,8 @@
 <template lang="html">
 
-  <iframe :src="`graph/index.html?global_Graph_Edit`" frameborder="0"
+  <iframe :src="`graph/main/index.html?global_Graph_Edit`" frameborder="0"
     allowfullscreen class="fit" style="min-height: inherit;min-width: inherit;">
    </iframe>
-
 
 </template>
 
