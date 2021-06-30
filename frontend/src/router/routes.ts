@@ -6,7 +6,8 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('pages/manualBootstrapping/GlobalGraph.vue') },
-      { path: 'globalGraph', component: () => import('pages/manualBootstrapping/GlobalGraph.vue') }
+      { path: 'globalGraph', component: () => import('pages/manualBootstrapping/GlobalGraph.vue') },
+      { path: 'pruebaWebvowl', component: () => import('pages/Test_webvowl.vue') },
     ],
   },
 
