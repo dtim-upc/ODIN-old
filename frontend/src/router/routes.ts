@@ -9,7 +9,8 @@ const routes: RouteRecordRaw[] = [
       { path: 'globalGraph', component: () => import('pages/manualBootstrapping/GlobalGraph.vue') },
       { path: 'dataSources', component: () => import('pages/manualBootstrapping/DataSources.vue') },
       { path: 'wrappers', component: () => import('pages/manualBootstrapping/Wrappers.vue') },
-      { path: 'LAVMappings', component: () => import('pages/manualBootstrapping/LAVMappings.vue') }
+      { path: 'LAVMappings', component: () => import('pages/manualBootstrapping/LAVMappings.vue') },
+      { path: 'pruebaWebvowl', component: () => import('pages/Test_webvowl.vue') },
     ],
   },
 
