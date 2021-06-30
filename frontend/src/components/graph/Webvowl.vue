@@ -1,6 +1,6 @@
 <template lang="html">
 
-  <iframe :src="`graph/main/index.html?global_Graph_Edit`" frameborder="0"
+  <iframe :src="`html/index.html?` +view" frameborder="0"
     allowfullscreen class="fit" style="min-height: inherit;min-width: inherit;">
    </iframe>
 
@@ -32,6 +32,12 @@ export default defineComponent({
     //   // console.log(webvowl.hola)
     //   // webvowl.app().initialize("global_Graph_Edit");
     // })
+  },
+  props: {
+    view: {
+      type: String,
+      default: "global_Graph_Edit"
+    }
   }
 });
 </script>

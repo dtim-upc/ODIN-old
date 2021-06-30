@@ -3,6 +3,8 @@
  * Created by snadal on 21/12/16.
  */
 
+const odinApi = "http://localhost:8082/odin"
+
 const Namespaces = {
     S: "http://www.essi.upc.edu/~snadal/BDIOntology/Source/",
     G: "http://www.essi.upc.edu/~snadal/BDIOntology/Global/",
