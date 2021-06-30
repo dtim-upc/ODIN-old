@@ -17,17 +17,27 @@ module.exports = function (graph) {
                     object.modified = graph.prepareChangesObject();
                     if(!object.modified.isModified)
                         object.ttl = exportMenu.exportTurtleText();
-                    $.ajax({
-                        type: "POST",
-                        url: '/globalGraph/'+encodeURIComponent(loadingModule.currentGlobalGraph().namedGraph)+'/TTL',
-                        data: object,
-                        success: function(data) {
-                            console.log("success");
-                            saveGraphMenu.saveGraphicalGraph();
-                            graph.resetOriginalLabels();
-                            graph.options().alertModule().showAlert("Information","Graph saved");
-                        }
-                    });
+
+                    // Javier: Uncomment in next iteration when we added Jena into ODIN.
+                    // For now we are just interested to save the graphical graph into mongodb
+
+                    console.log("success");
+                    saveGraphMenu.saveGraphicalGraph();
+                    graph.resetOriginalLabels();
+                    graph.options().alertModule().showAlert("Information","Graph saved");
+
+
+                    // $.ajax({
+                    //     type: "POST",
+                    //     url: '/globalGraph/'+encodeURIComponent(loadingModule.currentGlobalGraph().namedGraph)+'/TTL',
+                    //     data: object,
+                    //     success: function(data) {
+                    //         console.log("success");
+                    //         saveGraphMenu.saveGraphicalGraph();
+                    //         graph.resetOriginalLabels();
+                    //         graph.options().alertModule().showAlert("Information","Graph saved");
+                    //     }
+                    // });
                 } else if(config.selectSG_mode === "true"){
                     saveGraphMenu.saveSubGraph();
                 }
@@ -53,8 +63,8 @@ module.exports = function (graph) {
         loadingModule=graph.options().loadingModule();
         exportMenu = graph.options().exportMenu();
         $.ajax({
-            type: "POST",
-            url: '/globalGraph/'+loadingModule.currentGlobalGraph().globalGraphID+'/graphicalGraph',
+            type: "PUT",
+            url: odinApi+'/globalGraph/'+loadingModule.currentGlobalGraph().globalGraphID+'/graphicalGraph',
             data: {graphicalGraph: exportMenu.getJson()}
         });
     };

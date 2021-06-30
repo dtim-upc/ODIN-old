@@ -2,7 +2,6 @@
 
   <q-page>
     <Webvowl :view="global_Graph_Edit"/>
-    <!--  -->
   </q-page>
 
 </template>

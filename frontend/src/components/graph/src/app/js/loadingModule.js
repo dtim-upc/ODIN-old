@@ -570,105 +570,124 @@ module.exports =  function (graph) {
 
     /** --- HELPER FUNCTIONS **/
 
+    // Javier: this method should retrieve the graphical graph in the flows
+    // * Global Graphs
+    // * wrappers
+    // * lav mapping
     function retrieveGraph() {
-        if(graph.options().defaultConfig().bdi === "true" ||
-            graph.options().defaultConfig().bdi_manualAl ==="true"
-        ){
-            console.log("BDI");
-            var IntegratedDSID = getParameterByName("IntegratedDataSourceID");
-            var dataSourceID = getParameterByName("dataSourceID");
 
-            if(IntegratedDSID){
-                currentGlobalGraph = JSON.parse($.ajax({
-                    type: "GET",
-                    url: "/bdiIntegratedDataSources/"+IntegratedDSID,
-                    async: false
-                }).responseText);
-                if(currentGlobalGraph.graphicalGraph){
-                    console.log(currentGlobalGraph);
-                    var json = JSON.parse(JSON.parse(currentGlobalGraph.graphicalGraph));
-                    json.header.title = currentGlobalGraph.name;
-                    json.header.iri = currentGlobalGraph.schema_iri;
-                    currentGlobalGraph.graphicalGraph = JSON.stringify(JSON.stringify(json));
-                }
-            }else if(dataSourceID){
-                currentGlobalGraph = JSON.parse($.ajax({
-                    type: "GET",
-                    url: "/bdiDataSource/"+dataSourceID,
-                    async: false
-                }).responseText);
-                if(currentGlobalGraph.graphicalGraph){
-                    var json = JSON.parse(JSON.parse(currentGlobalGraph.graphicalGraph));
-                    json.header.title = currentGlobalGraph.name;
-                    json.header.iri = currentGlobalGraph.iri;
-                    currentGlobalGraph.graphicalGraph = JSON.stringify(JSON.stringify(json));
-                }
+        // editor mode is just for global graph but let's consider changing the name later
+        if ( graph.options().defaultConfig().editorMode === "true" ) {
+            var globalGraphID = getParameterByName("globalGraphID");
+
+            if (globalGraphID !== "") {
+              // retrieve global graph data.
+              currentGlobalGraph = JSON.parse($.ajax({
+                  type: "GET",
+                  url: odinApi+"/globalGraph/"+globalGraphID,
+                  async: false
+              }).responseText);
             }
-            return;
         }
 
-        currentSubGraph = undefined;
-        currentGlobalGraph = undefined;
-
-        var lavMappingID = getParameterByName("LAVMappingID");
-        var globalGraphID = getParameterByName("globalGraphID");
-
-        var ontologyID = getParameterByName("dataSourceID");
-        var intID = getParameterByName("IntegratedDataSourceID")
-
-        if(lavMappingID !== ""){
-            var data = JSON.parse($.ajax({
-                type: "GET",
-                url: "/LAVMapping/"+lavMappingID,
-                async: false
-            }).responseText);
-
-            if(data.graphicalSubGraph)
-                currentSubGraph = data.graphicalSubGraph;
-
-            currentGlobalGraph = JSON.parse($.ajax({
-                type: "GET",
-                url: "/globalGraph/"+data.globalGraphID,
-                async: false
-            }).responseText);
-
-        }else if(globalGraphID !== ""){
-            currentGlobalGraph = JSON.parse($.ajax({
-                type: "GET",
-                url: "/globalGraph/"+globalGraphID,
-                async: false
-            }).responseText);
-        } else if( ontologyID !== "" ){
-            console.log("ontologyID....")
-
-            currentGlobalGraph = JSON.parse($.ajax({
-                type: "GET",
-                url: "/ontologies/"+ontologyID,
-                async: false
-            }).responseText);
-            if(currentGlobalGraph.graphicalGraph){
-                var json = JSON.parse(JSON.parse(currentGlobalGraph.graphicalGraph));
-                json.header.title = currentGlobalGraph.name;
-                json.header.iri = currentGlobalGraph.iri;
-                currentGlobalGraph.graphicalGraph = JSON.stringify(JSON.stringify(json));
-            }
-
-        } else if( intID !== "" ){
-            console.log("integratedID....")
-
-            currentGlobalGraph = JSON.parse($.ajax({
-                type: "GET",
-                url: "/integratedOntologies/"+intID,
-                async: false
-            }).responseText);
-            if(currentGlobalGraph.graphicalGraph){
-                var json = JSON.parse(JSON.parse(currentGlobalGraph.graphicalGraph));
-                json.header.title = currentGlobalGraph.name;
-                json.header.iri = currentGlobalGraph.iri;
-                currentGlobalGraph.graphicalGraph = JSON.stringify(JSON.stringify(json));
-            }
-
-        }
+        // if(graph.options().defaultConfig().bdi === "true" ||
+        //     graph.options().defaultConfig().bdi_manualAl ==="true"
+        // ){
+        //     console.log("BDI");
+        //     var IntegratedDSID = getParameterByName("IntegratedDataSourceID");
+        //     var dataSourceID = getParameterByName("dataSourceID");
+        //
+        //     if(IntegratedDSID){
+        //         currentGlobalGraph = JSON.parse($.ajax({
+        //             type: "GET",
+        //             url: "/bdiIntegratedDataSources/"+IntegratedDSID,
+        //             async: false
+        //         }).responseText);
+        //         if(currentGlobalGraph.graphicalGraph){
+        //             console.log(currentGlobalGraph);
+        //             var json = JSON.parse(JSON.parse(currentGlobalGraph.graphicalGraph));
+        //             json.header.title = currentGlobalGraph.name;
+        //             json.header.iri = currentGlobalGraph.schema_iri;
+        //             currentGlobalGraph.graphicalGraph = JSON.stringify(JSON.stringify(json));
+        //         }
+        //     }else if(dataSourceID){
+        //         currentGlobalGraph = JSON.parse($.ajax({
+        //             type: "GET",
+        //             url: "/bdiDataSource/"+dataSourceID,
+        //             async: false
+        //         }).responseText);
+        //         if(currentGlobalGraph.graphicalGraph){
+        //             var json = JSON.parse(JSON.parse(currentGlobalGraph.graphicalGraph));
+        //             json.header.title = currentGlobalGraph.name;
+        //             json.header.iri = currentGlobalGraph.iri;
+        //             currentGlobalGraph.graphicalGraph = JSON.stringify(JSON.stringify(json));
+        //         }
+        //     }
+        //     return;
+        // }
+        //
+        // currentSubGraph = undefined;
+        // currentGlobalGraph = undefined;
+        //
+        // var lavMappingID = getParameterByName("LAVMappingID");
+        // var globalGraphID = getParameterByName("globalGraphID");
+        //
+        // var ontologyID = getParameterByName("dataSourceID");
+        // var intID = getParameterByName("IntegratedDataSourceID")
+        //
+        // if(lavMappingID !== ""){
+        //     var data = JSON.parse($.ajax({
+        //         type: "GET",
+        //         url: "/LAVMapping/"+lavMappingID,
+        //         async: false
+        //     }).responseText);
+        //
+        //     if(data.graphicalSubGraph)
+        //         currentSubGraph = data.graphicalSubGraph;
+        //
+        //     currentGlobalGraph = JSON.parse($.ajax({
+        //         type: "GET",
+        //         url: odinApi+"/globalGraph/"+data.globalGraphID,
+        //         async: false
+        //     }).responseText);
+        //
+        // }else if(globalGraphID !== ""){
+        //     currentGlobalGraph = JSON.parse($.ajax({
+        //         type: "GET",
+        //         url: odinApi+"/globalGraph/"+globalGraphID,
+        //         async: false
+        //     }).responseText);
+        // } else if( ontologyID !== "" ){
+        //     console.log("ontologyID....")
+        //
+        //     currentGlobalGraph = JSON.parse($.ajax({
+        //         type: "GET",
+        //         url: "/ontologies/"+ontologyID,
+        //         async: false
+        //     }).responseText);
+        //     if(currentGlobalGraph.graphicalGraph){
+        //         var json = JSON.parse(JSON.parse(currentGlobalGraph.graphicalGraph));
+        //         json.header.title = currentGlobalGraph.name;
+        //         json.header.iri = currentGlobalGraph.iri;
+        //         currentGlobalGraph.graphicalGraph = JSON.stringify(JSON.stringify(json));
+        //     }
+        //
+        // } else if( intID !== "" ){
+        //     console.log("integratedID....")
+        //
+        //     currentGlobalGraph = JSON.parse($.ajax({
+        //         type: "GET",
+        //         url: "/integratedOntologies/"+intID,
+        //         async: false
+        //     }).responseText);
+        //     if(currentGlobalGraph.graphicalGraph){
+        //         var json = JSON.parse(JSON.parse(currentGlobalGraph.graphicalGraph));
+        //         json.header.title = currentGlobalGraph.name;
+        //         json.header.iri = currentGlobalGraph.iri;
+        //         currentGlobalGraph.graphicalGraph = JSON.stringify(JSON.stringify(json));
+        //     }
+        //
+        // }
     }
 
     function getParameterByName(name) {
@@ -779,5 +798,3 @@ module.exports =  function (graph) {
 
     return loadingModule;
 };
-
-
