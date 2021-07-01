@@ -28,7 +28,6 @@ public class WrapperController {
 
     @PostMapping
     public ResponseEntity<Wrapper> createWrapper(@RequestBody Wrapper wrapper) {
-        System.out.println("CREATEEEEEEE");
         try {
             Wrapper _wrapper = new Wrapper(wrapper.getName(), wrapper.getAttributes(), wrapper.getDataSourcesId());
             repository.save(_wrapper);
@@ -56,6 +55,27 @@ public class WrapperController {
             return new ResponseEntity<>(wrappers, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deleteWrapper(@PathVariable("id") String id) {
+        try {
+            repository.deleteById(id);
+            LOGGER.info(LOG_MSG, "deleteWrapper", id, HttpStatus.NO_CONTENT.toString() );
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping
+    public ResponseEntity<HttpStatus> deleteWrapper() {
+        try {
+            repository.deleteAll();
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

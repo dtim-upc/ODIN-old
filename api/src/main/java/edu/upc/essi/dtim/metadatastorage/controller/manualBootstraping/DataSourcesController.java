@@ -29,7 +29,6 @@ public class DataSourcesController {
 
     @PostMapping
     public ResponseEntity<DataSources> createDataSources(@RequestBody DataSources dataSources) {
-        System.out.println("CREATEEEEEEE");
         try {
             DataSources _dataSources = new DataSources(dataSources.getName(), dataSources.getType());
             repository.save(_dataSources);
@@ -57,6 +56,27 @@ public class DataSourcesController {
             return new ResponseEntity<>(dataSources, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deleteDataSources(@PathVariable("id") String id) {
+        try {
+            repository.deleteById(id);
+            LOGGER.info(LOG_MSG, "deleteDataSources", id, HttpStatus.NO_CONTENT.toString() );
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping
+    public ResponseEntity<HttpStatus> deleteDataSources() {
+        try {
+            repository.deleteAll();
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

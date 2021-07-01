@@ -22,7 +22,6 @@ public class Wrapper {
     private String dataSourcesLabel;
 
     public Wrapper(String name, String[] attributes, String dataSourcesId) {
-        System.out.println("Wrapper CREATOR " + dataSourcesId);
         this.name = name;
         this.attributes = attributes;
         this.dataSourcesId = dataSourcesId;
