@@ -7,7 +7,7 @@
       no-data-label="I didn't find anything for you. Consider creating a new data source."
       no-results-label="The filter didn't uncover any results"
     >
-      <template v-slot:top-left="props">
+      <template v-slot:top-left="">
         <div class="q-table__title">
           {{ title }}
           <q-btn
@@ -128,20 +128,11 @@
 
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent } from "vue";
 import { odinApi } from "boot/axios";
 import { DataSources } from "components/models";
-import { QTd } from "quasar";
 export default defineComponent({
   name: "TableDataSources",
-  // props:{
-  //   rows: {
-  //     type: Array,
-  //     default() {
-  //       return []
-  //     }
-  //   }
-  // },
   data() {
     const columns = [
       {
@@ -181,6 +172,13 @@ export default defineComponent({
         field: "View Source Graph",
         sortable: false,
       },
+      {
+        name: "actions",
+        label: "actions",
+        align: "center",
+        field: "actions",
+        sortable: false,
+      },
     ];
     const rows: DataSources[] = [];
     const options = [
@@ -205,25 +203,40 @@ export default defineComponent({
     this.retrieveData();
   },
   methods: {
-    // editRow(props) {
-    //   // do something
-    //   console.log(props.row)
-    // },
+    editRow(props) {
+      console.log(props.row.id);
+    },
+    deleteRow(props) {
+      console.log(props.row.id);
+      odinApi.delete(`/dataSources/${props.row.id}` )
+        .then(response => {
 
-    onSubmit() {
-      /*var xhr = new XMLHttpRequest();
-    xhr.open('POST', 'archiveupload.sample', true);
-    xhr.upload.onprogress = function (e) {
-      console.log("Progressing...");
-    }
-    xhr.onload = function (e) {
-      if (xhr.status === 200) {
-        console.log("Success");
-      } else {
-        alert('An error occurred!');
-      }
-    };
-    xhr.send(this.uploadedFile);*/  
+          if(response.status == 204){
+            console.log('response')
+            console.log(response)
+
+
+            this.$q.notify({
+              color: 'positive',
+              textColor: 'white',
+              icon: 'check_circle',
+              message: 'Successfully deleted'
+            })
+
+            this.rows.splice(props.rowIndex, 1);
+          } else {
+            // 500
+            this.$q.notify({
+              message: 'Something went wrong in the server.',
+              color: 'negative',
+              icon: 'cancel',
+              textColor: 'white'
+            })
+          }
+
+          });
+    },
+    onSubmit() {  
       odinApi.post("/dataSources", this.newDataSources).then((response) => {
         if (response.status == 201) {
           this.$q.notify({

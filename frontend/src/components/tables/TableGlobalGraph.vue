@@ -9,7 +9,7 @@
       no-results-label="The filter didn't uncover any results"
     >
 
-    <template v-slot:top-left="props">
+    <template v-slot:top-left="">
         <div class="q-table__title">
           {{title}} <q-btn padding="none" color="secondary" icon="add" @click="show_dialog = true"/>
         </div>
@@ -80,7 +80,7 @@
 
     <template v-slot:body-cell-actions="props">
       <q-td :props="props">
-        <q-btn dense round flat color="grey" @click="editRow(props)" icon="edit"></q-btn>
+        <!-- <q-btn dense round flat color="grey" @click="editRow(props)" icon="edit"></q-btn> -->
         <q-btn dense round flat color="grey" @click="deleteRow(props)" icon="delete"></q-btn>
       </q-td>
     </template>
@@ -108,7 +108,6 @@
 import { defineComponent, ref } from 'vue';
 import { odinApi } from 'boot/axios';
 import { GlobalGraph } from 'components/models';
-import {QTd} from 'quasar'
 export default defineComponent({
 
 
