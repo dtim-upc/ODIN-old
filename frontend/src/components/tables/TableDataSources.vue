@@ -3,6 +3,7 @@
     <q-table
       :rows="rows"
       :columns="columns"
+      :filter="search"
       row-key="name"
       no-data-label="I didn't find anything for you. Consider creating a new data source."
       no-results-label="The filter didn't uncover any results"
@@ -17,6 +18,11 @@
             @click="show_dialog = true"
           />
         </div>
+        <q-input dense debounce="400" color="primary" v-model="search">
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
 
         <q-dialog v-model="show_dialog" persistent>
           <q-card style="width: 700px; max-width: 80vw">
@@ -35,9 +41,12 @@
                     (val) => (val && val.length > 0) || 'Please type a name',
                   ]"
                 />
-                
-                <q-select v-model="newDataSources.type" :options="options" label="Type" />
 
+                <q-select
+                  v-model="newDataSources.type"
+                  :options="options"
+                  label="Type"
+                />
 
                 <!-- <q-file
                   outlined 
@@ -142,7 +151,7 @@ export default defineComponent({
         align: "center",
         field: "name",
         sortable: true,
-      },      
+      },
       {
         name: "Type",
         required: true,
@@ -182,22 +191,31 @@ export default defineComponent({
     ];
     const rows: DataSources[] = [];
     const options = [
-                "Avro",
-                "JSONFile",
-                "MongoDB",
-                "Neo4j",
-                "Parquet",
-                "RESTAPI",
-                "SQLDatabase"
+      "Avro",
+      "JSONFile",
+      "MongoDB",
+      "Neo4j",
+      "Parquet",
+      "RESTAPI",
+      "SQLDatabase",
     ];
     const title = "Data Sources";
     const show_dialog = false;
     const uploadedFile: File = new File([], "");
     const newDataSources = {
       name: "",
-      type: ""
+      type: "",
     };
-    return { columns, rows, options, title, show_dialog, newDataSources, uploadedFile };
+    return {
+      columns,
+      rows,
+      options,
+      title,
+      show_dialog,
+      newDataSources,
+      uploadedFile,
+      search: "",
+    };
   },
   mounted() {
     this.retrieveData();
@@ -208,35 +226,31 @@ export default defineComponent({
     },
     deleteRow(props) {
       console.log(props.row.id);
-      odinApi.delete(`/dataSources/${props.row.id}` )
-        .then(response => {
+      odinApi.delete(`/dataSources/${props.row.id}`).then((response) => {
+        if (response.status == 204) {
+          console.log("response");
+          console.log(response);
 
-          if(response.status == 204){
-            console.log('response')
-            console.log(response)
-
-
-            this.$q.notify({
-              color: 'positive',
-              textColor: 'white',
-              icon: 'check_circle',
-              message: 'Successfully deleted'
-            })
-
-            this.rows.splice(props.rowIndex, 1);
-          } else {
-            // 500
-            this.$q.notify({
-              message: 'Something went wrong in the server.',
-              color: 'negative',
-              icon: 'cancel',
-              textColor: 'white'
-            })
-          }
-
+          this.$q.notify({
+            color: "positive",
+            textColor: "white",
+            icon: "check_circle",
+            message: "Successfully deleted",
           });
+
+          this.rows.splice(props.rowIndex, 1);
+        } else {
+          // 500
+          this.$q.notify({
+            message: "Something went wrong in the server.",
+            color: "negative",
+            icon: "cancel",
+            textColor: "white",
+          });
+        }
+      });
     },
-    onSubmit() {  
+    onSubmit() {
       odinApi.post("/dataSources", this.newDataSources).then((response) => {
         if (response.status == 201) {
           this.$q.notify({

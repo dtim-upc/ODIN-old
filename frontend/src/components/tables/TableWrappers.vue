@@ -3,6 +3,7 @@
     <q-table
       :rows="rows"
       :columns="columns"
+      :filter="search"
       row-key="name"
       no-data-label="I didn't find anything for you. Consider creating a new data source."
       no-results-label="The filter didn't uncover any results"
@@ -17,6 +18,11 @@
             @click="show_dialog = true"
           />
         </div>
+        <q-input dense debounce="400" color="primary" v-model="search">
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
 
         <q-dialog v-model="show_dialog" persistent>
           <q-card style="width: 700px; max-width: 80vw">
@@ -207,6 +213,7 @@ export default defineComponent({
       dataSources,
       attrib,
       attribs,
+      search: "",
     };
   },
   mounted() {
@@ -215,37 +222,33 @@ export default defineComponent({
   methods: {
     editRow(props) {
       // do something
-      console.log(props.row)
+      console.log(props.row);
     },
     deleteRow(props) {
       console.log(props.row.id);
-      odinApi.delete(`/wrapper/${props.row.id}` )
-        .then(response => {
+      odinApi.delete(`/wrapper/${props.row.id}`).then((response) => {
+        if (response.status == 204) {
+          console.log("response");
+          console.log(response);
 
-          if(response.status == 204){
-            console.log('response')
-            console.log(response)
-
-
-            this.$q.notify({
-              color: 'positive',
-              textColor: 'white',
-              icon: 'check_circle',
-              message: 'Successfully deleted'
-            })
-
-            this.rows.splice(props.rowIndex, 1);
-          } else {
-            // 500
-            this.$q.notify({
-              message: 'Something went wrong in the server.',
-              color: 'negative',
-              icon: 'cancel',
-              textColor: 'white'
-            })
-          }
-
+          this.$q.notify({
+            color: "positive",
+            textColor: "white",
+            icon: "check_circle",
+            message: "Successfully deleted",
           });
+
+          this.rows.splice(props.rowIndex, 1);
+        } else {
+          // 500
+          this.$q.notify({
+            message: "Something went wrong in the server.",
+            color: "negative",
+            icon: "cancel",
+            textColor: "white",
+          });
+        }
+      });
     },
 
     onSubmit() {
@@ -260,7 +263,7 @@ export default defineComponent({
             message: `Wrapper ${this.newWrapper.name} sucessfully created`,
           });
           const index = this.dataSources
-            .map(e => e.value)
+            .map((e) => e.value)
             .indexOf(response.data.dataSourcesId);
           if (index != -1) {
             response.data["dataSourcesLabel"] = this.dataSources[index].label;
@@ -306,18 +309,18 @@ export default defineComponent({
         }
       });
     },
-    getDataSourcesLabels(ds: { label: string; value: string; }[], data: any) {
-      this.rows = data.map((elem: { [x: string]: string; dataSourcesId: string; }) => {
-        if (elem.dataSourcesId) {
-          const index = ds
-            .map(e => e.value)
-            .indexOf(elem.dataSourcesId);
-          if (index != -1) {
-            elem["dataSourcesLabel"] = ds[index].label;
+    getDataSourcesLabels(ds: { label: string; value: string }[], data: any) {
+      this.rows = data.map(
+        (elem: { [x: string]: string; dataSourcesId: string }) => {
+          if (elem.dataSourcesId) {
+            const index = ds.map((e) => e.value).indexOf(elem.dataSourcesId);
+            if (index != -1) {
+              elem["dataSourcesLabel"] = ds[index].label;
+            }
           }
+          return elem;
         }
-        return elem;
-      });
+      );
     },
     addAttrib() {
       if (this.newWrapper.attributes.indexOf(this.attrib) === -1)
