@@ -5,7 +5,7 @@
       :columns="columns"
       :filter="search"
       row-key="name"
-      no-data-label="I didn't find anything for you. Consider creating a new data source."
+      no-data-label="I didn't find anything for you. Consider creating a new wrapper."
       no-results-label="The filter didn't uncover any results"
     >
       <template v-slot:top-left="">
@@ -45,6 +45,7 @@
                   v-model="newWrapper.dataSourcesId"
                   :options="dataSources"
                   label="Data Sources"
+                  :rules="[(val) => !!val || 'Field is required']"
                   emit-value
                   map-options
                 />
@@ -53,6 +54,8 @@
                     <q-btn round dense flat icon="add" @click="addAttrib()" />
                   </template>
                 </q-input>
+                <q-toggle v-model="inferSchema" label="Infer Schema" />
+
 
                 <div class="q-pa-md">
                   <div class="q-gutter-xs">
@@ -203,6 +206,7 @@ export default defineComponent({
     const dataSources: { label: string; value: string }[] = [];
     const attrib: string = "";
     const attribs: string[] = [];
+    const inferSchema: boolean = false;
 
     return {
       columns,
@@ -214,6 +218,7 @@ export default defineComponent({
       attrib,
       attribs,
       search: "",
+      inferSchema,
     };
   },
   mounted() {
@@ -252,32 +257,39 @@ export default defineComponent({
     },
 
     onSubmit() {
-      odinApi.post("/wrapper", this.newWrapper).then((response) => {
-        console.log(response.status)
-        if (response.status == 201) {
-          this.$q.notify({
-            color: "positive",
-            textColor: "white",
-            icon: "check_circle",
-            message: `Wrapper ${this.newWrapper.name} sucessfully created`,
-          });
-          const index = this.dataSources
-            .map((e) => e.value)
-            .indexOf(response.data.dataSourcesId);
-          if (index != -1) {
-            response.data["dataSourcesLabel"] = this.dataSources[index].label;
+      if (this.newWrapper.attributes.length === 0) {
+        this.$q.notify({
+          color: "negative",
+          textColor: "white",
+          message: "Please add at least 1 attribute",
+        });
+      } else {
+        odinApi.post("/wrapper", this.newWrapper).then((response) => {
+          if (response.status == 201) {
+            this.$q.notify({
+              color: "positive",
+              textColor: "white",
+              icon: "check_circle",
+              message: `Wrapper ${this.newWrapper.name} sucessfully created`,
+            });
+            const index = this.dataSources
+              .map((e) => e.value)
+              .indexOf(response.data.dataSourcesId);
+            if (index != -1) {
+              response.data["dataSourcesLabel"] = this.dataSources[index].label;
+            }
+            this.rows.push(response.data);
+            this.show_dialog = false;
+          } else {
+            this.$q.notify({
+              message: "Something went wrong in the server.",
+              color: "negative",
+              icon: "cancel",
+              textColor: "white",
+            });
           }
-          this.rows.push(response.data);
-          this.show_dialog = false;
-        } else {
-          this.$q.notify({
-            message: "Something went wrong in the server.",
-            color: "negative",
-            icon: "cancel",
-            textColor: "white",
-          });
-        }
-      });
+        });
+      }
     },
 
     onReset() {
@@ -289,7 +301,7 @@ export default defineComponent({
 
     retrieveData() {
       odinApi.get("/wrapper").then((response) => {
-        console.log(response.status)
+        console.log(response.status);
         if (response.status == 200 || response.status == 204) {
           this.getDataSources(response.data);
         }
@@ -297,7 +309,7 @@ export default defineComponent({
     },
     getDataSources(data: any) {
       odinApi.get("/dataSources").then((response) => {
-        console.log(response.status)
+        console.log(response.status);
         if (response.status == 200) {
           for (const elem of response.data) {
             const obj = {
@@ -306,8 +318,7 @@ export default defineComponent({
             };
             this.dataSources.push(obj);
           }
-          if (data)
-            this.getDataSourcesLabels(this.dataSources, data);
+          if (data) this.getDataSourcesLabels(this.dataSources, data);
         }
       });
     },
@@ -325,7 +336,10 @@ export default defineComponent({
       );
     },
     addAttrib() {
-      if (this.newWrapper.attributes.indexOf(this.attrib) === -1)
+      if (
+        this.attrib !== "" &&
+        this.newWrapper.attributes.indexOf(this.attrib) === -1
+      )
         this.newWrapper.attributes.push(this.attrib);
       this.attrib = "";
     },

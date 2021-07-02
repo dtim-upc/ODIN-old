@@ -58,6 +58,7 @@
                     <q-icon name="attach_file" />
                   </template>
                 </q-file> -->
+                <q-toggle v-model="mustUploadFile" label="Upload file to remote database" />
 
                 <div>
                   <q-btn label="Submit" type="submit" color="primary" />
@@ -202,6 +203,7 @@ export default defineComponent({
     const title = "Data Sources";
     const show_dialog = false;
     const uploadedFile: File = new File([], "");
+    const mustUploadFile: boolean = false;
     const newDataSources = {
       name: "",
       type: "",
@@ -215,6 +217,7 @@ export default defineComponent({
       newDataSources,
       uploadedFile,
       search: "",
+      mustUploadFile,
     };
   },
   mounted() {
