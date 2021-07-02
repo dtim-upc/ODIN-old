@@ -114,14 +114,14 @@
 
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
-          <q-btn
+          <!-- <q-btn
             dense
             round
             flat
             color="grey"
             @click="editRow(props)"
             icon="edit"
-          ></q-btn>
+          ></q-btn> -->
           <q-btn
             dense
             round
@@ -220,10 +220,10 @@ export default defineComponent({
     this.retrieveData();
   },
   methods: {
-    editRow(props) {
-      // do something
-      console.log(props.row);
-    },
+    // editRow(props) {
+    //   // do something
+    //   console.log(props.row);
+    // },
     deleteRow(props) {
       console.log(props.row.id);
       odinApi.delete(`/wrapper/${props.row.id}`).then((response) => {
@@ -252,9 +252,8 @@ export default defineComponent({
     },
 
     onSubmit() {
-      console.log(this.newWrapper);
-
       odinApi.post("/wrapper", this.newWrapper).then((response) => {
+        console.log(response.status)
         if (response.status == 201) {
           this.$q.notify({
             color: "positive",
@@ -290,13 +289,15 @@ export default defineComponent({
 
     retrieveData() {
       odinApi.get("/wrapper").then((response) => {
-        if (response.status == 200) {
+        console.log(response.status)
+        if (response.status == 200 || response.status == 204) {
           this.getDataSources(response.data);
         }
       });
     },
     getDataSources(data: any) {
       odinApi.get("/dataSources").then((response) => {
+        console.log(response.status)
         if (response.status == 200) {
           for (const elem of response.data) {
             const obj = {
@@ -305,7 +306,8 @@ export default defineComponent({
             };
             this.dataSources.push(obj);
           }
-          this.getDataSourcesLabels(this.dataSources, data);
+          if (data)
+            this.getDataSourcesLabels(this.dataSources, data);
         }
       });
     },

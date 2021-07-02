@@ -12,7 +12,6 @@ public class MetadataStorageApplication {
 			LoggerFactory.getLogger(MetadataStorageApplication.class);
 
 	public static void main(String[] args) {
-		System.out.println("MAIN START!");
 		SpringApplication.run(MetadataStorageApplication.class, args);
 	}
 

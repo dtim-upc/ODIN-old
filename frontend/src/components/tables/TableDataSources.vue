@@ -104,14 +104,14 @@
 
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
-          <q-btn
+          <!-- <q-btn
             dense
             round
             flat
             color="grey"
             @click="editRow(props)"
             icon="edit"
-          ></q-btn>
+          ></q-btn> -->
           <q-btn
             dense
             round
@@ -221,9 +221,9 @@ export default defineComponent({
     this.retrieveData();
   },
   methods: {
-    editRow(props) {
-      console.log(props.row.id);
-    },
+    // editRow(props) {
+    //   console.log(props.row.id);
+    // },
     deleteRow(props) {
       console.log(props.row.id);
       odinApi.delete(`/dataSources/${props.row.id}`).then((response) => {
