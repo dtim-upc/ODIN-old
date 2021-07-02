@@ -48,17 +48,79 @@
                   label="Type"
                 />
 
-                <!-- <q-file
-                  outlined 
-                  v-model="uploadedFile"     
+                <q-file
+                  outlined
+                  v-model="uploadedFile"
                   multiple
                   auto-expand
-                  :headers="{'content-type': 'multipart/form-data'}">
+                  :headers="{ 'content-type': 'multipart/form-data' }"
+                >
                   <template v-slot:prepend>
                     <q-icon name="attach_file" />
                   </template>
-                </q-file> -->
-                <q-toggle v-model="mustUploadFile" label="Upload file to remote database" />
+                </q-file>
+                <q-toggle
+                  v-model="mustUploadFile"
+                  label="Upload file to remote database"
+                />
+
+                <div>
+                  <q-btn label="Submit" type="submit" color="primary" />
+                  <q-btn
+                    label="Cancel"
+                    type="reset"
+                    color="primary"
+                    flat
+                    class="q-ml-sm"
+                  />
+                </div>
+              </q-form>
+            </q-card-section>
+          </q-card>
+        </q-dialog>
+        <q-dialog v-model="show_edit_dialog" persistent>
+          <q-card style="width: 700px; max-width: 80vw">
+            <q-card-section>
+              <div class="text-h6">Edit data source</div>
+            </q-card-section>
+
+            <q-card-section>
+              <q-form
+                @submit="onSubmitEdit"
+                @reset="onReset"
+                class="q-gutter-md"
+              >
+                <q-input
+                  filled
+                  v-model="newDataSources.name"
+                  label="Introduce a data source name"
+                  lazy-rules
+                  :rules="[
+                    (val) => (val && val.length > 0) || 'Please type a name',
+                  ]"
+                />
+
+                <q-select
+                  v-model="newDataSources.type"
+                  :options="options"
+                  label="Type"
+                />
+
+                <q-file
+                  outlined
+                  v-model="uploadedFile"
+                  multiple
+                  auto-expand
+                  :headers="{ 'content-type': 'multipart/form-data' }"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="attach_file" />
+                  </template>
+                </q-file>
+                <q-toggle
+                  v-model="mustUploadFile"
+                  label="Upload file to remote database"
+                />
 
                 <div>
                   <q-btn label="Submit" type="submit" color="primary" />
@@ -105,14 +167,14 @@
 
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
-          <!-- <q-btn
+          <q-btn
             dense
             round
             flat
             color="grey"
             @click="editRow(props)"
             icon="edit"
-          ></q-btn> -->
+          ></q-btn>
           <q-btn
             dense
             round
@@ -202,9 +264,11 @@ export default defineComponent({
     ];
     const title = "Data Sources";
     const show_dialog = false;
+    const show_edit_dialog: boolean = false;
     const uploadedFile: File = new File([], "");
     const mustUploadFile: boolean = false;
     const newDataSources = {
+      id: "",
       name: "",
       type: "",
     };
@@ -218,22 +282,24 @@ export default defineComponent({
       uploadedFile,
       search: "",
       mustUploadFile,
+      show_edit_dialog,
     };
   },
   mounted() {
     this.retrieveData();
   },
   methods: {
-    // editRow(props) {
-    //   console.log(props.row.id);
-    // },
-    deleteRow(props) {
+    editRow(props: any) {
+      this.show_edit_dialog = true;
+      const row = props.row;
+      this.newDataSources.id = row.id;
+      this.newDataSources.name = row.name;
+      this.newDataSources.type = row.type;
+    },
+    deleteRow(props: any) {
       console.log(props.row.id);
       odinApi.delete(`/dataSources/${props.row.id}`).then((response) => {
         if (response.status == 204) {
-          console.log("response");
-          console.log(response);
-
           this.$q.notify({
             color: "positive",
             textColor: "white",
@@ -274,11 +340,49 @@ export default defineComponent({
         }
       });
     },
+    onSubmitEdit() {
+      console.log();
+      this.show_edit_dialog = false;
+      odinApi
+        .post(
+          `/dataSources/edit/${this.newDataSources.id}`,
+          this.newDataSources
+        )
+        .then((response) => {
+          console.log(response.status);
+          if (response.status == 204) {
+            this.rows.map((e) => {
+              if (e.id === this.newDataSources.id) {
+                e.id = this.newDataSources.id;
+                e.name = this.newDataSources.name;
+                e.type = this.newDataSources.type;
+              }
+              return e;
+            });
+            console.log(this.rows);
+            this.$q.notify({
+              color: "positive",
+              textColor: "white",
+              icon: "check_circle",
+              message: `Data Source ${this.newDataSources.name} sucessfully edited`,
+            });
+            this.show_dialog = false;
+          } else {
+            this.$q.notify({
+              message: "Something went wrong in the server.",
+              color: "negative",
+              icon: "cancel",
+              textColor: "white",
+            });
+          }
+        });
+    },
 
     onReset() {
       this.newDataSources.name = "";
       this.newDataSources.type = "";
       this.show_dialog = false;
+      this.show_edit_dialog = false;
     },
 
     retrieveData() {

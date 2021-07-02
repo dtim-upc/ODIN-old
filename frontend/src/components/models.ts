@@ -18,6 +18,7 @@ export interface GlobalGraph {
 }
 
 export interface DataSources {
+  id:string;
   name:string;
   type:string;
 }

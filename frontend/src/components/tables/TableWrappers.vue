@@ -54,7 +54,6 @@
                     <q-btn round dense flat icon="add" @click="addAttrib()" />
                   </template>
                 </q-input>
-                <q-toggle v-model="inferSchema" label="Infer Schema" />
 
 
                 <div class="q-pa-md">
@@ -72,6 +71,8 @@
                     </q-chip>
                   </div>
                 </div>
+                <q-toggle v-model="inferSchema" label="Infer Schema" />
+
                 <div>
                   <q-btn label="Submit" type="submit" color="primary" />
                   <q-btn
