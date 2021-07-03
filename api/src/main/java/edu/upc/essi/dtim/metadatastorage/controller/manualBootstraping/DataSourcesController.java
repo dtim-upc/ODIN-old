@@ -2,6 +2,7 @@ package edu.upc.essi.dtim.metadatastorage.controller.manualBootstraping;
 
 import edu.upc.essi.dtim.metadatastorage.controller.AdminController;
 import edu.upc.essi.dtim.metadatastorage.models.DataSources;
+import edu.upc.essi.dtim.metadatastorage.models.Wrapper;
 import edu.upc.essi.dtim.metadatastorage.repository.DataSourcesRepository;
 import org.bson.BsonBinarySubType;
 import org.bson.types.Binary;
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/dataSources")
@@ -56,6 +58,22 @@ public class DataSourcesController {
             return new ResponseEntity<>(dataSources, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/edit/{id}")
+    public ResponseEntity<HttpStatus> editDataSources(@PathVariable("id") String id, @RequestBody DataSources dataSources) {
+        try {
+            Optional<DataSources> optionalDataSources = repository.findById(id);
+            if (optionalDataSources.isPresent()) {
+                DataSources ds = optionalDataSources.get();
+                ds.setName(dataSources.getName());
+                ds.setType(dataSources.getType());
+                repository.save(ds);
+            }
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
