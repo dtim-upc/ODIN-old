@@ -68,6 +68,50 @@
             </q-card-section>
           </q-card>
         </q-dialog>
+        <q-dialog v-model="show_edit_dialog" persistent>
+          <q-card style="width: 700px; max-width: 80vw">
+            <q-card-section>
+              <div class="text-h6">Edit global graph</div>
+            </q-card-section>
+
+            <q-card-section>
+              <q-form @submit="onSubmitEdit" @reset="onReset" class="q-gutter-md">
+                <q-input
+                  filled
+                  v-model="newGlobalGraph.name"
+                  label="Introduce a global graph name"
+                  lazy-rules
+                  :rules="[
+                    (val) => (val && val.length > 0) || 'Please type a name',
+                  ]"
+                />
+
+                <q-input
+                  filled
+                  type="url"
+                  v-model="newGlobalGraph.namespace"
+                  label="Introduce a namespace"
+                  lazy-rules
+                  :rules="[
+                    (val) =>
+                      (val !== null && val !== '') || 'Please type a namespace',
+                  ]"
+                />
+
+                <div>
+                  <q-btn label="Submit" type="submit" color="primary" />
+                  <q-btn
+                    label="Cancel"
+                    type="reset"
+                    color="primary"
+                    flat
+                    class="q-ml-sm"
+                  />
+                </div>
+              </q-form>
+            </q-card-section>
+          </q-card>
+        </q-dialog>
       </template>
 
       <template v-slot:top-right="props">
@@ -99,7 +143,7 @@
 
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
-          <!-- <q-btn dense round flat color="grey" @click="editRow(props)" icon="edit"></q-btn> -->
+          <q-btn dense round flat color="grey" @click="editRow(props)" icon="edit"></q-btn>
           <q-btn
             dense
             round
@@ -174,22 +218,43 @@ export default defineComponent({
     const rows: GlobalGraph[] = [];
     const title = "Global Graphs";
     const show_dialog = false;
+    const show_edit_dialog: boolean = false;
     const newGlobalGraph = {
+      id: "",
       name: "",
+      namedGraph:"",
       namespace: "",
       graphicalGraph: "",
     };
 
-    return { columns, rows, title, show_dialog, newGlobalGraph, search: "" };
+    return {
+      columns,
+      rows,
+      title,
+      show_dialog,
+      newGlobalGraph,
+      search: "",
+      show_edit_dialog,
+    };
   },
   mounted() {
     this.retrieveData();
   },
   methods: {
-    // editRow(props) {
-    //   // do something
-    //   console.log(props.row)
-    // },
+    // id:string;
+    // name:string;
+    // namedGraph:string;
+    // graphicalGraph:string;
+    // namespace:string;
+    editRow(props: any) {
+      this.show_edit_dialog = true;
+      const row = props.row;
+      this.newGlobalGraph.id = row.id;
+      this.newGlobalGraph.name = row.name;
+      this.newGlobalGraph.namedGraph = row.namedGraph;
+      this.newGlobalGraph.graphicalGraph = row.graphicalGraph;
+      this.newGlobalGraph.namespace = row.namespace;
+    },
 
     onSubmit() {
       odinApi.post("/globalGraph", this.newGlobalGraph).then((response) => {
@@ -212,12 +277,51 @@ export default defineComponent({
         }
       });
     },
+    onSubmitEdit() {
+      this.show_edit_dialog = false;
+      odinApi
+        .post(
+          `/globalGraph/edit/${this.newGlobalGraph.id}`,
+          this.newGlobalGraph
+        )
+        .then((response) => {
+          console.log(response.status);
+          if (response.status == 204) {
+            this.rows.map((e) => {
+              if (e.id === this.newGlobalGraph.id) {
+                e.id = this.newGlobalGraph.id;
+                e.name = this.newGlobalGraph.name;
+                e.namedGraph = this.newGlobalGraph.namedGraph;
+                e.graphicalGraph = this.newGlobalGraph.graphicalGraph;
+                e.namespace = this.newGlobalGraph.namespace;
+              }
+              return e;
+            });
+            console.log(this.rows);
+            this.$q.notify({
+              color: "positive",
+              textColor: "white",
+              icon: "check_circle",
+              message: `Data Source ${this.newGlobalGraph.name} sucessfully edited`,
+            });
+            this.show_dialog = false;
+          } else {
+            this.$q.notify({
+              message: "Something went wrong in the server.",
+              color: "negative",
+              icon: "cancel",
+              textColor: "white",
+            });
+          }
+        });
+    },
 
     onReset() {
       this.newGlobalGraph.name = "";
       this.newGlobalGraph.namespace = "";
       this.newGlobalGraph.graphicalGraph = "";
       this.show_dialog = false;
+      this.show_edit_dialog = false;
     },
 
     retrieveData() {
@@ -229,9 +333,7 @@ export default defineComponent({
       });
     },
 
-    deleteRow(props) {
-      console.log(props);
-      console.log(props.row.id);
+    deleteRow(props: any) {
       odinApi.delete(`/globalGraph/${props.row.id}`).then((response) => {
         if (response.status == 204) {
           console.log("response");

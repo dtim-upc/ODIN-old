@@ -1,6 +1,7 @@
 package edu.upc.essi.dtim.metadatastorage.controller.manualBootstraping;
 
 import edu.upc.essi.dtim.metadatastorage.controller.AdminController;
+import edu.upc.essi.dtim.metadatastorage.models.DataSources;
 import edu.upc.essi.dtim.metadatastorage.models.GlobalGraph;
 import edu.upc.essi.dtim.metadatastorage.repository.GlobalGraphRespository;
 import org.slf4j.Logger;
@@ -54,6 +55,24 @@ public class GlobalGraphController {
             return new ResponseEntity<>(_globalGraph, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/edit/{id}")
+    public ResponseEntity<HttpStatus> editGlobalGraph(@PathVariable("id") String id, @RequestBody GlobalGraph globalGraph) {
+        try {
+            Optional<GlobalGraph> optionalGlobalGraph = repository.findById(id);
+            if (optionalGlobalGraph.isPresent()) {
+                GlobalGraph gg = optionalGlobalGraph.get();
+                gg.setName(globalGraph.getName());
+                gg.setNamespace(globalGraph.getNamespace());
+                gg.setNamedGraph(globalGraph.getNamedGraph());
+                gg.setGraphicalGraph(globalGraph.getGraphicalGraph());
+                repository.save(gg);
+            }
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
