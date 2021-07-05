@@ -202,7 +202,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { odinApi } from "boot/axios";
-import { DataSources } from "components/models";
+import { DataSources, Wrapper } from "components/models";
 export default defineComponent({
   name: "TableDataSources",
   data() {
@@ -252,7 +252,12 @@ export default defineComponent({
         sortable: false,
       },
     ];
-    const rows: DataSources[] = [];
+    const rows: {
+      id: string;
+      name: string;
+      type: string;
+      wrappers: number;
+    }[] = [];
     const options = [
       "Avro",
       "JSONFile",
@@ -297,7 +302,6 @@ export default defineComponent({
       this.newDataSources.type = row.type;
     },
     deleteRow(props: any) {
-      console.log(props.row.id);
       odinApi.delete(`/dataSources/${props.row.id}`).then((response) => {
         if (response.status == 204) {
           this.$q.notify({
@@ -328,6 +332,7 @@ export default defineComponent({
             icon: "check_circle",
             message: `Data Source ${this.newDataSources.name} sucessfully created`,
           });
+          response.data.wrappers = 0;
           this.rows.push(response.data);
           this.show_dialog = false;
         } else {
@@ -341,7 +346,6 @@ export default defineComponent({
       });
     },
     onSubmitEdit() {
-      console.log();
       this.show_edit_dialog = false;
       odinApi
         .post(
@@ -349,7 +353,6 @@ export default defineComponent({
           this.newDataSources
         )
         .then((response) => {
-          console.log(response.status);
           if (response.status == 204) {
             this.rows.map((e) => {
               if (e.id === this.newDataSources.id) {
@@ -359,7 +362,6 @@ export default defineComponent({
               }
               return e;
             });
-            console.log(this.rows);
             this.$q.notify({
               color: "positive",
               textColor: "white",
@@ -386,11 +388,26 @@ export default defineComponent({
     },
 
     retrieveData() {
-      odinApi.get("/dataSources").then((response) => {
-        if (response.status == 200) {
-          this.rows = response.data;
-        }
-      });
+      odinApi
+        .get("/dataSources")
+        .then((response) => {
+          if (response.status == 200) {
+            this.rows = response.data;
+          }
+        })
+        .then(() => {
+          odinApi.get("/wrapper").then((wrappers_res) => {
+            const arrayOfWrappers: Wrapper[] = wrappers_res.data;
+            // Calculates the number of wrappers per DataSource
+            this.rows.map((r) => {
+              let size = 0;
+              for (const w of arrayOfWrappers)
+                if (w.dataSourcesId === r.id) ++size;
+              r.wrappers = size;
+              return r;
+            });
+          });
+        });
     },
   },
 });

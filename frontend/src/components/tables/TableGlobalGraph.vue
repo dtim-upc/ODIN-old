@@ -297,12 +297,11 @@ export default defineComponent({
               }
               return e;
             });
-            console.log(this.rows);
             this.$q.notify({
               color: "positive",
               textColor: "white",
               icon: "check_circle",
-              message: `Data Source ${this.newGlobalGraph.name} sucessfully edited`,
+              message: `Global graph ${this.newGlobalGraph.name} sucessfully edited`,
             });
             this.show_dialog = false;
           } else {

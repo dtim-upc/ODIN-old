@@ -4,6 +4,7 @@ import edu.upc.essi.dtim.metadatastorage.controller.AdminController;
 import edu.upc.essi.dtim.metadatastorage.models.DataSources;
 import edu.upc.essi.dtim.metadatastorage.models.Wrapper;
 import edu.upc.essi.dtim.metadatastorage.repository.DataSourcesRepository;
+import edu.upc.essi.dtim.metadatastorage.repository.WrapperRepository;
 import org.bson.BsonBinarySubType;
 import org.bson.types.Binary;
 import org.slf4j.Logger;
@@ -28,6 +29,8 @@ public class DataSourcesController {
 
     @Autowired
     private DataSourcesRepository repository;
+    @Autowired
+    private WrapperRepository wrapperRepository;
 
     @PostMapping
     public ResponseEntity<DataSources> createDataSources(@RequestBody DataSources dataSources) {

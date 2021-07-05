@@ -2,6 +2,7 @@ package edu.upc.essi.dtim.metadatastorage.controller.manualBootstraping;
 
 import edu.upc.essi.dtim.metadatastorage.controller.AdminController;
 import edu.upc.essi.dtim.metadatastorage.models.DataSources;
+import edu.upc.essi.dtim.metadatastorage.models.GlobalGraph;
 import edu.upc.essi.dtim.metadatastorage.models.Wrapper;
 import edu.upc.essi.dtim.metadatastorage.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.metadatastorage.repository.WrapperRepository;
@@ -27,20 +28,14 @@ public class WrapperController {
 
     @Autowired
     private WrapperRepository repository;
-    @Autowired
-    private DataSourcesRepository dataSourcesRepository;
 
     @PostMapping
     public ResponseEntity<Wrapper> createWrapper(@RequestBody Wrapper wrapper) {
         try {
-            Wrapper _wrapper = new Wrapper(wrapper.getName(), wrapper.getAttributes(), wrapper.getDataSourcesId());
+            Wrapper _wrapper = new Wrapper(wrapper.getName(),
+                                            wrapper.getAttributes(),
+                                            wrapper.getDataSourcesId());
             repository.save(_wrapper);
-            Optional<DataSources> optionalDataSources = dataSourcesRepository.findById(wrapper.getDataSourcesId());
-            if (optionalDataSources.isPresent()) {
-                DataSources _dataSources = optionalDataSources.get();
-                _dataSources.setWrappers(_dataSources.getWrappers()+1);
-                dataSourcesRepository.save(_dataSources);
-            }
             LOGGER.info(LOG_MSG, "createDataSources", wrapper.toString(), _wrapper.toString() );
             return new ResponseEntity<>(_wrapper, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -68,19 +63,28 @@ public class WrapperController {
         }
     }
 
+    @PostMapping("/edit/{id}")
+    public ResponseEntity<HttpStatus> editWrapper(@PathVariable("id") String id, @RequestBody Wrapper wrapper) {
+        try {
+            Optional<Wrapper> optionalWrapper = repository.findById(id);
+            if (optionalWrapper.isPresent()) {
+                Wrapper w = optionalWrapper.get();
+                w.setName(wrapper.getName());
+                w.setAttributes(wrapper.getAttributes());
+                w.setDataSourcesId(wrapper.getDataSourcesId());
+                w.setDataSourcesLabel(wrapper.getDataSourcesLabel());
+                repository.save(w);
+            }
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteWrapper(@PathVariable("id") String id) {
         try {
             Optional<Wrapper> optionalWrapper = repository.findById(id);
-            if (optionalWrapper.isPresent()) {
-                Wrapper _wrapper = optionalWrapper.get();
-                Optional<DataSources> optionalDataSources = dataSourcesRepository.findById(_wrapper.getDataSourcesId());
-                if (optionalDataSources.isPresent()) {
-                    DataSources _dataSources = optionalDataSources.get();
-                    _dataSources.setWrappers(_dataSources.getWrappers()-1);
-                    dataSourcesRepository.save(_dataSources);
-                }
-            }
             repository.deleteById(id);
             LOGGER.info(LOG_MSG, "deleteWrapper", id, HttpStatus.NO_CONTENT.toString() );
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

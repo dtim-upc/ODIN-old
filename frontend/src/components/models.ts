@@ -24,6 +24,7 @@ export interface DataSources {
 }
 
 export interface Wrapper {
+  id:string;
   name:string;
   attributes:[string];
   dataSourcesId:string;

@@ -19,19 +19,17 @@ public class DataSources {
     @NotBlank
     private String type;
     private String file;
-    private Integer wrappers = 0;
 
     public DataSources(String name, String type) {
         System.out.println("DATA SOURCES CREATOR");
         this.name = name;
         this.type = type;
-        this.wrappers = 0;
     }
 
     @Override
     public String toString() {
         return String.format(
-                "DataSources[name=%s, type='%s', file='%s', wrappers='%s']",
-                name, type, file, wrappers);
+                "DataSources[name=%s, type='%s', file='%s']",
+                name, type, file);
     }
 }

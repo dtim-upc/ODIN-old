@@ -55,7 +55,6 @@
                   </template>
                 </q-input>
 
-
                 <div class="q-pa-md">
                   <div class="q-gutter-xs">
                     <q-chip
@@ -73,6 +72,70 @@
                 </div>
                 <q-toggle v-model="inferSchema" label="Infer Schema" />
 
+                <div>
+                  <q-btn label="Submit" type="submit" color="primary" />
+                  <q-btn
+                    label="Cancel"
+                    type="reset"
+                    color="primary"
+                    flat
+                    class="q-ml-sm"
+                  />
+                </div>
+              </q-form>
+            </q-card-section>
+          </q-card>
+        </q-dialog>
+        <q-dialog v-model="show_edit_dialog" persistent>
+          <q-card style="width: 700px; max-width: 80vw">
+            <q-card-section>
+              <div class="text-h6">Edit wrapper</div>
+            </q-card-section>
+
+            <q-card-section>
+              <q-form
+                @submit="onSubmitEdit"
+                @reset="onReset"
+                class="q-gutter-md"
+              >
+                <q-input
+                  filled
+                  v-model="newWrapper.name"
+                  label="Introduce a wrapper name"
+                  lazy-rules
+                  :rules="[
+                    (val) => (val && val.length > 0) || 'Please type a name',
+                  ]"
+                />
+                <q-select
+                  v-model="newWrapper.dataSourcesId"
+                  :options="dataSources"
+                  label="Data Sources"
+                  :rules="[(val) => !!val || 'Field is required']"
+                  emit-value
+                  map-options
+                />
+                <q-input bottom-slots v-model="attrib" label="Attributes">
+                  <template v-slot:append>
+                    <q-btn round dense flat icon="add" @click="addAttrib()" />
+                  </template>
+                </q-input>
+
+                <div class="q-pa-md">
+                  <div class="q-gutter-xs">
+                    <q-chip
+                      size="lg"
+                      v-for="x in newWrapper.attributes"
+                      :key="x"
+                      removable
+                      color="primary"
+                      text-color="white"
+                      @remove="removeAttrib(x)"
+                    >
+                      {{ x }}
+                    </q-chip>
+                  </div>
+                </div>
                 <div>
                   <q-btn label="Submit" type="submit" color="primary" />
                   <q-btn
@@ -118,14 +181,14 @@
 
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
-          <!-- <q-btn
+          <q-btn
             dense
             round
             flat
             color="grey"
             @click="editRow(props)"
             icon="edit"
-          ></q-btn> -->
+          ></q-btn>
           <q-btn
             dense
             round
@@ -199,10 +262,13 @@ export default defineComponent({
     const rows: Wrapper[] = [];
     const title = "Wrappers";
     const show_dialog = false;
+    const show_edit_dialog = false;
     const newWrapper = {
+      id: "",
       name: "",
       attributes: Array<string>(),
       dataSourcesId: "",
+      dataSourcesLabel: "",
     };
     const dataSources: { label: string; value: string }[] = [];
     const attrib: string = "";
@@ -214,6 +280,7 @@ export default defineComponent({
       rows,
       title,
       show_dialog,
+      show_edit_dialog,
       newWrapper,
       dataSources,
       attrib,
@@ -226,17 +293,18 @@ export default defineComponent({
     this.retrieveData();
   },
   methods: {
-    // editRow(props) {
-    //   // do something
-    //   console.log(props.row);
-    // },
-    deleteRow(props) {
-      console.log(props.row.id);
+    editRow(props: any) {
+      this.show_edit_dialog = true;
+      const row = props.row;
+      this.newWrapper.id = row.id;
+      this.newWrapper.name = row.name;
+      this.newWrapper.attributes = row.attributes;
+      this.newWrapper.dataSourcesId = row.dataSourcesId;
+      this.newWrapper.dataSourcesLabel = row.dataSourcesLabel;
+    },
+    deleteRow(props: any) {
       odinApi.delete(`/wrapper/${props.row.id}`).then((response) => {
         if (response.status == 204) {
-          console.log("response");
-          console.log(response);
-
           this.$q.notify({
             color: "positive",
             textColor: "white",
@@ -279,6 +347,7 @@ export default defineComponent({
             if (index != -1) {
               response.data["dataSourcesLabel"] = this.dataSources[index].label;
             }
+            console.log(response.data)
             this.rows.push(response.data);
             this.show_dialog = false;
           } else {
@@ -292,12 +361,63 @@ export default defineComponent({
         });
       }
     },
+    onSubmitEdit() {
+      this.show_edit_dialog = false;
+      odinApi
+        .post(`/wrapper/edit/${this.newWrapper.id}`, this.newWrapper)
+        .then((response) => {
+          if (response.status == 204) {
+            this.rows.map((e) => {
+              if (e.id === this.newWrapper.id) {
+                e.id = this.newWrapper.id;
+                e.name = this.newWrapper.name;
+                const aux: [string] = [""];
+                aux.pop();
+                for (const a of this.newWrapper.attributes) {
+                  aux.push(a);
+                }
+                e.attributes = aux;
+                e.dataSourcesId = this.newWrapper.dataSourcesId;
+                const index = this.dataSources
+                  .map((e) => e.value)
+                  .indexOf(e.dataSourcesId);
+                if (index === -1) {
+                  e.dataSourcesLabel = this.dataSources[index].label;
+                } else {
+                  this.$q.notify({
+                    message: "Something went wrong in the server.",
+                    color: "negative",
+                    icon: "cancel",
+                    textColor: "white",
+                  });
+                  e.dataSourcesLabel = "ERROR DATA SOURCE NOT FOUND"
+                }
+              }
+              return e;
+            });
+            this.$q.notify({
+              color: "positive",
+              textColor: "white",
+              icon: "check_circle",
+              message: `Wrapper ${this.newWrapper.name} sucessfully edited`,
+            });
+          } else {
+            this.$q.notify({
+              message: "Something went wrong in the server.",
+              color: "negative",
+              icon: "cancel",
+              textColor: "white",
+            });
+          }
+        });
+    },
 
     onReset() {
       this.newWrapper.name = "";
       this.newWrapper.attributes = [];
       this.newWrapper.dataSourcesId = "";
       this.show_dialog = false;
+      this.show_edit_dialog = false;
     },
 
     retrieveData() {
@@ -310,7 +430,6 @@ export default defineComponent({
     },
     getDataSources(data: any) {
       odinApi.get("/dataSources").then((response) => {
-        console.log(response.status);
         if (response.status == 200) {
           for (const elem of response.data) {
             const obj = {
@@ -330,6 +449,8 @@ export default defineComponent({
             const index = ds.map((e) => e.value).indexOf(elem.dataSourcesId);
             if (index != -1) {
               elem["dataSourcesLabel"] = ds[index].label;
+            } else {
+              elem["dataSourcesLabel"] = "ERROR DATA SOURCE NOT FOUND";
             }
           }
           return elem;
