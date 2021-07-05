@@ -75,7 +75,11 @@
             </q-card-section>
 
             <q-card-section>
-              <q-form @submit="onSubmitEdit" @reset="onReset" class="q-gutter-md">
+              <q-form
+                @submit="onSubmitEdit"
+                @reset="onReset"
+                class="q-gutter-md"
+              >
                 <q-input
                   filled
                   v-model="newGlobalGraph.name"
@@ -143,7 +147,14 @@
 
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
-          <q-btn dense round flat color="grey" @click="editRow(props)" icon="edit"></q-btn>
+          <q-btn
+            dense
+            round
+            flat
+            color="grey"
+            @click="editRow(props)"
+            icon="edit"
+          ></q-btn>
           <q-btn
             dense
             round
@@ -153,7 +164,19 @@
             icon="delete"
           ></q-btn>
         </q-td>
-      </template>
+      </template>      
+      <template v-slot:body-cell-editgraph="props">
+        <q-td :props="props">
+          <q-btn
+            dense
+            round
+            flat
+            color="grey"
+            :to="'/globalGraph/edit_global_graph/'+props.row.id"
+            icon="search"
+          ></q-btn>
+        </q-td>
+      </template> 
 
       <template v-slot:no-data="{ icon, message, filter }">
         <div class="full-width row flex-center text-accent q-gutter-sm">
@@ -208,6 +231,12 @@ export default defineComponent({
         sortable: true,
       },
       {
+        name: "editgraph",
+        label: "Edit Graph",
+        align: "center",
+        field: "editgraph",
+      },
+      {
         name: "actions",
         label: "actions",
         align: "center",
@@ -222,7 +251,7 @@ export default defineComponent({
     const newGlobalGraph = {
       id: "",
       name: "",
-      namedGraph:"",
+      namedGraph: "",
       namespace: "",
       graphicalGraph: "",
     };
@@ -241,6 +270,9 @@ export default defineComponent({
     this.retrieveData();
   },
   methods: {
+    editGlobalGraph(props: any) {
+      console.log(props.row.id);
+    },
     // id:string;
     // name:string;
     // namedGraph:string;
