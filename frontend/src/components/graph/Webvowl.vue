@@ -1,6 +1,6 @@
 <template lang="html">
 
-  <iframe :src="`html/index.html?` +view" frameborder="0"
+  <iframe :src="`html/index.html?` +view +params()" frameborder="0"
     allowfullscreen class="fit" style="min-height: inherit;min-width: inherit;">
    </iframe>
 
@@ -25,19 +25,27 @@ import { odinApi } from 'boot/axios';
 export default defineComponent({
   name: 'Webvowl',
   setup() {
-    // mounted
-    // onMounted(() => {
-    //   console.log('Component is mounted!')
-    //   // this.loadJS('./metamodel.js')
-    //   // console.log(webvowl.hola)
-    //   // webvowl.app().initialize("global_Graph_Edit");
-    // })
   },
   props: {
     view: {
       type: String,
       default: "global_Graph_Edit"
+    },
+    id: {
+      type:String,
+      default:''
     }
+  },
+  methods: {
+
+    params(){
+
+      if(this.globalGraphID !== '' ){
+        return "&id="+this.id
+      }
+      return ""
+    }
+
   }
 });
 </script>
