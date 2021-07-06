@@ -13,6 +13,9 @@ import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
   name: 'Test_webvowl',
-  components: { Webvowl }
+  components: { Webvowl },
+  data() {
+    return {global_Graph_Edit: "global_Graph_Edit"}
+  }
 });
 </script>
