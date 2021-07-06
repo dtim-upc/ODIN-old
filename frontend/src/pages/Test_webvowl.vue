@@ -1,7 +1,8 @@
 <template>
 
   <q-page>
-    <Webvowl :view="global_Graph_Edit"/>
+    <Webvowl :view="global_Graph_Edit" />
+    <!-- <Webvowl :view="global_Graph_Edit" :id="1234"/> -->
   </q-page>
 
 </template>
