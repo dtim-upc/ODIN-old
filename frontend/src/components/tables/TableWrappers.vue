@@ -186,6 +186,14 @@
             round
             flat
             color="grey"
+            :to="'/wrappers/view/' + props.row.id"
+            icon="remove_red_eye"
+          ></q-btn>
+          <q-btn
+            dense
+            round
+            flat
+            color="grey"
             @click="editRow(props)"
             icon="edit"
           ></q-btn>
@@ -378,10 +386,12 @@ export default defineComponent({
                 }
                 e.attributes = aux;
                 e.dataSourcesId = this.newWrapper.dataSourcesId;
+                console.log(this.dataSources)
                 const index = this.dataSources
                   .map((e) => e.value)
                   .indexOf(e.dataSourcesId);
-                if (index === -1) {
+                console.log(index)
+                if (index !== -1) {
                   e.dataSourcesLabel = this.dataSources[index].label;
                 } else {
                   this.$q.notify({
@@ -447,7 +457,7 @@ export default defineComponent({
         (elem: { [x: string]: string; dataSourcesId: string }) => {
           if (elem.dataSourcesId) {
             const index = ds.map((e) => e.value).indexOf(elem.dataSourcesId);
-            if (index != -1) {
+            if (index !== -1) {
               elem["dataSourcesLabel"] = ds[index].label;
             } else {
               elem["dataSourcesLabel"] = "ERROR DATA SOURCE NOT FOUND";

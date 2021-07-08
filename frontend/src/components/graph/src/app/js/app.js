@@ -278,6 +278,7 @@ module.exports = function () {
 		pauseMenu.reset();
 		graph.options().navigationMenu().hideAllMenus();
 
+        console.log({jsonText, filename})
 		if ((jsonText===undefined && filename===undefined) || (jsonText.length===0)){
             loadingModule.notValidJsonFile();
 			return;
@@ -291,6 +292,7 @@ module.exports = function () {
 				data =JSON.parse(jsonText);
 				validJSON=true;
 			} catch (e){
+                console.log("hace catch")
 				validJSON=false;
 			}
 			if (validJSON===false){

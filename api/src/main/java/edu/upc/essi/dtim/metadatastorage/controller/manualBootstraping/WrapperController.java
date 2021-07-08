@@ -62,6 +62,21 @@ public class WrapperController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @GetMapping("/view/{id}")
+    public ResponseEntity<Wrapper> getWrapper(@PathVariable("id") String id) {
+
+        try {
+            Optional<Wrapper> optionalWrapper = repository.findById(id);
+            if (optionalWrapper.isPresent()) {
+                LOGGER.info(LOG_MSG, "getWrapper", id, "" );
+                return new ResponseEntity<>(optionalWrapper.get(), HttpStatus.OK);
+            }
+            LOGGER.info(LOG_MSG, "getWrapper", id, "" );
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @PostMapping("/edit/{id}")
     public ResponseEntity<HttpStatus> editWrapper(@PathVariable("id") String id, @RequestBody Wrapper wrapper) {

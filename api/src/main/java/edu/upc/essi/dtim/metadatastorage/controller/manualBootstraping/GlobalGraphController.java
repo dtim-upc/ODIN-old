@@ -46,6 +46,38 @@ public class GlobalGraphController {
         }
     }
 
+    @GetMapping("/view/{id}")
+    public ResponseEntity<GlobalGraph> getGlobalGraph(@PathVariable("id") String id) {
+
+        try {
+            Optional<GlobalGraph> optionalGlobalGraph = repository.findById(id);
+            if (optionalGlobalGraph.isPresent()) {
+                LOGGER.info(LOG_MSG, "getGlobalGraph", id, "" );
+                return new ResponseEntity<>(optionalGlobalGraph.get(), HttpStatus.OK);
+            }
+            LOGGER.info(LOG_MSG, "getGlobalGraphs", id, "" );
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<GlobalGraph> getGraphicalGraph(@PathVariable("id") String id) {
+
+        try {
+            Optional<GlobalGraph> optionalGlobalGraph = repository.findById(id);
+            if (optionalGlobalGraph.isPresent()) {
+                LOGGER.info(LOG_MSG, "getGraphicalGraph", id, "" );
+                return new ResponseEntity<>(optionalGlobalGraph.get(), HttpStatus.OK);
+            }
+            LOGGER.info(LOG_MSG, "getGraphicalGraph", id, "" );
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     @PostMapping
     public ResponseEntity<GlobalGraph> createGlobalGraph(@RequestBody GlobalGraph globalGraph) {
@@ -69,6 +101,7 @@ public class GlobalGraphController {
                 gg.setNamedGraph(globalGraph.getNamedGraph());
                 gg.setGraphicalGraph(globalGraph.getGraphicalGraph());
                 repository.save(gg);
+                return new ResponseEntity<>(HttpStatus.OK);
             }
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
@@ -86,6 +119,19 @@ public class GlobalGraphController {
             _globalGraph.setGraphicalGraph(globalGraph.getGraphicalGraph());
             _globalGraph.setNamedGraph(globalGraph.getNamedGraph());
             _globalGraph.setNamespace(globalGraph.getNamespace());
+            return new ResponseEntity<>(repository.save(_globalGraph), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping("/{id}/graphicalGraph")
+    public ResponseEntity<GlobalGraph> updateGraphicalGraph(@PathVariable("id") String id, @RequestBody String graphicalGraph) {
+        Optional<GlobalGraph> tutorialData = repository.findById(id);
+
+        if (tutorialData.isPresent()) {
+            GlobalGraph _globalGraph = tutorialData.get();
+            _globalGraph.setGraphicalGraph(graphicalGraph);
             return new ResponseEntity<>(repository.save(_globalGraph), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

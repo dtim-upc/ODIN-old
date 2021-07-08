@@ -2,6 +2,7 @@ package edu.upc.essi.dtim.metadatastorage.controller.manualBootstraping;
 
 import edu.upc.essi.dtim.metadatastorage.controller.AdminController;
 import edu.upc.essi.dtim.metadatastorage.models.DataSources;
+import edu.upc.essi.dtim.metadatastorage.models.GlobalGraph;
 import edu.upc.essi.dtim.metadatastorage.models.Wrapper;
 import edu.upc.essi.dtim.metadatastorage.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.metadatastorage.repository.WrapperRepository;
@@ -59,6 +60,21 @@ public class DataSourcesController {
             }
             LOGGER.info(LOG_MSG, "getAllDataSources", EMPTY_INPUTS, "" );
             return new ResponseEntity<>(dataSources, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping("/view/{id}")
+    public ResponseEntity<DataSources> getAllDataSources(@PathVariable("id") String id) {
+
+        try {
+            Optional<DataSources> optionalDataSources = repository.findById(id);
+            if (optionalDataSources.isPresent()) {
+                LOGGER.info(LOG_MSG, "getDataSources", id, "" );
+                return new ResponseEntity<>(optionalDataSources.get(), HttpStatus.OK);
+            }
+            LOGGER.info(LOG_MSG, "getDataSources", id, "" );
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

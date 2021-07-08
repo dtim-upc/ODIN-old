@@ -152,6 +152,14 @@
             round
             flat
             color="grey"
+            :to="'/globalGraph/view/'+props.row.id"
+            icon="remove_red_eye"
+          ></q-btn>
+          <q-btn
+            dense
+            round
+            flat
+            color="grey"
             @click="editRow(props)"
             icon="edit"
           ></q-btn>
@@ -164,7 +172,7 @@
             icon="delete"
           ></q-btn>
         </q-td>
-      </template>      
+      </template>
       <template v-slot:body-cell-editgraph="props">
         <q-td :props="props">
           <q-btn
@@ -270,9 +278,6 @@ export default defineComponent({
     this.retrieveData();
   },
   methods: {
-    editGlobalGraph(props: any) {
-      console.log(props.row.id);
-    },
     // id:string;
     // name:string;
     // namedGraph:string;
@@ -317,8 +322,7 @@ export default defineComponent({
           this.newGlobalGraph
         )
         .then((response) => {
-          console.log(response.status);
-          if (response.status == 204) {
+          if (response.status == 200) {
             this.rows.map((e) => {
               if (e.id === this.newGlobalGraph.id) {
                 e.id = this.newGlobalGraph.id;
@@ -358,7 +362,6 @@ export default defineComponent({
     retrieveData() {
       odinApi.get("/globalGraph").then((response) => {
         if (response.status == 200) {
-          console.log(response.data);
           this.rows = response.data;
         }
       });
@@ -366,8 +369,7 @@ export default defineComponent({
 
     deleteRow(props: any) {
       odinApi.delete(`/globalGraph/${props.row.id}`).then((response) => {
-        if (response.status == 204) {
-          console.log("response");
+        if (response.status == 204 || response.status == 200) {
           console.log(response);
 
           this.$q.notify({

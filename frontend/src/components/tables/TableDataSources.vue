@@ -47,8 +47,8 @@
                   :options="options"
                   label="Type"
                 />
-
-                <q-file
+                
+                <!-- <q-file
                   outlined
                   v-model="uploadedFile"
                   multiple
@@ -58,7 +58,7 @@
                   <template v-slot:prepend>
                     <q-icon name="attach_file" />
                   </template>
-                </q-file>
+                </q-file> -->
                 <q-toggle
                   v-model="mustUploadFile"
                   label="Upload file to remote database"
@@ -167,6 +167,14 @@
 
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
+          <q-btn
+            dense
+            round
+            flat
+            color="grey"
+            :to="'/dataSources/view/' + props.row.id"
+            icon="remove_red_eye"
+          ></q-btn>
           <q-btn
             dense
             round
