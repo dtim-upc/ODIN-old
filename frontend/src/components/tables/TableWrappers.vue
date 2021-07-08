@@ -332,7 +332,6 @@ export default defineComponent({
         }
       });
     },
-
     onSubmit() {
       if (this.newWrapper.attributes.length === 0) {
         this.$q.notify({
@@ -368,6 +367,7 @@ export default defineComponent({
           }
         });
       }
+      this.onReset();
     },
     onSubmitEdit() {
       this.show_edit_dialog = false;
@@ -421,7 +421,6 @@ export default defineComponent({
           }
         });
     },
-
     onReset() {
       this.newWrapper.name = "";
       this.newWrapper.attributes = [];
@@ -429,7 +428,6 @@ export default defineComponent({
       this.show_dialog = false;
       this.show_edit_dialog = false;
     },
-
     retrieveData() {
       odinApi.get("/wrapper").then((response) => {
         console.log(response.status);

@@ -16,9 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/dataSources")
@@ -98,7 +96,13 @@ public class DataSourcesController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteDataSources(@PathVariable("id") String id) {
+        //First Step: Find wrappers with _dataSourceId == id and delete them
+        //Second Step: Delete the data source with _id = id
         try {
+            Iterable<Wrapper> wrapperIterable = wrapperRepository.findAllByDataSourcesId(id);
+            for (Wrapper w:
+                 wrapperIterable)
+            wrapperRepository.deleteById(w.getId());
             repository.deleteById(id);
             LOGGER.info(LOG_MSG, "deleteDataSources", id, HttpStatus.NO_CONTENT.toString() );
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
