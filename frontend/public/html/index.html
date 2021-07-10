@@ -380,6 +380,12 @@
 <script>
 
 var view = location.href.split('?')[1]
+
+if (view.includes('&')) {
+	view = view.split('&')[0]
+}
+
+console.log("webvowl!!!")
 console.log(view)
 window.onload = webvowl.app().initialize(view);
 
