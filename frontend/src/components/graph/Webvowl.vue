@@ -1,14 +1,15 @@
 <template lang="html">
 
-  <iframe :src="`html/index.html?` +view +params()" frameborder="0"
-    allowfullscreen class="fit" style="min-height: inherit;min-width: inherit;">
+  <iframe :src="`html/index.html?` + view + params()" 
+    frameborder="0"
+    allowfullscreen class="fit" 
+    style="min-height: inherit;min-width: inherit;">
    </iframe>
 
 </template>
 
 <script>
-import { defineComponent, onMounted } from 'vue';
-import { odinApi } from 'boot/axios';
+import { defineComponent} from 'vue';
 
 // import './metamodel.js'
 // import './public/js/d3.min.js';
@@ -38,9 +39,8 @@ export default defineComponent({
   },
   methods: {
 
-    params(){
-
-      if(this.globalGraphID !== '' ){
+    params() {
+      if(this.id !== '' ){
         return "&id="+this.id
       }
       return ""

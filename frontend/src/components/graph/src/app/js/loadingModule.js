@@ -473,10 +473,7 @@ module.exports =  function (graph) {
     };
 
     loadingModule.from_MDM_DB=function() {
-        console.log("loadingModule.from_MDM_DB")
-        console.log({currentGlobalGraph})
         ontologyMenu.append_bulletPoint("Retrieving ontology: " + currentGlobalGraph.name );
-        console.log(currentGlobalGraph.graphicalGraph)
         parseOntologyContent(currentGlobalGraph.graphicalGraph);
     };
 
@@ -521,7 +518,8 @@ module.exports =  function (graph) {
                     ontologyContent= request.responseText;
                     if(currentGlobalGraph){
                         ontologyContent = ontologyContent.replace("{{:title:}}",currentGlobalGraph.name);
-                        ontologyContent = ontologyContent.replace("{{:iri:}}",currentGlobalGraph.defaultNamespace);
+                        ontologyContent = ontologyContent.replace("{{:iri:}}",currentGlobalGraph.namespace);
+                        //ontologyContent = ontologyContent.replace("{{:iri:}}",currentGlobalGraph.defaultNamespace);
                     }
                     parseOntologyContent(ontologyContent);
                 } else {
@@ -546,7 +544,6 @@ module.exports =  function (graph) {
     }
 
     loadingModule.notValidJsonFile=function(){
-        console.log("loadingModule.notValidJsonFile")
         graph.clearGraphData();
         ontologyMenu.append_message_toLastBulletPoint(" <span style='color:red;'>failed</span>");
         ontologyMenu.append_message_toLastBulletPoint("<br><span style='color:red;'>Error: Received empty graph</span>");
@@ -580,29 +577,18 @@ module.exports =  function (graph) {
     // * wrappers
     // * lav mapping
     function retrieveGraph() {
-        console.log("retrieveGraph() holaa3")
         // editor mode is just for global graph but let's consider changing the name later
         //if ( graph.options().defaultConfig().editorMode === "true" ) {
-            console.log("location.search")
-            console.log(location.search)
             var globalGraphID = getParameterByName("id");
-            console.log({globalGraphID});
-            var url_string = window.location.href;
-            console.log(url_string)
-            var url = new URL(url_string);
-            //var globalGraphID = url.searchParams.get("globalGraphID");
-            //var globalGraphID = "60e42d04927d9433fd53d36c";
             if (globalGraphID !== "") {
               // retrieve global graph data.
-                currentGlobalGraph = {}
-                const content = $.ajax({
+                const content = JSON.parse($.ajax({
                     type: "GET",
                     url: odinApi+"/globalGraph/"+globalGraphID,
                     async: false
-                }).responseText;
-                if (content !== "") {
-                    currentGlobalGraph = JSON.parse(content);
-                }
+                }).responseText);
+                currentGlobalGraph = content;
+                console.log("this");
                 console.log({currentGlobalGraph});
             }
         //}
@@ -792,8 +778,6 @@ module.exports =  function (graph) {
 
 
     function identifyOntologyLoadingMethod(url){
-        console.log("vacio?")
-        console.log({currentGlobalGraph})
         if(currentGlobalGraph)
             if (currentGlobalGraph.graphicalGraph) {
                 return MDM_DB;

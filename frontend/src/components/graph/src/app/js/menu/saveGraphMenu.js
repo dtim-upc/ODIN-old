@@ -62,15 +62,13 @@ module.exports = function (graph) {
     saveGraphMenu.saveGraphicalGraph = function () {
         loadingModule=graph.options().loadingModule();
         exportMenu = graph.options().exportMenu();
-        console.log("this")
-        console.log(loadingModule.currentGlobalGraph())
-        console.log(exportMenu.getJson())
-        $.ajax({
+        console.log(loadingModule.currentGlobalGraph());
+        /*$.ajax({
             type: "PUT",
             //url: odinApi+'/globalGraph/'+loadingModule.currentGlobalGraph().globalGraphID+'/graphicalGraph',
             url: odinApi+'/globalGraph/60e42d04927d9433fd53d36c/graphicalGraph',
             data: exportMenu.getJson()
-        });
+        });*/
     };
 
     saveGraphMenu.hide = function (flag) {

@@ -1214,6 +1214,7 @@ module.exports = function (graphContainerSelector) {
     // Loads all settings, removes the old graph (if it exists) and draws a new one.
     graph.start = function () {
         force.stop();
+        console.log("graph.start")
         loadGraphData(true);
         redrawGraph();
         graph.update(true);
@@ -1221,6 +1222,8 @@ module.exports = function (graphContainerSelector) {
         if (graph.options().loadingModule().successfullyLoadedOntology() === false) {
             graph.options().loadingModule().setErrorMode();
         }
+        console.log("graph.start 2")
+
     };
 
     // Updates only the style of the graph.
@@ -1241,6 +1244,7 @@ module.exports = function (graphContainerSelector) {
 
     graph.load = function () {
         force.stop();
+        console.log("load")
         loadGraphData();
         refreshGraphData();
         for (var i = 0; i < labelNodes.length; i++) {
@@ -1254,6 +1258,8 @@ module.exports = function (graphContainerSelector) {
             }
         }
         graph.update();
+        console.log("load 2")
+
     };
 
     graph.fastUpdate = function () {
@@ -1862,6 +1868,7 @@ module.exports = function (graphContainerSelector) {
         if (graphContainer && validOntology===true) {
 
             updateRenderingDuringSimulation=false;
+            console.log("Generating visualization")
             graph.options().ontologyMenu().append_bulletPoint("Generating visualization ... ");
             loadingModule.setPercentMode();
 
@@ -1873,6 +1880,8 @@ module.exports = function (graphContainerSelector) {
                 if (showFPS===true) {   force.on("tick",recalculatePositionsWithFPS ); }
                 else                {   force.on("tick",recalculatePositions        );  }
             }
+            console.log("Generating visualization 2")
+
 
             force.start();
         } else {
@@ -1945,6 +1954,7 @@ module.exports = function (graphContainerSelector) {
         graph.options().editSidebar().updateGeneralOntologyInfo();
         graph.options().editSidebar().updatePrefixUi();
         graph.options().editSidebar().updateElementWidth();
+        console.log("Generating visualization 3")
     }
 
     graph.handleOnLoadingError=function(){

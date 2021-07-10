@@ -1,7 +1,7 @@
 <template>
 
   <q-page>
-    <Webvowl :view="global_Graph_Edit" :id="graphID"/>
+    <Webvowl :view="global_Graph_Edit" :id="this.$route.params.id"/>
   </q-page>
 
 </template>
@@ -15,7 +15,7 @@ export default defineComponent({
   name: 'Test_webvowl',
   components: { Webvowl },
   data() {
-    return {global_Graph_Edit: "global_Graph_Edit", graphID: this.$route.params.id}
+    return {global_Graph_Edit: "global_Graph_Edit"}
   }
 });
 </script>
