@@ -317,8 +317,8 @@ export default defineComponent({
     onSubmitEdit() {
       this.show_edit_dialog = false;
       odinApi
-        .post(
-          `/globalGraph/edit/${this.newGlobalGraph.id}`,
+        .put(
+          `/globalGraph/${this.newGlobalGraph.id}`,
           this.newGlobalGraph
         )
         .then((response) => {

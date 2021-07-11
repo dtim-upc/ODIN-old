@@ -356,8 +356,8 @@ export default defineComponent({
     onSubmitEdit() {
       this.show_edit_dialog = false;
       odinApi
-        .post(
-          `/dataSources/edit/${this.newDataSources.id}`,
+        .put(
+          `/dataSources/${this.newDataSources.id}`,
           this.newDataSources
         )
         .then((response) => {

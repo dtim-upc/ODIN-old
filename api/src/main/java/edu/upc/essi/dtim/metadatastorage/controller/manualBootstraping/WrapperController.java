@@ -78,7 +78,7 @@ public class WrapperController {
         }
     }
 
-    @PostMapping("/edit/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<HttpStatus> editWrapper(@PathVariable("id") String id, @RequestBody Wrapper wrapper) {
         try {
             Optional<Wrapper> optionalWrapper = repository.findById(id);

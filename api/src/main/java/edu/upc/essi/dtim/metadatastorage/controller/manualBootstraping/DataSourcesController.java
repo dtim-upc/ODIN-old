@@ -78,7 +78,7 @@ public class DataSourcesController {
         }
     }
 
-    @PostMapping("/edit/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<HttpStatus> editDataSources(@PathVariable("id") String id, @RequestBody DataSources dataSources) {
         try {
             Optional<DataSources> optionalDataSources = repository.findById(id);

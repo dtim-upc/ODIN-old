@@ -372,7 +372,7 @@ export default defineComponent({
     onSubmitEdit() {
       this.show_edit_dialog = false;
       odinApi
-        .post(`/wrapper/edit/${this.newWrapper.id}`, this.newWrapper)
+        .put(`/wrapper/${this.newWrapper.id}`, this.newWrapper)
         .then((response) => {
           if (response.status == 204) {
             this.rows.map((e) => {

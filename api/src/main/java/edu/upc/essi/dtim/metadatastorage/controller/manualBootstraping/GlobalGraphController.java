@@ -90,25 +90,6 @@ public class GlobalGraphController {
         }
     }
 
-    @PostMapping("/edit/{id}")
-    public ResponseEntity<HttpStatus> editGlobalGraph(@PathVariable("id") String id, @RequestBody GlobalGraph globalGraph) {
-        try {
-            Optional<GlobalGraph> optionalGlobalGraph = repository.findById(id);
-            if (optionalGlobalGraph.isPresent()) {
-                GlobalGraph gg = optionalGlobalGraph.get();
-                gg.setName(globalGraph.getName());
-                gg.setNamespace(globalGraph.getNamespace());
-                gg.setNamedGraph(globalGraph.getNamedGraph());
-                gg.setGraphicalGraph(globalGraph.getGraphicalGraph());
-                repository.save(gg);
-                return new ResponseEntity<>(HttpStatus.OK);
-            }
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<GlobalGraph> updateGlobalGraph(@PathVariable("id") String id, @RequestBody GlobalGraph globalGraph) {
         Optional<GlobalGraph> tutorialData = repository.findById(id);
