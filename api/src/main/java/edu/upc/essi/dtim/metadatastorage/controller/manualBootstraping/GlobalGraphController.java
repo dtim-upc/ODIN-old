@@ -92,14 +92,18 @@ public class GlobalGraphController {
 
     @PutMapping("/{id}")
     public ResponseEntity<GlobalGraph> updateGlobalGraph(@PathVariable("id") String id, @RequestBody GlobalGraph globalGraph) {
-        Optional<GlobalGraph> tutorialData = repository.findById(id);
+        Optional<GlobalGraph> optionalGlobalGraph = repository.findById(id);
 
-        if (tutorialData.isPresent()) {
-            GlobalGraph _globalGraph = tutorialData.get();
-            _globalGraph.setName(globalGraph.getName());
-            _globalGraph.setGraphicalGraph(globalGraph.getGraphicalGraph());
-            _globalGraph.setNamedGraph(globalGraph.getNamedGraph());
-            _globalGraph.setNamespace(globalGraph.getNamespace());
+        if (optionalGlobalGraph.isPresent()) {
+            GlobalGraph _globalGraph = optionalGlobalGraph.get();
+            if (!_globalGraph.getName().equals(""))
+                _globalGraph.setName(globalGraph.getName());
+            if (!_globalGraph.getGraphicalGraph().equals(""))
+                _globalGraph.setGraphicalGraph(globalGraph.getGraphicalGraph());
+            if (!_globalGraph.getNamedGraph().equals(""))
+                _globalGraph.setNamedGraph(globalGraph.getNamedGraph());
+            if (!_globalGraph.getNamespace().equals(""))
+                _globalGraph.setNamespace(globalGraph.getNamespace());
             return new ResponseEntity<>(repository.save(_globalGraph), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
