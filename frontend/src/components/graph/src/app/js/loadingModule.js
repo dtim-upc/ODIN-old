@@ -588,7 +588,6 @@ module.exports =  function (graph) {
                     async: false
                 }).responseText);
                 currentGlobalGraph = content;
-                console.log("this");
                 console.log({currentGlobalGraph});
             }
         //}

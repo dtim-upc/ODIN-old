@@ -152,7 +152,7 @@
             round
             flat
             color="grey"
-            :to="'/globalGraph/view/'+props.row.id"
+            :to="'/globalGraph/view/' + props.row.id"
             icon="remove_red_eye"
           ></q-btn>
           <q-btn
@@ -180,11 +180,11 @@
             round
             flat
             color="grey"
-            :to="'/globalGraph/edit_global_graph/'+props.row.id"
+            :to="'/globalGraph/edit_global_graph/' + props.row.id"
             icon="search"
           ></q-btn>
         </q-td>
-      </template> 
+      </template>
 
       <template v-slot:no-data="{ icon, message, filter }">
         <div class="full-width row flex-center text-accent q-gutter-sm">
@@ -203,6 +203,7 @@
 import { defineComponent } from "vue";
 import { odinApi } from "boot/axios";
 import { GlobalGraph } from "components/models";
+import { properties } from "../graph/src/webvowl/js/entry";
 export default defineComponent({
   name: "TableGlobalGraph",
   // props:{
@@ -316,10 +317,21 @@ export default defineComponent({
     },
     onSubmitEdit() {
       this.show_edit_dialog = false;
+      const data = {
+        globalGraph: this.newGlobalGraph,
+        isModified: true,
+        ttl: "string",
+        deleted: {
+          classes: [],
+          properties: [],
+        },
+      };
+
       odinApi
         .put(
           `/globalGraph/${this.newGlobalGraph.id}`,
-          this.newGlobalGraph
+          //this.newGlobalGraph
+          data
         )
         .then((response) => {
           if (response.status == 200) {

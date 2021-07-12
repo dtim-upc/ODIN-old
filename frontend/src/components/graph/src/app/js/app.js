@@ -177,7 +177,6 @@ module.exports = function () {
             options.colorExternalsModule(colorExternalsSwitch);
             options.compactNotationModule(compactNotationSwitch);
 
-            console.log("presetup")
             ontologyMenu.setup(loadOntologyFromText);
 
             configMenu.setup();
@@ -270,21 +269,17 @@ module.exports = function () {
             // add the initialized objects
             webvowl.opts=options;
             webvowl.gr=graph;
-            console.log("presetup 2")
-
         }
 	};
 
 
 	function loadOntologyFromText(jsonText, filename, alternativeFilename) {
-        console.log("loadOntologyFromText")
         d3.select("#reloadCachedOntology").classed("hidden",true);
 		pauseMenu.reset();
 		graph.options().navigationMenu().hideAllMenus();
 
         console.log({jsonText, filename})
 		if ((jsonText===undefined && filename===undefined) || (jsonText.length===0)){
-            console.log("notvalid")
             loadingModule.notValidJsonFile();
 			return;
 		}
@@ -300,7 +295,6 @@ module.exports = function () {
 				validJSON=false;
 			}
 			if (validJSON===false){
-                console.log("Not valid")
 				// the server output is not a valid json file
                 loadingModule.notValidJsonFile();
 				return;
@@ -345,7 +339,6 @@ module.exports = function () {
                 graph.editorMode(true);
 
             }
-            console.log("preload")
             graph.load();
             sidebar.updateOntologyInformation(data, statistics);
             exportMenu.setFilename(filename);
@@ -356,10 +349,8 @@ module.exports = function () {
             else
                 var flagOfCheckBox=options.defaultConfig().editorMode==="true";
             graph.editorMode(flagOfCheckBox);// update gui
-            console.log("preload 2")
 
         }
-        console.log("ENDloadOntologyFromText")
 
 	}
 

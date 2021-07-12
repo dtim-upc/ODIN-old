@@ -98,7 +98,10 @@ module.exports = function (graphContainerSelector) {
         keepDetailsCollapsedOnLoading = true,
         adjustingGraphSize = false,
         showReloadButtonAfterLayoutOptimization=false,
-        zoom;
+        zoom,
+        
+        deletedURIClasses = new Set(),
+        deletedURIProperties = new Set();
     //var prefixModule=require("./prefixRepresentationModule")(graph);
     var NodePrototypeMap = createLowerCasePrototypeMap(nodePrototypeMap);
     var PropertyPrototypeMap = createLowerCasePrototypeMap(propertyPrototypeMap);
@@ -106,6 +109,14 @@ module.exports = function (graphContainerSelector) {
     var rangeDragger = require("./rangeDragger")(graph);
     var domainDragger = require("./domainDragger")(graph);
     var shadowClone = require("./shadowClone")(graph);
+
+    graph.deletedURIClasses = function () {
+        return Array.from(deletedURIClasses);
+    }
+
+    graph.deletedURIProperties = function () {
+        return Array.from(deletedURIProperties);
+    }
 
     graph.math = function () {
         return math;
@@ -1244,7 +1255,6 @@ module.exports = function (graphContainerSelector) {
 
     graph.load = function () {
         force.stop();
-        console.log("load")
         loadGraphData();
         refreshGraphData();
         for (var i = 0; i < labelNodes.length; i++) {
@@ -1258,7 +1268,6 @@ module.exports = function (graphContainerSelector) {
             }
         }
         graph.update();
-        console.log("load 2")
 
     };
 
@@ -1868,7 +1877,6 @@ module.exports = function (graphContainerSelector) {
         if (graphContainer && validOntology===true) {
 
             updateRenderingDuringSimulation=false;
-            console.log("Generating visualization")
             graph.options().ontologyMenu().append_bulletPoint("Generating visualization ... ");
             loadingModule.setPercentMode();
 
@@ -1880,7 +1888,6 @@ module.exports = function (graphContainerSelector) {
                 if (showFPS===true) {   force.on("tick",recalculatePositionsWithFPS ); }
                 else                {   force.on("tick",recalculatePositions        );  }
             }
-            console.log("Generating visualization 2")
 
 
             force.start();
@@ -1954,7 +1961,6 @@ module.exports = function (graphContainerSelector) {
         graph.options().editSidebar().updateGeneralOntologyInfo();
         graph.options().editSidebar().updatePrefixUi();
         graph.options().editSidebar().updateElementWidth();
-        console.log("Generating visualization 3")
     }
 
     graph.handleOnLoadingError=function(){
@@ -3746,9 +3752,11 @@ module.exports = function (graphContainerSelector) {
         }
 
         console.log("deleting: "+node.iri());
+        deletedURIClasses.add(node.iri());
         var dataDelNode = new Object();
         dataDelNode.iri = node.iri();
-        $.ajax({
+        graph.removeNodesViaResponse(nodesToRemove,propsToRemove);
+        /*$.ajax({
             type: "DELETE",
             url: '/globalGraph/'+encodeURIComponent(graph.options().loadingModule().currentGlobalGraph().namedGraph)+'/node',
             data: dataDelNode,
@@ -3763,7 +3771,7 @@ module.exports = function (graphContainerSelector) {
                 console.log("error deletion: "+xhr.status);
                 alert("Node cannot be deleted, it is used in mappings");
             }
-        });
+        });*/
         // var removedItems=propsToRemove.length+nodesToRemove.length;
         // if (removedItems>2){
         //     var text="You are about to delete 1 class and "+propsToRemove.length+ " properties";
@@ -3814,12 +3822,15 @@ module.exports = function (graphContainerSelector) {
 
     graph.removePropertyViaEditor = function (property) {
         console.log("deleting property: "+property.iri());
+        deletedURIProperties.add(property.iri());
+        console.log(deletedURIProperties)
         var dataDelProperty = new Object();
         dataDelProperty.sIRI = property.domain().iri();
         dataDelProperty.pIRI = property.iri();
         dataDelProperty.oIRI = property.range().iri();
+        graph.removePropertyViaResponse(property);
 
-        $.ajax({
+        /*$.ajax({
             type: "DELETE",
             url: '/globalGraph/'+encodeURIComponent(graph.options().loadingModule().currentGlobalGraph().namedGraph)+'/property',
             data: dataDelProperty,
@@ -3834,7 +3845,7 @@ module.exports = function (graphContainerSelector) {
                 console.log("error deletion: "+xhr.status);
                 alert("Property cannot be deleted, it is used in mappings");
             }
-        });
+        });*/
 
     };
 

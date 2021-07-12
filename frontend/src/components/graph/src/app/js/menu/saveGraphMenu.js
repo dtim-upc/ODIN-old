@@ -60,14 +60,33 @@ module.exports = function (graph) {
     };
 
     saveGraphMenu.saveGraphicalGraph = function () {
-        loadingModule=graph.options().loadingModule();
+        loadingModule = graph.options().loadingModule();
         exportMenu = graph.options().exportMenu();
         console.log("loadingModule.currentGlobalGraph()")
         console.log(loadingModule.currentGlobalGraph());
+        console.log("DEBUG")
+        console.log(graph.prepareChangesObject());
+        console.log(typeof(exportMenu.exportTurtleText()));
+        console.log(graph.deletedURIProperties())
+        const modified = graph.prepareChangesObject().isModified 
+                        || (graph.deletedURIClasses().length > 0)
+                        || (graph.deletedURIProperties().length > 0);
+        const data = {
+            globalGraph: loadingModule.currentGlobalGraph(),
+            isModified: modified,
+            ttl: modified ? exportMenu.exportTurtleText() : "",
+            deleted: {
+              classes: graph.deletedURIClasses(),
+              properties: graph.deletedURIProperties(),
+            },
+        };
+        data.globalGraph.graphicalGraph = exportMenu.getJson();
+        console.log({data})
         $.ajax({
             type: "PUT",
-            url: odinApi+'/globalGraph/'+loadingModule.currentGlobalGraph().id+'/graphicalGraph',
-            data: exportMenu.getJson()
+            contentType: "application/json",
+            url: odinApi+'/globalGraph/'+loadingModule.currentGlobalGraph().id,
+            data: JSON.stringify(data)
         });
     };
 
