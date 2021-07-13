@@ -1,3 +1,11 @@
+
+db:
+  jena:
+    dir: /Users/javierflores/Documents/UPC Projects/2/newODIN/api
+    name: jena2
+
+
+
 logging:
   level:
     org.springframework.web: INFO

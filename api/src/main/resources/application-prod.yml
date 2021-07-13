@@ -1,4 +1,12 @@
 
+
+db:
+  jena:
+    dir: /Users/javierflores/Documents/UPC Projects/2/newODIN/api
+    name: jena2
+
+
+
 spring:
   devtools:
     add-properties:false

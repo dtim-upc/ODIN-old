@@ -1,5 +1,4 @@
 package edu.upc.essi.dtim.metadatastorage.config.db;
-import org.apache.jena.base.Sys;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.tdb.TDBFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,7 +29,12 @@ public class JenaConnection {
         if (dataset == null) {
             try {
                 System.out.println("here");
-                dataset = TDBFactory.createDataset("/home/metabig/sample");
+                dataset = TDBFactory.createDataset(dir+"/"+name);
+
+                if(dataset== null){
+                    System.out.println("DATASET NULO");
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("An error has occurred obtaining TDB dataset");
@@ -44,14 +48,6 @@ public class JenaConnection {
     public void init() {
         getTDBDataset();
 
-        Runtime.getRuntime().addShutdownHook(
-                new Thread("app-shutdown-hook") {
-                    @Override
-                    public void run() {
-                        instance.close();
-                        close();
-                        System.out.println("Closed jena connection");
-                    }});
     }
 
     public void close() {
@@ -65,12 +61,12 @@ public class JenaConnection {
 
     }
 
-    /*@PreDestroy
+    @PreDestroy
     public void destroy() {
         System.out.println(
                 "Callback triggered Jena Connection - @PreDestroy.");
         close();
-    }*/
+    }
 
     public static JenaConnection getInstance() {
         return instance;
