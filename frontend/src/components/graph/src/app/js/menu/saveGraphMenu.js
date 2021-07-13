@@ -70,7 +70,9 @@ module.exports = function (graph) {
         console.log(graph.deletedURIProperties())
         const modified = graph.prepareChangesObject().isModified 
                         || (graph.deletedURIClasses().length > 0)
-                        || (graph.deletedURIProperties().length > 0);
+                        || (graph.deletedURIProperties().length > 0)
+                        || true; //graph.prepareChangesObject().isModified no dice si se
+                                 //ha creado un nodo/propiedad sin modificar el label
         const data = {
             globalGraph: loadingModule.currentGlobalGraph(),
             isModified: modified,

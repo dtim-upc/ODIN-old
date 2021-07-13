@@ -48,7 +48,7 @@
                   label="Type"
                 />
                 
-                <!-- <q-file
+                <q-file
                   outlined
                   v-model="uploadedFile"
                   multiple
@@ -58,7 +58,7 @@
                   <template v-slot:prepend>
                     <q-icon name="attach_file" />
                   </template>
-                </q-file> -->
+                </q-file>
                 <q-toggle
                   v-model="mustUploadFile"
                   label="Upload file to remote database"

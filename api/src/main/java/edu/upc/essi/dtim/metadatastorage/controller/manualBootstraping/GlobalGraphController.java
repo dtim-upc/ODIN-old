@@ -5,6 +5,7 @@ import edu.upc.essi.dtim.metadatastorage.models.DataSources;
 import edu.upc.essi.dtim.metadatastorage.models.GlobalGraph;
 import edu.upc.essi.dtim.metadatastorage.models.GlobalGraphUpdate;
 import edu.upc.essi.dtim.metadatastorage.repository.GlobalGraphRespository;
+import edu.upc.essi.dtim.metadatastorage.utils.jena.GraphOperations;
 import org.bson.json.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,8 @@ public class GlobalGraphController {
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
     private static final String LOG_MSG = "{} request finished with inputs: {} and return value: {}";
     private static final String EMPTY_INPUTS = "{}";
+    @Autowired
+    private GraphOperations graphOperations;
 
     @Autowired
     private GlobalGraphRespository repository;
@@ -140,26 +143,19 @@ public class GlobalGraphController {
                 _globalGraph.setNamedGraph(globalGraph.getNamedGraph());
             if (!globalGraph.getNamespace().equals(""))
                 _globalGraph.setNamespace(globalGraph.getNamespace());
-            // First save
-            if (globalGraph.getGraphicalGraph().equals("")) {
-                _globalGraph.setGraphicalGraph(globalGraph.getGraphicalGraph()); //Saving for the first time
-                //TODO: Save the triples generated in Jena TDB
-                //[...]
+
+            //IT HAS BEEN MODIFIED
+            if (data.getIsModified().equals("true")) {
+                // The field deleted should contain keys “classes” and “properties”.
+                System.out.println("Modified equals true");
+                //Overwritten field (Temporal)
+                _globalGraph.setGraphicalGraph(globalGraph.getGraphicalGraph());
+                //graphOperations.loadTTL(globalGraph.getName(), data.getTtl());
             }
-            // Not the first save:
+            //IT HAS NOT BEEN MODIFIED
             else {
-                //IT HAS BEEN MODIFIED
-                if (data.getIsModified().equals("true")) {
-                    // The field deleted should contain keys “classes” and “properties”.
-                    System.out.println("Modified equals true");
-                    //Overwritten field (Temporal)
-                    _globalGraph.setGraphicalGraph(globalGraph.getGraphicalGraph());
-                }
-                //IT HAS NOT BEEN MODIFIED
-                else {
-                    // We shouldn’t update any data in mongodb or jena
-                    System.out.println("Modified equals false");
-                }
+                // We shouldn’t update any data in mongodb or jena
+                System.out.println("Modified equals false");
             }
 
             return new ResponseEntity<>(repository.save(_globalGraph), HttpStatus.OK);

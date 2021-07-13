@@ -1225,7 +1225,6 @@ module.exports = function (graphContainerSelector) {
     // Loads all settings, removes the old graph (if it exists) and draws a new one.
     graph.start = function () {
         force.stop();
-        console.log("graph.start")
         loadGraphData(true);
         redrawGraph();
         graph.update(true);
@@ -1233,7 +1232,6 @@ module.exports = function (graphContainerSelector) {
         if (graph.options().loadingModule().successfullyLoadedOntology() === false) {
             graph.options().loadingModule().setErrorMode();
         }
-        console.log("graph.start 2")
 
     };
 

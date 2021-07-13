@@ -278,7 +278,6 @@ module.exports = function () {
 		pauseMenu.reset();
 		graph.options().navigationMenu().hideAllMenus();
 
-        console.log({jsonText, filename})
 		if ((jsonText===undefined && filename===undefined) || (jsonText.length===0)){
             loadingModule.notValidJsonFile();
 			return;
