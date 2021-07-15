@@ -11,9 +11,9 @@ import java.util.logging.Logger;
 public class JenaConnection {
 
     @Value("${db.jena.dir}")
-    private String dir = "/sample";
+    private String dir;
     @Value("${db.jena.name}")
-    private String name = "JenaODIN";
+    private String name;
 
 
     private static JenaConnection instance = new JenaConnection();
@@ -43,11 +43,6 @@ public class JenaConnection {
 
         }
         return dataset;
-    }
-
-    public void init() {
-        getTDBDataset();
-
     }
 
     public void close() {
