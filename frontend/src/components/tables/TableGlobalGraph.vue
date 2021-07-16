@@ -295,6 +295,9 @@ export default defineComponent({
     },
 
     onSubmit() {
+      if (this.newGlobalGraph.namespace.substr(-1) !== '/') {
+        this.newGlobalGraph.namespace += '/'
+      }
       odinApi.post("/globalGraph", this.newGlobalGraph).then((response) => {
         if (response.status == 201) {
           this.$q.notify({
