@@ -1,7 +1,7 @@
 
 db:
   jena:
-    dir: /Users/javierflores/Documents/UPC Projects/2/newODIN/api
+    dir: /home/metabig/Work/newODIN/api
     name: jena2
 
 
