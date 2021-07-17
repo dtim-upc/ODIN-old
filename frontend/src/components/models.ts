@@ -30,3 +30,9 @@ export interface Wrapper {
   dataSourcesId:string;
   dataSourcesLabel:string;
 }
+
+export interface LavMapping {
+  id:string;
+  wrapperId:string;
+  globalGraphId:string;
+}
