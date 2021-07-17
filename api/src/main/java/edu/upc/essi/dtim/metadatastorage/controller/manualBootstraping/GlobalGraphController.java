@@ -5,7 +5,10 @@ import edu.upc.essi.dtim.metadatastorage.models.DataSources;
 import edu.upc.essi.dtim.metadatastorage.models.GlobalGraph;
 import edu.upc.essi.dtim.metadatastorage.models.GlobalGraphUpdate;
 import edu.upc.essi.dtim.metadatastorage.repository.GlobalGraphRespository;
+import edu.upc.essi.dtim.metadatastorage.services.impl.GlobalGraphService;
 import edu.upc.essi.dtim.metadatastorage.utils.jena.GraphOperations;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFormatter;
 import org.bson.json.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +30,9 @@ public class GlobalGraphController {
     private static final String EMPTY_INPUTS = "{}";
     @Autowired
     private GraphOperations graphOperations;
+    @Autowired
+    private GlobalGraphService globalGraphService;
+
 
     @Autowired
     private GlobalGraphRespository repository;
@@ -129,14 +135,13 @@ public class GlobalGraphController {
 */
     @PutMapping("/{id}")
     public ResponseEntity<GlobalGraph> updateGlobalGraph(@PathVariable("id") String id, @RequestBody GlobalGraphUpdate data) {
-        System.out.println("@PutMapping(\"/{id}\")");
-        //System.out.println("isModified: " + data.getIsModified());
-        //System.out.println("ttl: " + data.getTtl());
+        LOGGER.info( "@PutMapping(/{id})" );
         Optional<GlobalGraph> optionalGlobalGraph = repository.findById(id);
 
         if (optionalGlobalGraph.isPresent()) {
             GlobalGraph _globalGraph = optionalGlobalGraph.get();
             GlobalGraph globalGraph = data.getGlobalGraph();
+            boolean first_save = _globalGraph.getGraphicalGraph().equals("");
             if (!globalGraph.getName().equals(""))
                 _globalGraph.setName(globalGraph.getName());
             if (!globalGraph.getNamedGraph().equals(""))
@@ -146,21 +151,86 @@ public class GlobalGraphController {
 
             //IT HAS BEEN MODIFIED
             if (data.getIsModified().equals("true")) {
+                LOGGER.info( "[\"@PutMapping(\"/{id}\")\"] Modified" );
                 // The field deleted should contain keys “classes” and “properties”.
                 System.out.println("Modified equals true");
                 //Overwritten field (Temporal)
                 _globalGraph.setGraphicalGraph(globalGraph.getGraphicalGraph());
-                //graphOperations.loadTTL(globalGraph.getName(), data.getTtl());
+                //first save
+                if (first_save) {
+                    graphOperations.loadTTL(globalGraph.getNamedGraph(), data.getTtl());
+                } else  {
+                    //Delete Nodes
+                    for (String s : data.getDeleted().getClasses()) {
+                        globalGraphService.deleteNode(globalGraph.getNamedGraph(), s);
+                    }
+
+                }
+                    //Delete Properties
+                    /*for (String s : data.getDeleted().getProperties()) {
+
+                    }*/
             }
             //IT HAS NOT BEEN MODIFIED
             else {
-                // We shouldn’t update any data in mongodb or jena
-                System.out.println("Modified equals false");
+                LOGGER.info( "[\"@PutMapping(\"/{id}\")\"] Not modified" );
             }
 
             return new ResponseEntity<>(repository.save(_globalGraph), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/flagPUSH")
+    public ResponseEntity<HttpStatus> PUSH_graph() {
+        System.out.println("flagPUSH");
+        String tmp_ttl = "#################################################################\n" +
+                "###  Generated with the experimental alpha version of the TTL exporter of WebVOWL (version 1.1.3) http://visualdataweb.de/webvowl/   ###\n" +
+                "#################################################################\n" +
+                "\n" +
+                "@prefix :         <http://test.com/> .\n" +
+                "@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n" +
+                "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n" +
+                "@prefix owl:         <http://www.w3.org/2002/07/owl#> .\n" +
+                "@prefix xsd:         <http://www.w3.org/2001/XMLSchema#> .\n" +
+                "@prefix dc:         <http://purl.org/dc/elements/1.1/#> .\n" +
+                "@prefix xml:         <http://www.w3.org/XML/1998/namespace> .\n" +
+                "@prefix G: <http://www.essi.upc.edu/~snadal/BDIOntology/Global/> .\n" +
+                "@prefix sc:         <http://schema.org/> .\n" +
+                "@base             <http://test.com/> .\n" +
+                "\n" +
+                "#################################################################\n" +
+                "\n" +
+                "###  Class Definitions (Number of Classes) 3 ###\n" +
+                "#  --------------------------- Class  0-------------------------\n" +
+                ":hola rdf:type G:Concept;\n" +
+                "       :playsin :javier ;\n" +
+                "       G:hasFeature :Class4 ;\n" +
+                ".#  --------------------------- Class  1-------------------------\n" +
+                ":javier rdf:type G:Concept;\n" +
+                ".#  --------------------------- Class  2-------------------------\n" +
+                ":Class4 rdf:type G:Feature;\n" +
+                ".";
+        graphOperations.loadTTL("http://test.com/42022dd0a55a478cba7b7e5d5abba55f", tmp_ttl);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/flagGET")
+    public ResponseEntity<HttpStatus> GET_graph() {
+        System.out.println("flagGET");
+        String out = "";
+
+        try{
+            ResultSet rs = graphOperations.runAQuery("SELECT * WHERE {GRAPH ?g {?s ?p ?o.}}");
+            out = ResultSetFormatter.asText(rs);
+            System.out.println("RESULT:");
+            System.out.println(out);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/{id}/graphicalGraph")

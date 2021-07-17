@@ -4,6 +4,7 @@ import edu.upc.essi.dtim.metadatastorage.config.db.JenaConnection;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.system.Txn;
+import org.apache.jena.update.UpdateAction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -44,6 +45,29 @@ public class GraphOperations {
     public ResultSet runAQuery(String query) {
 
         return runAQuery(QueryFactory.create(query));
+    }
+
+    public void deleteTriplesWithSubject(String graphIRI, String subjectIRI){
+        runAnUpdateQuery("DELETE WHERE { GRAPH <" + graphIRI + ">" +
+                " {<"+subjectIRI+"> ?p ?o} }");
+    }
+
+    public void deleteTriplesWithObject(String graphIRI, String objectIRI){
+        runAnUpdateQuery("DELETE WHERE { GRAPH <" + graphIRI + ">" +
+                " {?s ?p <"+objectIRI+"> } }");
+    }
+
+    public  void runAnUpdateQuery(String sparqlQuery) {
+
+        Txn.executeWrite(ds, ()->{
+
+            try {
+                UpdateAction.parseExecute(sparqlQuery, ds);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
     }
 
 }
