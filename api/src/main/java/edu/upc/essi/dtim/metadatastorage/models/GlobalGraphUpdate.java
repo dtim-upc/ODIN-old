@@ -5,15 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-class Deleted {
-    @JsonProperty("classes")
-    String[] classes;
-    @JsonProperty("properties")
-    String[] properties;
-}
-
-@Getter
-@Setter
 public class GlobalGraphUpdate {
     @JsonProperty("globalGraph")
     GlobalGraph globalGraph;
