@@ -4,6 +4,7 @@ import edu.upc.essi.dtim.metadatastorage.controller.AdminController;
 import edu.upc.essi.dtim.metadatastorage.models.DataSources;
 import edu.upc.essi.dtim.metadatastorage.models.GlobalGraph;
 import edu.upc.essi.dtim.metadatastorage.models.GlobalGraphUpdate;
+import edu.upc.essi.dtim.metadatastorage.models.JenaPropertyTriplet;
 import edu.upc.essi.dtim.metadatastorage.repository.GlobalGraphRespository;
 import edu.upc.essi.dtim.metadatastorage.services.impl.GlobalGraphService;
 import edu.upc.essi.dtim.metadatastorage.utils.jena.GraphOperations;
@@ -129,7 +130,7 @@ public class GlobalGraphController {
     },
     “deleted”: {
     “classes”: [“URI1”, “URI2”, ...],
-    “properties”: [“URI1”, “URI2”, ...]
+    “properties”: [{property: “URI1”, subject: "URI1.1", object: "URI1.2"}, ...]
 
     }
 */
@@ -161,15 +162,18 @@ public class GlobalGraphController {
                     graphOperations.loadTTL(globalGraph.getNamedGraph(), data.getTtl());
                 } else  {
                     //Delete Nodes
-                    for (String s : data.getDeleted().getClasses()) {
-                        globalGraphService.deleteNode(globalGraph.getNamedGraph(), s);
+                    for (String subject : data.getDeleted().getClasses()) {
+                        globalGraphService.deleteNode(globalGraph.getNamedGraph(), subject);
                     }
-
-                }
                     //Delete Properties
-                    /*for (String s : data.getDeleted().getProperties()) {
+                    for (JenaPropertyTriplet jenaPropertyTriplet : data.getDeleted().getProperties()) {
+                        globalGraphService.deleteProperty(globalGraph.getNamedGraph(),
+                                                            jenaPropertyTriplet.getSubject(),
+                                                            jenaPropertyTriplet.getProperty(),
+                                                            jenaPropertyTriplet.getObject());
+                    }
+                }
 
-                    }*/
             }
             //IT HAS NOT BEEN MODIFIED
             else {
@@ -181,39 +185,6 @@ public class GlobalGraphController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("/flagPUSH")
-    public ResponseEntity<HttpStatus> PUSH_graph() {
-        System.out.println("flagPUSH");
-        String tmp_ttl = "#################################################################\n" +
-                "###  Generated with the experimental alpha version of the TTL exporter of WebVOWL (version 1.1.3) http://visualdataweb.de/webvowl/   ###\n" +
-                "#################################################################\n" +
-                "\n" +
-                "@prefix :         <http://test.com/> .\n" +
-                "@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n" +
-                "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n" +
-                "@prefix owl:         <http://www.w3.org/2002/07/owl#> .\n" +
-                "@prefix xsd:         <http://www.w3.org/2001/XMLSchema#> .\n" +
-                "@prefix dc:         <http://purl.org/dc/elements/1.1/#> .\n" +
-                "@prefix xml:         <http://www.w3.org/XML/1998/namespace> .\n" +
-                "@prefix G: <http://www.essi.upc.edu/~snadal/BDIOntology/Global/> .\n" +
-                "@prefix sc:         <http://schema.org/> .\n" +
-                "@base             <http://test.com/> .\n" +
-                "\n" +
-                "#################################################################\n" +
-                "\n" +
-                "###  Class Definitions (Number of Classes) 3 ###\n" +
-                "#  --------------------------- Class  0-------------------------\n" +
-                ":hola rdf:type G:Concept;\n" +
-                "       :playsin :javier ;\n" +
-                "       G:hasFeature :Class4 ;\n" +
-                ".#  --------------------------- Class  1-------------------------\n" +
-                ":javier rdf:type G:Concept;\n" +
-                ".#  --------------------------- Class  2-------------------------\n" +
-                ":Class4 rdf:type G:Feature;\n" +
-                ".";
-        graphOperations.loadTTL("http://test.com/42022dd0a55a478cba7b7e5d5abba55f", tmp_ttl);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 
     @GetMapping("/flagGET")
     public ResponseEntity<HttpStatus> GET_graph() {

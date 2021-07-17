@@ -3820,12 +3820,12 @@ module.exports = function (graphContainerSelector) {
 
     graph.removePropertyViaEditor = function (property) {
         console.log("deleting property: "+property.iri());
-        deletedURIProperties.add(property.iri());
         console.log(deletedURIProperties)
         var dataDelProperty = new Object();
         dataDelProperty.sIRI = property.domain().iri();
         dataDelProperty.pIRI = property.iri();
         dataDelProperty.oIRI = property.range().iri();
+        deletedURIProperties.add({property: property.iri(), subject: dataDelProperty.sIRI, object: dataDelProperty.oIRI});
         graph.removePropertyViaResponse(property);
 
         /*$.ajax({

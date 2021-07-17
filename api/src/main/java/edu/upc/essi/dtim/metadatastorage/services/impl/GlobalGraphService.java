@@ -26,7 +26,7 @@ public class GlobalGraphService {
     * conectaba la property. Me parece que esto lo puedes hacer en webvowl
     * llamando desde el objeto property .domain() y .range(). Revisalo y si no me comentas.
     * */
-    void deleteProperty() {
-
+    public void deleteProperty(String graphIRI,String subjectIRI, String predicateIRI, String objectIRI) {
+        graphOperations.deleteTriples(graphIRI, subjectIRI, predicateIRI, objectIRI);
     }
 }

@@ -10,5 +10,5 @@ public class Deleted {
     @JsonProperty("classes")
     String[] classes;
     @JsonProperty("properties")
-    String[] properties;
+    JenaPropertyTriplet[] properties;
 }
