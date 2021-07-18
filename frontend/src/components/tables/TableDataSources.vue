@@ -47,7 +47,7 @@
                   :options="options"
                   label="Type"
                 />
-                
+
                 <q-file
                   outlined
                   v-model="uploadedFile"
@@ -59,10 +59,6 @@
                     <q-icon name="attach_file" />
                   </template>
                 </q-file>
-                <q-toggle
-                  v-model="mustUploadFile"
-                  label="Upload file to remote database"
-                />
 
                 <div>
                   <q-btn label="Submit" type="submit" color="primary" />
@@ -117,10 +113,6 @@
                     <q-icon name="attach_file" />
                   </template>
                 </q-file>
-                <q-toggle
-                  v-model="mustUploadFile"
-                  label="Upload file to remote database"
-                />
 
                 <div>
                   <q-btn label="Submit" type="submit" color="primary" />
@@ -210,7 +202,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { odinApi } from "boot/axios";
-import { DataSources, Wrapper } from "components/models";
+import { Wrapper } from "components/models";
 export default defineComponent({
   name: "TableDataSources",
   data() {
@@ -278,8 +270,7 @@ export default defineComponent({
     const title = "Data Sources";
     const show_dialog = false;
     const show_edit_dialog: boolean = false;
-    const uploadedFile: File = new File([], "");
-    const mustUploadFile: boolean = false;
+    const uploadedFile = new File([], "");
     const newDataSources = {
       id: "",
       name: "",
@@ -294,7 +285,6 @@ export default defineComponent({
       newDataSources,
       uploadedFile,
       search: "",
-      mustUploadFile,
       show_edit_dialog,
     };
   },
@@ -332,34 +322,42 @@ export default defineComponent({
       });
     },
     onSubmit() {
-      odinApi.post("/dataSources", this.newDataSources).then((response) => {
-        if (response.status == 201) {
-          this.$q.notify({
-            color: "positive",
-            textColor: "white",
-            icon: "check_circle",
-            message: `Data Source ${this.newDataSources.name} sucessfully created`,
-          });
-          response.data.wrappers = 0;
-          this.rows.push(response.data);
-          this.show_dialog = false;
-        } else {
-          this.$q.notify({
-            message: "Something went wrong in the server.",
-            color: "negative",
-            icon: "cancel",
-            textColor: "white",
-          });
-        }
-      });
+      odinApi
+        .post("/dataSources", this.newDataSources)
+        .then((response) => {
+          if (response.status == 201) {
+            this.$q.notify({
+              color: "positive",
+              textColor: "white",
+              icon: "check_circle",
+              message: `Data Source ${this.newDataSources.name} sucessfully created`,
+            });
+            response.data.wrappers = 0;
+            this.rows.push(response.data);
+            this.show_dialog = false;
+          } else {
+            this.$q.notify({
+              message: "Something went wrong in the server.",
+              color: "negative",
+              icon: "cancel",
+              textColor: "white",
+            });
+          }
+        })
+        .then(() => {
+          var data = new FormData();
+          data.append("file", this.uploadedFile[0]);
+          odinApi.post("/dataSources/uploadFile", data, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }).then((response) => console.log(response));
+        });
     },
     onSubmitEdit() {
       this.show_edit_dialog = false;
       odinApi
-        .put(
-          `/dataSources/${this.newDataSources.id}`,
-          this.newDataSources
-        )
+        .put(`/dataSources/${this.newDataSources.id}`, this.newDataSources)
         .then((response) => {
           if (response.status == 204) {
             this.rows.map((e) => {

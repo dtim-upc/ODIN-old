@@ -6,6 +6,7 @@ import edu.upc.essi.dtim.metadatastorage.models.GlobalGraph;
 import edu.upc.essi.dtim.metadatastorage.models.Wrapper;
 import edu.upc.essi.dtim.metadatastorage.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.metadatastorage.repository.WrapperRepository;
+import edu.upc.essi.dtim.metadatastorage.services.filestorage.StorageService;
 import org.bson.BsonBinarySubType;
 import org.bson.types.Binary;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 
 @RestController
@@ -30,6 +32,9 @@ public class DataSourcesController {
     private DataSourcesRepository repository;
     @Autowired
     private WrapperRepository wrapperRepository;
+    @Autowired
+    private StorageService storageService;
+
 
     @PostMapping
     public ResponseEntity<DataSources> createDataSources(@RequestBody DataSources dataSources) {
@@ -41,6 +46,12 @@ public class DataSourcesController {
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @PostMapping("/uploadFile")
+    public ResponseEntity<HttpStatus> uploadMultipartFile(@RequestParam MultipartFile file) throws IOException {
+        storageService.store(file);
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @GetMapping
