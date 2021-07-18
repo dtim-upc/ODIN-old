@@ -35,6 +35,13 @@ public class GraphOperations {
 
     }
 
+    public void addTriple(String namedGraph, String s, String p, String o) {
+        Txn.executeWrite(ds, ()-> {
+            Model graph = ds.getNamedModel(namedGraph);
+            graph.add(new ResourceImpl(s), new PropertyImpl(p), new ResourceImpl(o));
+        });
+    }
+
     public void deleteTriplesWithSubject(String graphIRI, String subjectIRI){
         runAnUpdateQuery("DELETE WHERE { GRAPH <" + graphIRI + ">" +
                 " {<"+subjectIRI+"> ?p ?o} }");
@@ -51,6 +58,9 @@ public class GraphOperations {
             graph.remove(new ResourceImpl(subjectIRI), new PropertyImpl(predicateIRI), new ResourceImpl(objectIRI));
         });
     }
+    /*
+    * QUERIES
+    * */
 
     public ResultSet runAQuery(Query query) {
 

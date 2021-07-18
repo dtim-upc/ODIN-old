@@ -1,5 +1,7 @@
 package edu.upc.essi.dtim.metadatastorage.controller.manualBootstraping;
 
+import edu.upc.essi.dtim.metadatastorage.config.Namespaces;
+import edu.upc.essi.dtim.metadatastorage.config.SourceGraph;
 import edu.upc.essi.dtim.metadatastorage.controller.AdminController;
 import edu.upc.essi.dtim.metadatastorage.models.DataSources;
 import edu.upc.essi.dtim.metadatastorage.models.GlobalGraph;
@@ -7,6 +9,7 @@ import edu.upc.essi.dtim.metadatastorage.models.Wrapper;
 import edu.upc.essi.dtim.metadatastorage.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.metadatastorage.repository.WrapperRepository;
 import edu.upc.essi.dtim.metadatastorage.services.filestorage.StorageService;
+import edu.upc.essi.dtim.metadatastorage.utils.jena.GraphOperations;
 import org.bson.BsonBinarySubType;
 import org.bson.types.Binary;
 import org.slf4j.Logger;
@@ -34,6 +37,8 @@ public class DataSourcesController {
     private WrapperRepository wrapperRepository;
     @Autowired
     private StorageService storageService;
+    @Autowired
+    private GraphOperations graphOperations;
 
 
     @PostMapping
@@ -41,6 +46,8 @@ public class DataSourcesController {
         try {
             DataSources _dataSources = new DataSources(dataSources.getName(), dataSources.getType());
             repository.save(_dataSources);
+            graphOperations.addTriple(_dataSources.getIri(), _dataSources.getIri(), Namespaces.rdf.val() + "type", SourceGraph.DATA_SOURCE.val());
+
             LOGGER.info(LOG_MSG, "createDataSources", dataSources.toString(), _dataSources.toString() );
             return new ResponseEntity<>(_dataSources, HttpStatus.CREATED);
         } catch (Exception e) {
