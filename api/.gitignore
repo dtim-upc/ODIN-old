@@ -21,3 +21,7 @@ build/
 # IntelliJ IDEA
 *.iws
 *.ipr
+
+# Jena
+/jena2
+
