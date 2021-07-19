@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class GlobalGraphService {
     @Autowired
     private GraphOperations graphOperations;
-    
+
     public void deleteNode(String graphIRI, String subjectIRI) {
         graphOperations.deleteTriplesWithObject(graphIRI, subjectIRI);
         graphOperations.deleteTriplesWithSubject(graphIRI, subjectIRI);

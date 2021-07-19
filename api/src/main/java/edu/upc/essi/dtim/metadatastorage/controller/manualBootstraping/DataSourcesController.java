@@ -9,6 +9,7 @@ import edu.upc.essi.dtim.metadatastorage.models.Wrapper;
 import edu.upc.essi.dtim.metadatastorage.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.metadatastorage.repository.WrapperRepository;
 import edu.upc.essi.dtim.metadatastorage.services.filestorage.StorageService;
+import edu.upc.essi.dtim.metadatastorage.services.impl.DataSourceService;
 import edu.upc.essi.dtim.metadatastorage.utils.jena.GraphOperations;
 import org.bson.BsonBinarySubType;
 import org.bson.types.Binary;
@@ -39,6 +40,8 @@ public class DataSourcesController {
     private StorageService storageService;
     @Autowired
     private GraphOperations graphOperations;
+    @Autowired
+    private DataSourceService dataSourceService;
 
 
     @PostMapping
@@ -46,7 +49,10 @@ public class DataSourcesController {
         try {
             DataSources _dataSources = new DataSources(dataSources.getName(), dataSources.getType());
             repository.save(_dataSources);
-            graphOperations.addTriple(_dataSources.getIri(), _dataSources.getIri(), Namespaces.rdf.val() + "type", SourceGraph.DATA_SOURCE.val());
+            graphOperations.addTriple(_dataSources.getIri(),
+                    _dataSources.getIri(),
+                    Namespaces.rdf.val() + "type",
+                    SourceGraph.DATA_SOURCE.val());
 
             LOGGER.info(LOG_MSG, "createDataSources", dataSources.toString(), _dataSources.toString() );
             return new ResponseEntity<>(_dataSources, HttpStatus.CREATED);
@@ -114,19 +120,9 @@ public class DataSourcesController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteDataSources(@PathVariable("id") String id) {
-        //First Step: Find wrappers with _dataSourceId == id and delete them
-        //Second Step: Delete the data source with _id = id
-        try {
-            Iterable<Wrapper> wrapperIterable = wrapperRepository.findAllByDataSourcesId(id);
-            for (Wrapper w:
-                 wrapperIterable)
-            wrapperRepository.deleteById(w.getId());
-            repository.deleteById(id);
-            LOGGER.info(LOG_MSG, "deleteDataSources", id, HttpStatus.NO_CONTENT.toString() );
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        dataSourceService.delete(id);
+        LOGGER.info(LOG_MSG, "deleteDataSources", id, HttpStatus.NO_CONTENT.toString() );
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping
