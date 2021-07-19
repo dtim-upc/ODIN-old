@@ -7,6 +7,12 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotBlank;
+@Getter
+@Setter
+class Attribute {
+    private String name;
+    private boolean isID;
+}
 
 @Document(collection = "wrapper")
 @Getter
@@ -17,11 +23,11 @@ public class Wrapper {
     private String id;
     private String name;
     @NotBlank
-    private String[] attributes;
+    private Attribute[] attributes;
     private String dataSourcesId;
     private String dataSourcesLabel;
 
-    public Wrapper(String name, String[] attributes, String dataSourcesId) {
+    public Wrapper(String name, Attribute[] attributes, String dataSourcesId) {
         this.name = name;
         this.attributes = attributes;
         this.dataSourcesId = dataSourcesId;

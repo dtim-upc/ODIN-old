@@ -31,7 +31,7 @@ export default defineComponent({
     const wrapper: Wrapper = {
         id: "",
         name: "",
-        attributes: [""],
+        attributes: [{isID: false, name: ""}],
         dataSourcesId: "",
         dataSourcesLabel: "",
     };

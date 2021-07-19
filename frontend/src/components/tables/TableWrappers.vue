@@ -66,7 +66,7 @@
                       text-color="white"
                       @remove="removeAttrib(x)"
                     >
-                      {{ x }}
+                      {{ x.name }}
                     </q-chip>
                   </div>
                 </div>
@@ -132,7 +132,7 @@
                       text-color="white"
                       @remove="removeAttrib(x)"
                     >
-                      {{ x }}
+                      {{ x.name }}
                     </q-chip>
                   </div>
                 </div>
@@ -224,7 +224,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { odinApi } from "boot/axios";
-import { Wrapper } from "components/models";
+import { Wrapper, Attribute } from "components/models";
 export default defineComponent({
   name: "TableDataSources",
   // props:{
@@ -274,13 +274,12 @@ export default defineComponent({
     const newWrapper = {
       id: "",
       name: "",
-      attributes: Array<string>(),
+      attributes: Array<Attribute>(),
       dataSourcesId: "",
       dataSourcesLabel: "",
     };
     const dataSources: { label: string; value: string }[] = [];
     const attrib: string = "";
-    const attribs: string[] = [];
     const inferSchema: boolean = false;
 
     return {
@@ -292,7 +291,6 @@ export default defineComponent({
       newWrapper,
       dataSources,
       attrib,
-      attribs,
       search: "",
       inferSchema,
     };
@@ -340,6 +338,7 @@ export default defineComponent({
           message: "Please add at least 1 attribute",
         });
       } else {
+        console.log(this.newWrapper);
         odinApi.post("/wrapper", this.newWrapper).then((response) => {
           if (response.status == 201) {
             this.$q.notify({
@@ -351,7 +350,7 @@ export default defineComponent({
             const index = this.dataSources
               .map((e) => e.value)
               .indexOf(response.data.dataSourcesId);
-            if (index != -1) {
+            if (index !== -1) {
               response.data["dataSourcesLabel"] = this.dataSources[index].label;
             }
             console.log(response.data)
@@ -379,7 +378,7 @@ export default defineComponent({
               if (e.id === this.newWrapper.id) {
                 e.id = this.newWrapper.id;
                 e.name = this.newWrapper.name;
-                const aux: [string] = [""];
+                const aux: [Attribute] = [{isID:false, name:""}];
                 aux.pop();
                 for (const a of this.newWrapper.attributes) {
                   aux.push(a);
@@ -468,15 +467,15 @@ export default defineComponent({
     addAttrib() {
       if (
         this.attrib !== "" &&
-        this.newWrapper.attributes.indexOf(this.attrib) === -1
+        this.newWrapper.attributes.indexOf({isID:false, name: this.attrib}) === -1
       )
-        this.newWrapper.attributes.push(this.attrib);
+        this.newWrapper.attributes.push({isID:false, name: this.attrib});
       this.attrib = "";
     },
-    removeAttrib(att: string) {
+    removeAttrib(att: Attribute) {
       this.newWrapper.attributes = this.newWrapper.attributes
         .map((e) => e)
-        .filter((e) => e != att);
+        .filter((e) => e !== att);
     },
   },
 });

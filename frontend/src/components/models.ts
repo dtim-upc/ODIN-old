@@ -26,7 +26,7 @@ export interface DataSources {
 export interface Wrapper {
   id:string;
   name:string;
-  attributes:[string];
+  attributes:[Attribute];
   dataSourcesId:string;
   dataSourcesLabel:string;
 }
@@ -35,4 +35,9 @@ export interface LavMapping {
   id:string;
   wrapperId:string;
   globalGraphId:string;
+}
+
+export interface Attribute {
+  isID:boolean;
+  name:string;
 }
