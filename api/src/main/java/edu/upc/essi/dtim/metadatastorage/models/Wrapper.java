@@ -1,18 +1,11 @@
 package edu.upc.essi.dtim.metadatastorage.models;
 
+import edu.upc.essi.dtim.metadatastorage.config.SourceGraph;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import javax.validation.constraints.NotBlank;
-@Getter
-@Setter
-class Attribute {
-    private String name;
-    private boolean isID;
-}
 
 @Document(collection = "wrapper")
 @Getter
@@ -22,7 +15,6 @@ public class Wrapper {
     @Id
     private String id;
     private String name;
-    @NotBlank
     private Attribute[] attributes;
     private String dataSourcesId;
     private String dataSourcesLabel;
