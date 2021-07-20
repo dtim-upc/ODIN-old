@@ -50,7 +50,9 @@ public class LavMappingsController {
     public ResponseEntity<LavMapping> createLavMapping(@RequestBody LavMapping lavmapping) {
         try {
             LavMapping _lavmapping = repository.save(new LavMapping(lavmapping.getGlobalGraphId(), lavmapping.getWrapperId() ));
-            LOGGER.info(LOG_MSG, "createGlobalGraph", lavmapping.toString(), _lavmapping.toString() );
+            String input = lavmapping.toString().replaceAll("[\n\r\t]", "_");
+            String returnval = _lavmapping.toString().replaceAll("[\n\r\t]", "_");
+            LOGGER.info(LOG_MSG, "createGlobalGraph", input, returnval );
             return new ResponseEntity<>(_lavmapping, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

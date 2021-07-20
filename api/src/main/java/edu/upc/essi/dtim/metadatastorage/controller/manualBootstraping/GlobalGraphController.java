@@ -93,7 +93,9 @@ public class GlobalGraphController {
     public ResponseEntity<GlobalGraph> createGlobalGraph(@RequestBody GlobalGraph globalGraph) {
         try {
             GlobalGraph _globalGraph = repository.save(new GlobalGraph(globalGraph.getName(), globalGraph.getNamespace() ));
-            LOGGER.info(LOG_MSG, "createGlobalGraph", globalGraph.toString(), _globalGraph.toString() );
+            String input = globalGraph.toString().replaceAll("[\n\r\t]", "_");
+            String returnval = _globalGraph.toString().replaceAll("[\n\r\t]", "_");
+            LOGGER.info(LOG_MSG, "createGlobalGraph", input, returnval);
             return new ResponseEntity<>(_globalGraph, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

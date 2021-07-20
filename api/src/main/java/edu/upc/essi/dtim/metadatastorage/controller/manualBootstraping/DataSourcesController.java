@@ -53,8 +53,9 @@ public class DataSourcesController {
                     _dataSources.getIri(),
                     Namespaces.rdf.val() + "type",
                     SourceGraph.DATA_SOURCE.val());
-
-            LOGGER.info(LOG_MSG, "createDataSources", dataSources.toString(), _dataSources.toString() );
+            String input = dataSources.toString().replaceAll("[\n\r\t]", "_");
+            String returnval = _dataSources.toString().replaceAll("[\n\r\t]", "_");
+            LOGGER.info(LOG_MSG, "createDataSources", input, returnval);
             return new ResponseEntity<>(_dataSources, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

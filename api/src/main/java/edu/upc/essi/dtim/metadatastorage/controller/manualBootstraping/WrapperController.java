@@ -40,7 +40,9 @@ public class WrapperController {
                                             wrapper.getDataSourcesId());
             repository.save(_wrapper);
             wrapperService.create(wrapper.getName(), wrapper.getAttributes(), wrapper.getDataSourcesId());
-            LOGGER.info(LOG_MSG, "createDataSources", wrapper.toString(), _wrapper.toString() );
+            String input = wrapper.toString().replaceAll("[\n\r\t]", "_");
+            String returnval = _wrapper.toString().replaceAll("[\n\r\t]", "_");
+            LOGGER.info(LOG_MSG, "createDataSources", input, returnval );
             return new ResponseEntity<>(_wrapper, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

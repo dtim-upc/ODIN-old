@@ -7,7 +7,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.validation.constraints.NotBlank;
 import java.util.UUID;
 
-@Document(collection = "globalGraphs")
 @Getter @Setter
 @NoArgsConstructor
 public class GlobalGraph {
