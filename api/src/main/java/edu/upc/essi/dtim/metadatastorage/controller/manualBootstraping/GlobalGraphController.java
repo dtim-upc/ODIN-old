@@ -1,7 +1,6 @@
 package edu.upc.essi.dtim.metadatastorage.controller.manualBootstraping;
 
 import edu.upc.essi.dtim.metadatastorage.controller.AdminController;
-import edu.upc.essi.dtim.metadatastorage.models.DataSources;
 import edu.upc.essi.dtim.metadatastorage.models.GlobalGraph;
 import edu.upc.essi.dtim.metadatastorage.models.GlobalGraphUpdate;
 import edu.upc.essi.dtim.metadatastorage.models.JenaPropertyTriplet;
@@ -10,7 +9,6 @@ import edu.upc.essi.dtim.metadatastorage.services.impl.GlobalGraphService;
 import edu.upc.essi.dtim.metadatastorage.utils.jena.GraphOperations;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.query.ResultSetFormatter;
-import org.bson.json.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +24,7 @@ import java.util.Optional;
 @RequestMapping("/globalGraph")
 public class GlobalGraphController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GlobalGraphController.class);
     private static final String LOG_MSG = "{} request finished with inputs: {} and return value: {}";
     private static final String EMPTY_INPUTS = "{}";
     @Autowired
@@ -42,7 +40,7 @@ public class GlobalGraphController {
     public ResponseEntity<List<GlobalGraph>> getAllGlobalGraphs() {
 
         try {
-            List<GlobalGraph> globalGraphs = new ArrayList<GlobalGraph>();
+            List<GlobalGraph> globalGraphs = new ArrayList<>();
 
             repository.findAll().forEach(globalGraphs::add);
 
