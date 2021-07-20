@@ -197,7 +197,6 @@ public class GlobalGraphController {
             System.out.println("RESULT:");
             System.out.println(out);
         } catch (Exception e) {
-            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 

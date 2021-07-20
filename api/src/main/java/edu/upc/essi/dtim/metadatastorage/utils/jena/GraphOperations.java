@@ -84,7 +84,7 @@ public class GraphOperations {
             try {
                 UpdateAction.parseExecute(sparqlQuery, ds);
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println("Error occurred while Updating a quiery");
             }
         });
 
