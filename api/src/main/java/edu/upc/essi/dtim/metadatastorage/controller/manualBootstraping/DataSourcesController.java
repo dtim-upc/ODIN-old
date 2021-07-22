@@ -3,16 +3,12 @@ package edu.upc.essi.dtim.metadatastorage.controller.manualBootstraping;
 import edu.upc.essi.dtim.metadatastorage.config.Namespaces;
 import edu.upc.essi.dtim.metadatastorage.config.SourceGraph;
 import edu.upc.essi.dtim.metadatastorage.controller.AdminController;
-import edu.upc.essi.dtim.metadatastorage.models.DataSources;
-import edu.upc.essi.dtim.metadatastorage.models.GlobalGraph;
-import edu.upc.essi.dtim.metadatastorage.models.Wrapper;
+import edu.upc.essi.dtim.metadatastorage.models.DataSource;
 import edu.upc.essi.dtim.metadatastorage.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.metadatastorage.repository.WrapperRepository;
 import edu.upc.essi.dtim.metadatastorage.services.filestorage.StorageService;
 import edu.upc.essi.dtim.metadatastorage.services.impl.DataSourceService;
 import edu.upc.essi.dtim.metadatastorage.utils.jena.GraphOperations;
-import org.bson.BsonBinarySubType;
-import org.bson.types.Binary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,18 +41,18 @@ public class DataSourcesController {
 
 
     @PostMapping
-    public ResponseEntity<DataSources> createDataSources(@RequestBody DataSources dataSources) {
+    public ResponseEntity<DataSource> createDataSources(@RequestBody DataSource dataSource) {
         try {
-            DataSources _dataSources = new DataSources(dataSources.getName(), dataSources.getType());
-            repository.save(_dataSources);
-            graphOperations.addTriple(_dataSources.getIri(),
-                    _dataSources.getIri(),
+            DataSource _dataSource = new DataSource(dataSource.getName(), dataSource.getType());
+            repository.save(_dataSource);
+            graphOperations.addTriple(_dataSource.getIri(),
+                    _dataSource.getIri(),
                     Namespaces.rdf.val() + "type",
                     SourceGraph.DATA_SOURCE.val());
-            String input = dataSources.toString().replaceAll("[\n\r\t]", "_");
-            String returnval = _dataSources.toString().replaceAll("[\n\r\t]", "_");
+            String input = dataSource.toString().replaceAll("[\n\r\t]", "_");
+            String returnval = _dataSource.toString().replaceAll("[\n\r\t]", "_");
             LOGGER.info(LOG_MSG, "createDataSources", input, returnval);
-            return new ResponseEntity<>(_dataSources, HttpStatus.CREATED);
+            return new ResponseEntity<>(_dataSource, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -69,10 +65,10 @@ public class DataSourcesController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DataSources>> getAllDataSources() {
+    public ResponseEntity<List<DataSource>> getAllDataSources() {
 
         try {
-            List<DataSources> dataSources = new ArrayList<DataSources>();
+            List<DataSource> dataSources = new ArrayList<DataSource>();
 
             repository.findAll().forEach(dataSources::add);
 
@@ -88,10 +84,10 @@ public class DataSourcesController {
         }
     }
     @GetMapping("/view/{id}")
-    public ResponseEntity<DataSources> getAllDataSources(@PathVariable("id") String id) {
+    public ResponseEntity<DataSource> getAllDataSources(@PathVariable("id") String id) {
 
         try {
-            Optional<DataSources> optionalDataSources = repository.findById(id);
+            Optional<DataSource> optionalDataSources = repository.findById(id);
             if (optionalDataSources.isPresent()) {
                 LOGGER.info(LOG_MSG, "getDataSources", id, "" );
                 return new ResponseEntity<>(optionalDataSources.get(), HttpStatus.OK);
@@ -104,13 +100,13 @@ public class DataSourcesController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<HttpStatus> editDataSources(@PathVariable("id") String id, @RequestBody DataSources dataSources) {
+    public ResponseEntity<HttpStatus> editDataSources(@PathVariable("id") String id, @RequestBody DataSource dataSource) {
         try {
-            Optional<DataSources> optionalDataSources = repository.findById(id);
+            Optional<DataSource> optionalDataSources = repository.findById(id);
             if (optionalDataSources.isPresent()) {
-                DataSources ds = optionalDataSources.get();
-                ds.setName(dataSources.getName());
-                ds.setType(dataSources.getType());
+                DataSource ds = optionalDataSources.get();
+                ds.setName(dataSource.getName());
+                ds.setType(dataSource.getType());
                 repository.save(ds);
             }
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

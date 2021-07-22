@@ -3,7 +3,7 @@ package edu.upc.essi.dtim.metadatastorage.services.impl;
 import edu.upc.essi.dtim.metadatastorage.config.Namespaces;
 import edu.upc.essi.dtim.metadatastorage.config.SourceGraph;
 import edu.upc.essi.dtim.metadatastorage.models.Attribute;
-import edu.upc.essi.dtim.metadatastorage.models.DataSources;
+import edu.upc.essi.dtim.metadatastorage.models.DataSource;
 import edu.upc.essi.dtim.metadatastorage.models.Wrapper;
 import edu.upc.essi.dtim.metadatastorage.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.metadatastorage.repository.WrapperRepository;
@@ -36,9 +36,9 @@ public class WrapperService {
     (triple <http://www.essi.upc.edu/~snadal/BDIOntology/Source/DataSource/Teams/id> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.essi.upc.edu/~snadal/BDIOntology/Source/Attribute>)
     * */
     public void create(String wname, Attribute[] attrNames, String dataSourceId) {
-        Optional<DataSources> optionalDataSources = dataSourcesRepository.findById(dataSourceId);
+        Optional<DataSource> optionalDataSources = dataSourcesRepository.findById(dataSourceId);
         if (optionalDataSources.isPresent()) {
-            DataSources ds = optionalDataSources.get();
+            DataSource ds = optionalDataSources.get();
             String wIRI = createWrapperIri(wname);
             graphOperations.addTriple(ds.getIri(), wIRI, Namespaces.rdf.val() + "type", SourceGraph.WRAPPER.val());
             graphOperations.addTriple(ds.getIri(), ds.getIri(), SourceGraph.HAS_WRAPPER.val(), wIRI);
@@ -59,8 +59,8 @@ public class WrapperService {
         Optional<Wrapper> optionalWrapper = wrapperRepository.findById(id);
         if (optionalWrapper.isPresent()) {
             Wrapper w = optionalWrapper.get();
-            DataSources ds = new DataSources();
-            Optional<DataSources> optionalDataSources = dataSourcesRepository.findById(w.getDataSourcesId());
+            DataSource ds = new DataSource();
+            Optional<DataSource> optionalDataSources = dataSourcesRepository.findById(w.getDataSourcesId());
             if (optionalDataSources.isPresent()) {
                 ds = optionalDataSources.get();
             }
@@ -69,7 +69,7 @@ public class WrapperService {
         }
     }
 
-    public void delete(Wrapper w, DataSources ds) {
+    public void delete(Wrapper w, DataSource ds) {
         //Delete from Jena
         graphOperations.deleteTriplesWithSubject(ds.getIri(), createWrapperIri(w.getName()));
         graphOperations.deleteTriplesWithObject(ds.getIri(), createWrapperIri(w.getName()));

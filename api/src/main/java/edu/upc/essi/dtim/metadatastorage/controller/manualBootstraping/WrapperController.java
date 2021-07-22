@@ -1,10 +1,7 @@
 package edu.upc.essi.dtim.metadatastorage.controller.manualBootstraping;
 
 import edu.upc.essi.dtim.metadatastorage.controller.AdminController;
-import edu.upc.essi.dtim.metadatastorage.models.DataSources;
-import edu.upc.essi.dtim.metadatastorage.models.GlobalGraph;
 import edu.upc.essi.dtim.metadatastorage.models.Wrapper;
-import edu.upc.essi.dtim.metadatastorage.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.metadatastorage.repository.WrapperRepository;
 
 import edu.upc.essi.dtim.metadatastorage.services.impl.WrapperService;

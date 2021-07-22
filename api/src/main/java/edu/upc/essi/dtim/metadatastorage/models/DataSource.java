@@ -12,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 @NoArgsConstructor
-public class DataSources {
+public class DataSource {
     @Id
     private String id;
     private String name;
@@ -20,7 +20,7 @@ public class DataSources {
     @NotBlank
     private String type;
 
-    public DataSources(String name, String type) {
+    public DataSource(String name, String type) {
         this.name = name;
         this.type = type;
         this.iri = createDataSourceIri(name);
