@@ -18,7 +18,6 @@ public class MetadataStorageApplication {
 	@Bean
 	CommandLineRunner init(StorageService storageService) {
 		return (args) -> {
-			storageService.deleteAll();
 			storageService.init();
 		};
 	}
