@@ -128,6 +128,33 @@
             </q-card-section>
           </q-card>
         </q-dialog>
+        <q-dialog v-model="show_warning_dialog" persistent>
+          <q-card style="width: 700px; max-width: 80vw">
+            <q-card-section>
+              <div class="text-h4">Warning</div>
+              <div class="text-h6">Some wrappers are using this data source and will be also deleted. Proceed?</div>
+            </q-card-section>
+
+            <q-card-section>
+              <q-form
+                @submit="onWarningSubmit"
+                @reset="onReset"
+                class="q-gutter-md"
+              >
+                <div>
+                  <q-btn label="Proceed" type="submit" color="primary" />
+                  <q-btn
+                    label="Cancel"
+                    type="reset"
+                    color="primary"
+                    flat
+                    class="q-ml-sm"
+                  />
+                </div>
+              </q-form>
+            </q-card-section>
+          </q-card>
+        </q-dialog>
       </template>
 
       <template v-slot:top-right="props">
@@ -271,6 +298,9 @@ export default defineComponent({
     const show_dialog = false;
     const show_edit_dialog: boolean = false;
     const uploadedFile = new File([], "");
+    const show_warning_dialog: boolean = false;
+    const todeleteid: string = "";
+    const rowIndex: number = 0;
     const newDataSources = {
       id: "",
       name: "",
@@ -286,6 +316,9 @@ export default defineComponent({
       uploadedFile,
       search: "",
       show_edit_dialog,
+      show_warning_dialog,
+      todeleteid,
+      rowIndex,
     };
   },
   mounted() {
@@ -300,26 +333,32 @@ export default defineComponent({
       this.newDataSources.type = row.type;
     },
     deleteRow(props: any) {
-      odinApi.delete(`/dataSources/${props.row.id}`).then((response) => {
-        if (response.status == 204) {
-          this.$q.notify({
-            color: "positive",
-            textColor: "white",
-            icon: "check_circle",
-            message: "Successfully deleted",
-          });
+      if (props.row.wrappers > 0) {
+        this.show_warning_dialog = true;
+        this.todeleteid = props.row.id;
+        this.rowIndex = props.rowIndex;
+      } else {
+        odinApi.delete(`/dataSources/${props.row.id}`).then((response) => {
+          if (response.status == 204) {
+            this.$q.notify({
+              color: "positive",
+              textColor: "white",
+              icon: "check_circle",
+              message: "Successfully deleted",
+            });
 
-          this.rows.splice(props.rowIndex, 1);
-        } else {
-          // 500
-          this.$q.notify({
-            message: "Something went wrong in the server.",
-            color: "negative",
-            icon: "cancel",
-            textColor: "white",
-          });
-        }
-      });
+            this.rows.splice(props.rowIndex, 1);
+          } else {
+            // 500
+            this.$q.notify({
+              message: "Something went wrong in the server.",
+              color: "negative",
+              icon: "cancel",
+              textColor: "white",
+            });
+          }
+        });
+      }
     },
     onSubmit() {
       odinApi
@@ -347,11 +386,13 @@ export default defineComponent({
         .then(() => {
           var data = new FormData();
           data.append("file", this.uploadedFile[0]);
-          odinApi.post("/dataSources/uploadFile", data, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }).then((response) => console.log(response));
+          odinApi
+            .post("/dataSources/uploadFile", data, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            })
+            .then((response) => console.log(response));
         });
     },
     onSubmitEdit() {
@@ -385,12 +426,37 @@ export default defineComponent({
           }
         });
     },
+    onWarningSubmit() {
+      console.log(this.todeleteid);
+      odinApi.delete(`/dataSources/${this.todeleteid}`).then((response) => {
+          if (response.status == 204) {
+            this.$q.notify({
+              color: "positive",
+              textColor: "white",
+              icon: "check_circle",
+              message: "Successfully deleted",
+            });
+
+            this.rows.splice(this.rowIndex, 1);
+            this.show_warning_dialog = false;
+          } else {
+            // 500
+            this.$q.notify({
+              message: "Something went wrong in the server.",
+              color: "negative",
+              icon: "cancel",
+              textColor: "white",
+            });
+          }
+        });
+    },
 
     onReset() {
       this.newDataSources.name = "";
       this.newDataSources.type = "";
       this.show_dialog = false;
       this.show_edit_dialog = false;
+      this.show_warning_dialog = false;
     },
 
     retrieveData() {

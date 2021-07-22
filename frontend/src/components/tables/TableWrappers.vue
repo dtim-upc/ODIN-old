@@ -353,7 +353,7 @@ export default defineComponent({
             if (index !== -1) {
               response.data["dataSourcesLabel"] = this.dataSources[index].label;
             }
-            console.log(response.data)
+            console.log(response.data);
             this.rows.push(response.data);
             this.show_dialog = false;
           } else {
@@ -378,18 +378,18 @@ export default defineComponent({
               if (e.id === this.newWrapper.id) {
                 e.id = this.newWrapper.id;
                 e.name = this.newWrapper.name;
-                const aux: [Attribute] = [{isID:false, name:""}];
+                const aux: [Attribute] = [{ isID: false, name: "" }];
                 aux.pop();
                 for (const a of this.newWrapper.attributes) {
                   aux.push(a);
                 }
                 e.attributes = aux;
                 e.dataSourcesId = this.newWrapper.dataSourcesId;
-                console.log(this.dataSources)
+                console.log(this.dataSources);
                 const index = this.dataSources
                   .map((e) => e.value)
                   .indexOf(e.dataSourcesId);
-                console.log(index)
+                console.log(index);
                 if (index !== -1) {
                   e.dataSourcesLabel = this.dataSources[index].label;
                 } else {
@@ -399,7 +399,7 @@ export default defineComponent({
                     icon: "cancel",
                     textColor: "white",
                   });
-                  e.dataSourcesLabel = "ERROR DATA SOURCE NOT FOUND"
+                  e.dataSourcesLabel = "ERROR DATA SOURCE NOT FOUND";
                 }
               }
               return e;
@@ -467,9 +467,12 @@ export default defineComponent({
     addAttrib() {
       if (
         this.attrib !== "" &&
-        this.newWrapper.attributes.indexOf({isID:false, name: this.attrib}) === -1
+        this.newWrapper.attributes.indexOf({
+          isID: false,
+          name: this.attrib,
+        }) === -1
       )
-        this.newWrapper.attributes.push({isID:false, name: this.attrib});
+        this.newWrapper.attributes.push({ isID: false, name: this.attrib });
       this.attrib = "";
     },
     removeAttrib(att: Attribute) {
