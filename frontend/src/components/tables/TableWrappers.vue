@@ -70,8 +70,6 @@
                     </q-chip>
                   </div>
                 </div>
-                <q-toggle v-model="inferSchema" label="Infer Schema" />
-
                 <div>
                   <q-btn label="Submit" type="submit" color="primary" />
                   <q-btn
@@ -280,7 +278,6 @@ export default defineComponent({
     };
     const dataSources: { label: string; value: string }[] = [];
     const attrib: string = "";
-    const inferSchema: boolean = false;
 
     return {
       columns,
@@ -292,7 +289,6 @@ export default defineComponent({
       dataSources,
       attrib,
       search: "",
-      inferSchema,
     };
   },
   mounted() {

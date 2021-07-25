@@ -29,7 +29,6 @@ public class JenaConnection {
         System.out.println("Jena Name: " + name);
         if (dataset == null) {
             try {
-                System.out.println("here");
                 dataset = TDBFactory.createDataset(dir+"/"+name);
 
                 if(dataset== null){

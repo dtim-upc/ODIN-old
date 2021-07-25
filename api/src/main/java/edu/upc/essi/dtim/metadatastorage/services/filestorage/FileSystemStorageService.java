@@ -4,15 +4,12 @@ package edu.upc.essi.dtim.metadatastorage.services.filestorage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Random;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -24,6 +21,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileSystemStorageService implements StorageService {
 
     private final Path rootLocation;
+    private String randomSeed;
+
+    public void setRandomSeed(String randomSeed) {
+        this.randomSeed = randomSeed;
+    }
 
     @Autowired
     public FileSystemStorageService(StorageProperties properties) {
@@ -37,7 +39,7 @@ public class FileSystemStorageService implements StorageService {
                 throw new StorageException("Failed to store empty file.");
             }
             Path destinationFile = this.rootLocation.resolve(
-                    Paths.get(RandomStringUtils.randomAlphanumeric(16) + file.getOriginalFilename()))
+                    Paths.get(this.randomSeed))
                     .normalize().toAbsolutePath();
             if (!destinationFile.getParent().equals(this.rootLocation.toAbsolutePath())) {
                 // This is a security check

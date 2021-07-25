@@ -31,8 +31,10 @@ dependencies {
 //	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation group: 'org.apache.jena', name: 'apache-jena-libs', version: '4.1.0', ext: 'pom'
 	implementation group: 'org.apache.jena', name: 'jena-querybuilder', version: '4.1.0'
-
+	implementation group: 'net.minidev', name: 'json-smart', version: '2.4.7'
+	implementation group: 'org.apache.spark', name: 'spark-sql_2.12',version: '3.0.0'
 	implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+
 
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -79,4 +81,8 @@ checkstyleMain {
 
 checkstyleTest {
 	configFile = file("${rootDir}/config/checkstyle/google_checks.xml")
+}
+
+configurations.all {
+	exclude group: 'org.slf4j', module: 'slf4j-log4j12'
 }

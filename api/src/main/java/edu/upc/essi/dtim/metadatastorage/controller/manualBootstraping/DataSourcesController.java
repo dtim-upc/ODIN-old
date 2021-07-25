@@ -9,6 +9,7 @@ import edu.upc.essi.dtim.metadatastorage.repository.WrapperRepository;
 import edu.upc.essi.dtim.metadatastorage.services.filestorage.StorageService;
 import edu.upc.essi.dtim.metadatastorage.services.impl.DataSourceService;
 import edu.upc.essi.dtim.metadatastorage.utils.jena.GraphOperations;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ public class DataSourcesController {
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
     private static final String LOG_MSG = "{} request finished with inputs: {} and return value: {}";
     private static final String EMPTY_INPUTS = "{}";
+    private String latest_generated_random_string = "";
 
     @Autowired
     private DataSourcesRepository repository;
@@ -44,7 +46,11 @@ public class DataSourcesController {
     public ResponseEntity<DataSource> createDataSources(@RequestBody DataSource dataSource) {
         try {
             DataSource _dataSource = new DataSource(dataSource.getName(), dataSource.getType());
+            this.latest_generated_random_string = RandomStringUtils.randomAlphanumeric(16);
+            _dataSource.setJson_path("/home/metabig/Work/newOdin/api/upload-dir/" + this.latest_generated_random_string);
+
             repository.save(_dataSource);
+            storageService.setRandomSeed(latest_generated_random_string);
             graphOperations.addTriple(_dataSource.getIri(),
                     _dataSource.getIri(),
                     Namespaces.rdf.val() + "type",

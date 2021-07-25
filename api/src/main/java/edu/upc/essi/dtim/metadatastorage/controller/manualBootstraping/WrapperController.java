@@ -1,10 +1,13 @@
 package edu.upc.essi.dtim.metadatastorage.controller.manualBootstraping;
 
 import edu.upc.essi.dtim.metadatastorage.controller.AdminController;
+import edu.upc.essi.dtim.metadatastorage.models.DataSource;
 import edu.upc.essi.dtim.metadatastorage.models.Wrapper;
+import edu.upc.essi.dtim.metadatastorage.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.metadatastorage.repository.WrapperRepository;
 
 import edu.upc.essi.dtim.metadatastorage.services.impl.WrapperService;
+import edu.upc.essi.dtim.metadatastorage.services.omq.wrapper_implementations.JSON_Wrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +23,14 @@ import java.util.Optional;
 @RequestMapping("/wrapper")
 public class WrapperController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WrapperController.class);
     private static final String LOG_MSG = "{} request finished with inputs: {} and return value: {}";
     private static final String EMPTY_INPUTS = "{}";
 
     @Autowired
     private WrapperRepository repository;
+    @Autowired
+    private DataSourcesRepository dataSourcesRepository;
     @Autowired
     private WrapperService wrapperService;
 
@@ -65,6 +70,24 @@ public class WrapperController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @GetMapping("/inferschema")
+    public ResponseEntity<String> getInferredSchema(@RequestBody String dataSourceId) {
+        System.out.println(dataSourceId);
+        Optional<DataSource> optionalDataSource = dataSourcesRepository.findById(dataSourceId);
+        if (optionalDataSource.isPresent()) {
+            DataSource ds = optionalDataSource.get();
+            JSON_Wrapper json_wrapper = new JSON_Wrapper(ds, "");
+            try {
+                String schema = json_wrapper.inferSchema();
+                System.out.println(schema);
+                return new ResponseEntity<>(schema, HttpStatus.OK);
+            } catch (Exception e) {
+                System.out.println("Error trying to infer schema");
+            }
+        }
+        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @GetMapping("/view/{id}")
     public ResponseEntity<Wrapper> getWrapper(@PathVariable("id") String id) {
 

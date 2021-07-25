@@ -20,4 +20,5 @@ public interface StorageService {
 
     void deleteAll();
 
+    void setRandomSeed(String randomSeed);
 }

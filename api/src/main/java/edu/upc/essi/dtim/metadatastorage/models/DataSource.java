@@ -17,6 +17,7 @@ public class DataSource {
     private String id;
     private String name;
     private String iri;
+    private String Json_path;
     @NotBlank
     private String type;
 

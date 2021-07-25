@@ -304,7 +304,7 @@ export default defineComponent({
     const newDataSources = {
       id: "",
       name: "",
-      type: "",
+      type: ""
     };
     return {
       columns,
