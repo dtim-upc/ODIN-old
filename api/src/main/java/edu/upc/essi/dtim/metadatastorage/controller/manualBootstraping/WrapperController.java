@@ -1,6 +1,5 @@
 package edu.upc.essi.dtim.metadatastorage.controller.manualBootstraping;
 
-import edu.upc.essi.dtim.metadatastorage.controller.AdminController;
 import edu.upc.essi.dtim.metadatastorage.models.DataSource;
 import edu.upc.essi.dtim.metadatastorage.models.Wrapper;
 import edu.upc.essi.dtim.metadatastorage.repository.DataSourcesRepository;
@@ -37,11 +36,15 @@ public class WrapperController {
     @PostMapping
     public ResponseEntity<Wrapper> createWrapper(@RequestBody Wrapper wrapper) {
         try {
+            //Create wrapper
             Wrapper _wrapper = new Wrapper(wrapper.getName(),
                                             wrapper.getAttributes(),
                                             wrapper.getDataSourcesId());
+            //Save to Mongodb
             repository.save(_wrapper);
+            //Save to Jena
             wrapperService.create(wrapper.getName(), wrapper.getAttributes(), wrapper.getDataSourcesId());
+            //Log message
             String input = wrapper.toString().replaceAll("[\n\r\t]", "_");
             String returnval = _wrapper.toString().replaceAll("[\n\r\t]", "_");
             LOGGER.info(LOG_MSG, "createDataSources", input, returnval );
@@ -137,6 +140,7 @@ public class WrapperController {
     public ResponseEntity<HttpStatus> deleteWrapper() {
         try {
             repository.deleteAll();
+            //TODO: Delete all wrappers from jena also.
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
