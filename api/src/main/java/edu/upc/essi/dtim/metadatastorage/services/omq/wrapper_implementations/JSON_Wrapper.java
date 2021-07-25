@@ -89,7 +89,8 @@ public class JSON_Wrapper extends Wrapper {
                 .config("spark.testing.memory", "471859200")
                 .getOrCreate();
         System.out.println("SparkSessionCreated");
-        Dataset<Row> ds = spark.read().json("/home/metabig/Work/newODIN/api/upload-dir/eHDWy8uRisplayersShort.json");
+//        TODO: REVIEW if json datasources can be in a single line or multiline, probably will be better to ask this information when ingesting new ds
+        Dataset<Row> ds = spark.read().option("multiline","true").json("/home/metabig/Work/newODIN/api/upload-dir/eHDWy8uRisplayersShort.json");
         System.out.println("prehere");
         ds.createOrReplaceTempView("inference");
         Set<String> attributes = Sets.newHashSet();
