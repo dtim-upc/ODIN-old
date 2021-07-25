@@ -24,6 +24,10 @@ public class Wrapper {
         this.dataSourcesId = dataSourcesId;
     }
 
+    public String getIri() {
+        return SourceGraph.WRAPPER.val() + '/' + name;
+    }
+
     @Override
     public String toString() {
         return String.format(
