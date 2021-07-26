@@ -55,11 +55,11 @@
                   </template>
                 </q-input>
 
-                <div class="q-pa-md">
+                <div class="q-pa-md" v-if="!inferring_schema">
                   <div class="q-gutter-xs">
                     <q-chip
                       size="lg"
-                      v-for="x in newWrapper.attributes"
+                      v-for="x in getAttributes()"
                       :key="x"
                       removable
                       color="primary"
@@ -69,6 +69,9 @@
                       {{ x.name }}
                     </q-chip>
                   </div>
+                </div>
+                <div v-else>
+                  <q-spinner-gears size="20px" color="primary" />
                 </div>
                 <div>
                   <q-btn label="Submit" type="submit" color="primary" />
@@ -278,6 +281,8 @@ export default defineComponent({
     };
     const dataSources: { label: string; value: string }[] = [];
     const attrib: string = "";
+    const currentInferredDataSourceId: string = "";
+    const inferring_schema: boolean = false;
 
     return {
       columns,
@@ -289,6 +294,8 @@ export default defineComponent({
       dataSources,
       attrib,
       search: "",
+      currentInferredDataSourceId,
+      inferring_schema,
     };
   },
   mounted() {
@@ -475,6 +482,32 @@ export default defineComponent({
       this.newWrapper.attributes = this.newWrapper.attributes
         .map((e) => e)
         .filter((e) => e !== att);
+    },
+    getAttributes() {
+      if (
+        this.newWrapper.dataSourcesId !== "" &&
+        this.currentInferredDataSourceId !== this.newWrapper.dataSourcesId
+      ) {
+        console.log("get request");
+        this.inferring_schema = true;
+        odinApi
+          .get("/wrapper/inferschema", {
+            params: { dataSourceId: this.newWrapper.dataSourcesId },
+          })
+          .then((response) => {
+            console.log(response.data);
+            this.currentInferredDataSourceId = this.newWrapper.dataSourcesId;
+            for (const at of response.data) {
+              const obj = {
+                isID: false,
+                name: at,
+              };
+              this.newWrapper.attributes.push(obj);
+            }
+            this.inferring_schema = false;
+          });
+      }
+      return this.newWrapper.attributes;
     },
   },
 });
