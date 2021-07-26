@@ -1,6 +1,5 @@
 package edu.upc.essi.dtim.metadatastorage.services.omq.wrapper_implementations;
 
-import com.google.gson.Gson;
 import edu.upc.essi.dtim.metadatastorage.models.DataSource;
 import edu.upc.essi.dtim.metadatastorage.services.omq.Wrapper;
 import net.minidev.json.JSONArray;
@@ -10,7 +9,6 @@ import org.apache.commons.compress.utils.Sets;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Set;
@@ -79,8 +77,7 @@ public class JSON_Wrapper extends Wrapper {
         this.copyToParent = copyToParent;
     }
     @Override
-    public String inferSchema() throws Exception {
-        System.out.println("inferSchema()");
+    public String[] inferSchema() throws Exception {
         SparkSession spark = SparkSession.builder()
                 .appName("parquetPreview")
                 .master("local[*]")
@@ -88,19 +85,21 @@ public class JSON_Wrapper extends Wrapper {
                 .config("spark.driver.memory","471859200")
                 .config("spark.testing.memory", "471859200")
                 .getOrCreate();
-        System.out.println("SparkSessionCreated");
-        Dataset<Row> ds = spark.read().json("/home/metabig/Work/newODIN/api/upload-dir/eHDWy8uRisplayersShort.json");
-        System.out.println("prehere");
+        Dataset<Row> ds = spark.read().json(this.path);
         ds.createOrReplaceTempView("inference");
         Set<String> attributes = Sets.newHashSet();
-        System.out.println("here");
         extractAttributes(attributes,"",(JSONObject) JSONValue.parse(spark.sql(generateSparkSQLQuery("inference")).schema().json()));
 
+        String[] res = attributes.toArray(new String[0]);
 
-        JSONObject res = new JSONObject(); res.put("schema",new Gson().toJson(attributes));
+        /*
+        JSONObject res = new JSONObject();
+        res.put("schema", new Gson().toJson(attributes));
+         */
         spark.close();
-        return res.toJSONString();
+        //return res.toJSONString();
         //return super.inferSchema();
+        return res;
     }
 
     private String generateSparkSQLQuery(String tableName) {

@@ -21,12 +21,12 @@ public class WrapperService {
     private DataSourcesRepository dataSourcesRepository;
     @Autowired
     private WrapperRepository wrapperRepository;
-    //Pre:
-    //  INPUT: Wrapper name, dataSourceId, Array of strings of the names of the attributes.
-    //Post:
-    //  Generated the triples of Jena inserted into the dataSource graph.
-    //Example:
-    /*
+    /**
+    @pre:
+      INPUT: Wrapper name, dataSourceId, Array of strings of the names of the attributes.
+    @post:
+      Generated the triples of Jena inserted into the dataSource graph.
+    Example:
     * INPUT: "w1", "1fd3d01369b947f2a18a70b596006029",["DateOfBirth", "FullName", "teamId"]
     * POST:
     (triple <http://www.essi.upc.edu/~snadal/BDIOntology/Source/Wrapper/w1T> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.essi.upc.edu/~snadal/BDIOntology/Source/Wrapper>)
@@ -71,8 +71,18 @@ public class WrapperService {
 
     public void delete(Wrapper w, DataSource ds) {
         //Delete from Jena
+        //DsIri = http://www.essi.upc.edu/~snadal/BDIOntology/Source/DataSource/asd
+        //WIri = http://www.essi.upc.edu/~snadal/BDIOntology/Source/Wrapper/w1
         graphOperations.deleteTriplesWithSubject(ds.getIri(), createWrapperIri(w.getName()));
         graphOperations.deleteTriplesWithObject(ds.getIri(), createWrapperIri(w.getName()));
+        //Eliminación de attributos
+        for (Attribute a : w.getAttributes()) {
+            String attName = a.getName();
+            String attIRI = ds.getIri() + '/' + attName;
+            graphOperations.deleteTriplesWithSubject(ds.getIri(), attIRI);
+            graphOperations.deleteTriplesWithObject(ds.getIri(), attIRI);
+        }
+
 
         //Delete from Mongo
         wrapperRepository.deleteById(w.getId());

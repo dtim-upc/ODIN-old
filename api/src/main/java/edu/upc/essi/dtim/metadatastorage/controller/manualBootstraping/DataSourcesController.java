@@ -47,7 +47,7 @@ public class DataSourcesController {
         try {
             DataSource _dataSource = new DataSource(dataSource.getName(), dataSource.getType());
             this.latest_generated_random_string = RandomStringUtils.randomAlphanumeric(16);
-            _dataSource.setJson_path("/home/metabig/Work/newOdin/api/upload-dir/" + this.latest_generated_random_string);
+            _dataSource.setJson_path("/home/metabig/Work/newODIN/api/upload-dir/" + this.latest_generated_random_string);
 
             repository.save(_dataSource);
             storageService.setRandomSeed(latest_generated_random_string);

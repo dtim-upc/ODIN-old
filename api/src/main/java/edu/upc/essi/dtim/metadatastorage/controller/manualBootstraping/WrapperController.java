@@ -74,15 +74,16 @@ public class WrapperController {
         }
     }
     @GetMapping("/inferschema")
-    public ResponseEntity<String> getInferredSchema(@RequestBody String dataSourceId) {
+    public ResponseEntity<String[]> getInferredSchema(@RequestBody String dataSourceId) {
         System.out.println(dataSourceId);
         Optional<DataSource> optionalDataSource = dataSourcesRepository.findById(dataSourceId);
         if (optionalDataSource.isPresent()) {
             DataSource ds = optionalDataSource.get();
             JSON_Wrapper json_wrapper = new JSON_Wrapper(ds, "");
             try {
-                String schema = json_wrapper.inferSchema();
-                System.out.println(schema);
+                String[] schema = json_wrapper.inferSchema();
+                for (String s : schema)
+                    System.out.println(s);
                 return new ResponseEntity<>(schema, HttpStatus.OK);
             } catch (Exception e) {
                 System.out.println("Error trying to infer schema");
