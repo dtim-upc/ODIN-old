@@ -14,13 +14,13 @@ public class LavMapping {
     private String globalGraphId;
     private String wrapperId;
     private SameAs[] sameAs;
-    private String graphicalSubgraph;
+    private String globalQuery;
 
     public LavMapping(String globalGraphId, String wrapperId, SameAs[] sameAs, String graphicalSubgraph) {
         this.globalGraphId = globalGraphId;
         this.wrapperId = wrapperId;
         this.sameAs = sameAs;
-        this.graphicalSubgraph = graphicalSubgraph;
+        this.globalQuery = graphicalSubgraph;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class LavMapping {
                 ", globalGraphId='" + globalGraphId + '\'' +
                 ", wrapperId='" + wrapperId + '\'' +
                 ", sameAs=" + Arrays.toString(sameAs) +
-                ", graphicalSubgraph='" + graphicalSubgraph + '\'' +
+                ", graphicalSubgraph='" + globalQuery + '\'' +
                 '}';
     }
 }
