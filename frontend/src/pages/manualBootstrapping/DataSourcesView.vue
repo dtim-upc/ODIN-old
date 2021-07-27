@@ -36,7 +36,7 @@ export default defineComponent({
   },
   methods: {
     retrieveData() {
-      odinApi.get("/dataSources/view/" + this.dataSourceId).then((response) => {
+      odinApi.get("/dataSource/view/" + this.dataSourceId).then((response) => {
         if (response.status == 200) {
           this.dataSources = response.data;
           console.log(this.dataSources);

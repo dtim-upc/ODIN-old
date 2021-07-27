@@ -218,7 +218,7 @@
             color="accent"
             v-if="props.row.graphicalSubgraph === ''"
           >
-            Missing Graphical graph</q-chip
+            Missing Global Query</q-chip
           >
           <q-chip text-color="white" color="blue" v-else> Completed</q-chip>
         </q-td>

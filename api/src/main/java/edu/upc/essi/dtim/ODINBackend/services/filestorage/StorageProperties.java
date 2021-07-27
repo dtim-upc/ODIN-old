@@ -9,8 +9,8 @@ public class StorageProperties {
     /**
      * Folder location for storing files
      */
-    //@Value("${db.file.upload.dir}")
-    private String location = "upload-dir";
+    @Value("${db.files.upload.dir}")
+    private String location;
 
     public String getLocation() {
         return location;

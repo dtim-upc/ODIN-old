@@ -338,7 +338,7 @@ export default defineComponent({
         this.todeleteid = props.row.id;
         this.rowIndex = props.rowIndex;
       } else {
-        odinApi.delete(`/dataSources/${props.row.id}`).then((response) => {
+        odinApi.delete(`/dataSource/${props.row.id}`).then((response) => {
           if (response.status == 204) {
             this.$q.notify({
               color: "positive",
@@ -362,7 +362,7 @@ export default defineComponent({
     },
     onSubmit() {
       odinApi
-        .post("/dataSources", this.newDataSources)
+        .post("/dataSource", this.newDataSources)
         .then((response) => {
           if (response.status == 201) {
             this.$q.notify({
@@ -387,7 +387,7 @@ export default defineComponent({
           var data = new FormData();
           data.append("file", this.uploadedFile[0]);
           odinApi
-            .post("/dataSources/uploadFile", data, {
+            .post("/dataSource/uploadFile", data, {
               headers: {
                 "Content-Type": "multipart/form-data",
               },
@@ -398,7 +398,7 @@ export default defineComponent({
     onSubmitEdit() {
       this.show_edit_dialog = false;
       odinApi
-        .put(`/dataSources/${this.newDataSources.id}`, this.newDataSources)
+        .put(`/dataSource/${this.newDataSources.id}`, this.newDataSources)
         .then((response) => {
           if (response.status == 204) {
             this.rows.map((e) => {
@@ -428,7 +428,7 @@ export default defineComponent({
     },
     onWarningSubmit() {
       console.log(this.todeleteid);
-      odinApi.delete(`/dataSources/${this.todeleteid}`).then((response) => {
+      odinApi.delete(`/dataSource/${this.todeleteid}`).then((response) => {
           if (response.status == 204) {
             this.$q.notify({
               color: "positive",
@@ -461,7 +461,7 @@ export default defineComponent({
 
     retrieveData() {
       odinApi
-        .get("/dataSources")
+        .get("/dataSource")
         .then((response) => {
           if (response.status == 200) {
             this.rows = response.data;

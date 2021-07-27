@@ -13,6 +13,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,13 +23,15 @@ import java.io.IOException;
 import java.util.*;
 
 @RestController
-@RequestMapping("/dataSources")
+@RequestMapping("/dataSource")
 public class DataSourcesController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
     private static final String LOG_MSG = "{} request finished with inputs: {} and return value: {}";
     private static final String EMPTY_INPUTS = "{}";
     private String latest_generated_random_string = "";
+    @Value("${db.files.upload.dir}")
+    private String upload_dir;
 
     @Autowired
     private DataSourcesRepository repository;
@@ -41,13 +44,13 @@ public class DataSourcesController {
     @Autowired
     private DataSourceService dataSourceService;
 
-
     @PostMapping
     public ResponseEntity<DataSource> createDataSources(@RequestBody DataSource dataSource) {
         try {
             DataSource _dataSource = new DataSource(dataSource.getName(), dataSource.getType());
             this.latest_generated_random_string = RandomStringUtils.randomAlphanumeric(16);
-            _dataSource.setJson_path("/home/metabig/Work/newODIN/api/upload-dir/" + this.latest_generated_random_string);
+            System.out.println(upload_dir);
+            _dataSource.setJson_path(upload_dir + '/' + this.latest_generated_random_string + ".json");
 
             repository.save(_dataSource);
             storageService.setRandomSeed(latest_generated_random_string);

@@ -4,7 +4,8 @@ db:
     name: jena2
   files:
     upload:
-      dir: /uploads
+      dir: uploads
+      absolute.path: home/metabig/Work/newODIN/api
 
 
 logging:

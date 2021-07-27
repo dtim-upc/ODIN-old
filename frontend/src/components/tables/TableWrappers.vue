@@ -439,7 +439,7 @@ export default defineComponent({
       });
     },
     getDataSources(data: any) {
-      odinApi.get("/dataSources").then((response) => {
+      odinApi.get("/dataSource").then((response) => {
         if (response.status == 200) {
           for (const elem of response.data) {
             const obj = {

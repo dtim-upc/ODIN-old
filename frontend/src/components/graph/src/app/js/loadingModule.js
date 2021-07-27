@@ -631,28 +631,28 @@ module.exports =  function (graph) {
         // currentSubGraph = undefined;
         // currentGlobalGraph = undefined;
         //
-        // var lavMappingID = getParameterByName("LAVMappingID");
+        var lavMappingID = getParameterByName("LAVMappingID");
         // var globalGraphID = getParameterByName("globalGraphID");
         //
         // var ontologyID = getParameterByName("dataSourceID");
         // var intID = getParameterByName("IntegratedDataSourceID")
         //
-        // if(lavMappingID !== ""){
-        //     var data = JSON.parse($.ajax({
-        //         type: "GET",
-        //         url: "/LAVMapping/"+lavMappingID,
-        //         async: false
-        //     }).responseText);
-        //
-        //     if(data.graphicalSubGraph)
-        //         currentSubGraph = data.graphicalSubGraph;
-        //
-        //     currentGlobalGraph = JSON.parse($.ajax({
-        //         type: "GET",
-        //         url: odinApi+"/globalGraph/"+data.globalGraphID,
-        //         async: false
-        //     }).responseText);
-        //
+        if(lavMappingID !== ""){
+            var data = JSON.parse($.ajax({
+                type: "GET",
+                url: odinApi+"/LAVMapping/"+lavMappingID,
+                async: false
+            }).responseText);
+        
+            if(data.graphicalSubGraph)
+                currentSubGraph = data.graphicalSubGraph;
+        
+            currentGlobalGraph = JSON.parse($.ajax({
+                type: "GET",
+                url: odinApi+"/globalGraph/"+data.globalGraphID,
+                async: false
+            }).responseText);
+        }
         // }else if(globalGraphID !== ""){
         //     currentGlobalGraph = JSON.parse($.ajax({
         //         type: "GET",
