@@ -71,11 +71,15 @@ public class GlobalGraphController {
         }
     }
 
-    @GetMapping("/featuresConcepts")
-    public ResponseEntity<String[]> getFeaturesConceptsByNamedGraph(@RequestParam("namedGraph") String namedGraph) {
-        System.out.println(namedGraph);
-        String[] features = graphOperations.getFeaturesWithConceptFromGraph(namedGraph);
-        return new ResponseEntity<>(features, HttpStatus.OK);
+    @GetMapping("{id}/featuresConcepts")
+    public ResponseEntity<String[]> getFeaturesConceptsByNamedGraph(@PathVariable("id") String id) {
+        Optional<GlobalGraph> optionalGlobalGraph = repository.findById(id);
+        if (optionalGlobalGraph.isPresent()) {
+            GlobalGraph globalGraph = optionalGlobalGraph.get();
+            String[] features = graphOperations.getFeaturesWithConceptFromGraph(globalGraph.getNamedGraph());
+            return new ResponseEntity<>(features, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/{id}")
@@ -131,10 +135,9 @@ public class GlobalGraphController {
                 System.out.println("Modified equals true");
                 //Overwritten field (Temporal)
                 _globalGraph.setGraphicalGraph(globalGraph.getGraphicalGraph());
-                //first save
                 if (first_save) {
                     graphOperations.loadTTL(globalGraph.getNamedGraph(), data.getTtl());
-                } else  {
+                } else {
                     //Delete Nodes
                     for (String subject : data.getDeleted().getClasses()) {
                         globalGraphService.deleteNode(globalGraph.getNamedGraph(), subject);

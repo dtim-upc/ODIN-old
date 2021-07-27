@@ -468,10 +468,7 @@ export default defineComponent({
           return this.features.featuresArr;
         console.log("GET Request");
         odinApi
-          .get("/globalGraph/featuresConcepts", {
-            params: { namedGraph: globalGraph.namedGraph },
-            headers: { "Content-Type": "text/plain" },
-          })
+          .get(`/globalGraph/${globalGraph.id}/featuresConcepts`)
           .then((response) => {
             this.features.namedGraph = globalGraph.namedGraph;
             this.features.featuresArr = response.data;
