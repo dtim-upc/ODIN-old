@@ -9,6 +9,7 @@ import edu.upc.essi.dtim.ODINBackend.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.ODINBackend.repository.LavMappingRepository;
 import edu.upc.essi.dtim.ODINBackend.repository.WrapperRepository;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.GraphOperations;
+import net.minidev.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.Optional;
@@ -25,13 +26,16 @@ public class LAVMappingService {
     @Autowired
     private GraphOperations graphOperations;
 
+    //Saves LavMapping to repository
     //Create sameAs relations in the datasource graph of a wrapper.
+    //Adds id to LavMappingId
     public void createLAVMappingMapsTo(LavMapping lavMapping){
 
         Optional<Wrapper> optionalWrapper = wrapperRepository.findById(lavMapping.getWrapperId());
         String dsIRI = "";
+        Wrapper wrapper = null;
         if (optionalWrapper.isPresent()) {
-            Wrapper wrapper = optionalWrapper.get();
+            wrapper = optionalWrapper.get();
             Optional<DataSource> optionalDataSource =  dataSourcesRepository.findById(wrapper.getDataSourcesId());
             if (optionalDataSource.isPresent()) {
                 DataSource dataSource = optionalDataSource.get();
@@ -39,6 +43,11 @@ public class LAVMappingService {
             }
         }
         lavMappingRepository.save(lavMapping);
+        if (optionalWrapper.isPresent()) {
+            System.out.println("Setting id = " + lavMapping.getId());
+            wrapper.setLavMappingId(lavMapping.getId());
+            wrapperRepository.save(wrapper);
+        }
 
         String finalDsIRI = dsIRI;
         for (SameAs sa : lavMapping.getSameAs()) {
@@ -62,10 +71,9 @@ public class LAVMappingService {
         }
 
         String finalDsIri = dsIRI;
-        String finalWIri = dsIRI;
+        String finalWIri = wIRI;
 
-        //updateTriples(lavMapping.getSameAs(), lavMapping.getId(),
-        //        finalWIri, finalDsIri);
+        //updateTriples(lavMapping.getSameAs(), lavMapping.getId(), finalWIri, finalDsIri);
 
     }
     /**
@@ -74,18 +82,29 @@ public class LAVMappingService {
      * @param LAVMappingID id of the LAVMapping to be updated in mongodb.
      * @param wrapperIRI IRI of the wrapper to be deleted in jena.
      * @param datasourceIRI IRI of the datasource to be updated in jena.
-    public void updateTriples(JSONArray features,String LAVMappingID, String wrapperIRI, String datasourceIRI){
+     **/
+    public void updateTriples(JSONArray features, String LAVMappingID, String wrapperIRI, String datasourceIRI){
 
         for (Object selectedElement : features) {
-            JSONObject objSelectedElement = (JSONObject) selectedElement;
+            /*JSONObject objSelectedElement = (JSONObject) selectedElement;
             String oldIRI = objSelectedElement.getAsString("featureOld");
             String newIRI = objSelectedElement.getAsString("featureNew");
 
             updateLavMappingSameAsFeature(LAVMappingID,oldIRI,newIRI);
-            graphOperations.updateResourceNodeIRI(datasourceIRI,oldIRI,newIRI);
+            graphOperations.updateResourceNodeIRI(datasourceIRI,oldIRI,newIRI);*/
         }
-//        RDFUtil.deleteTriplesNamedGraph(wrapperIRI);
+
         graphOperations.deleteAllTriples(wrapperIRI);
-        deleteGraphicalSubgraph(LAVMappingID);
-    }*/
+        //deleteGraphicalSubgraph(LAVMappingID);
+    }
+
+    /**
+     * Updates the feature IRI from sameAs array of a LavMapping collection in MongoDB
+     * @param LAVMappingID lavmapping id to be updated.
+     * @param oldIRI actual iri.
+     * @param newIRI new iri.
+     */
+    public void updateLavMappingSameAsFeature(String LAVMappingID, String oldIRI, String newIRI){
+        //lavMappingRepository.update(LAVMappingMongo.FIELD_sameAsFeature.val(),oldIRI,LAVMappingMongo.FIELD_sameAsFeatureUpdate.val(), newIRI);
+    }
 }

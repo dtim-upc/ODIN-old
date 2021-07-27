@@ -3,6 +3,8 @@ package edu.upc.essi.dtim.ODINBackend.models;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 
+import java.util.Arrays;
+
 @Getter @Setter
 @NoArgsConstructor
 public class LavMapping {
@@ -23,11 +25,12 @@ public class LavMapping {
 
     @Override
     public String toString() {
-        return String.format(
-                "LavMapping[globalGraphId=%s, wrapperId='%s']",
-                this.globalGraphId, this.wrapperId);
+        return "LavMapping{" +
+                "id=" + id +
+                ", globalGraphId='" + globalGraphId + '\'' +
+                ", wrapperId='" + wrapperId + '\'' +
+                ", sameAs=" + Arrays.toString(sameAs) +
+                ", graphicalSubgraph='" + graphicalSubgraph + '\'' +
+                '}';
     }
-
-
-
 }
