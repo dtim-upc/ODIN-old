@@ -35,6 +35,13 @@ export interface LavMapping {
   id:string;
   wrapperId:string;
   globalGraphId:string;
+  saveAs:[SaveAs];
+  graphicalSubgraph: string;
+}
+
+export interface SaveAs {
+  features: string;
+  attribute: string;
 }
 
 export interface Attribute {

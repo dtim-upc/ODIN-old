@@ -35,13 +35,17 @@ export default defineComponent({
     id: {
       type:String,
       default:''
+    },
+    LAVMappingID: {
+      type:String,
+      default:''
     }
   },
   methods: {
 
     params() {
-      if(this.id !== '' ){
-        return "&id="+this.id
+      if(this.id !== '') {
+        return "&id="+this.id+"&LAVMappingID="+this.LAVMappingID
       }
       return ""
     }

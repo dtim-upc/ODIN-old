@@ -45,14 +45,19 @@ module.exports = function (graph) {
     };
 
     saveGraphMenu.saveSubGraph = function(){
+        console.log("saveGraphMenu.saveSubGraph")
         var subGraph = new Object();
-        subGraph.selection = graph.prepareSelectionObject();
+        subGraph.selection = JSON.stringify(graph.prepareSelectionObject());
         subGraph.LAVMappingID = getParameterByName("LAVMappingID");
         subGraph.graphicalSubGraph = graph.prepareGraphicalSelObject();
+        console.log(typeof(subGraph));
+        console.log(subGraph);
+
         $.ajax({
-            url: '/LAVMapping/subgraph',
+            url: odinApi+'/lavMapping/subgraph',
             type: 'POST',
-            data: subGraph,
+            contentType: "application/json;charset=UTF-8",
+            data: JSON.stringify(subGraph),
             success: function(data) {
                 graph.options().alertModule().showAlert("Information","Mappings saved");
             }
@@ -100,6 +105,8 @@ module.exports = function (graph) {
     };
 
     function getParameterByName(name) {
+        console.log("location.search")
+        console.log(location.search)
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
             results = regex.exec(location.search);
