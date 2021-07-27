@@ -74,7 +74,8 @@
                   <q-spinner-gears size="20px" color="primary" />
                 </div>
                 <div>
-                  <q-btn label="Submit" type="submit" color="primary" />
+                  <q-btn v-if="inferring_schema" disable label="Submit" type="submit" color="primary"/>
+                  <q-btn v-else label="Submit" type="submit" color="primary" />
                   <q-btn
                     label="Cancel"
                     type="reset"
@@ -429,6 +430,7 @@ export default defineComponent({
       this.newWrapper.dataSourcesId = "";
       this.show_dialog = false;
       this.show_edit_dialog = false;
+      this.inferring_schema = false;
     },
     retrieveData() {
       odinApi.get("/wrapper").then((response) => {
