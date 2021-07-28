@@ -57,7 +57,7 @@ public class LavMappingsController {
             if (optionalLavMapping.isPresent()) {
                 LavMapping lm  = optionalLavMapping.get();
                 lm.setSameAs(lm.getSameAs());
-                lm.setGraphicalSubgraph(lm.getGraphicalSubgraph());
+                lm.setGlobalQuery(lm.getGlobalQuery());
                 lm.setWrapperId(lm.getWrapperId());
                 lm.setGlobalGraphId(lm.getGlobalGraphId());
                 repository.save(lm);
@@ -75,7 +75,7 @@ public class LavMappingsController {
             LavMapping _lavmapping = new LavMapping(lavmapping.getGlobalGraphId(),
                                                                         lavmapping.getWrapperId(),
                                                                         lavmapping.getSameAs(),
-                                                                        lavmapping.getGraphicalSubgraph());
+                                                                        lavmapping.getGlobalQuery());
             lavMappingService.createLAVMappingMapsTo(_lavmapping);
             String input = lavmapping.toString().replaceAll("[\n\r\t]", "_");
             String returnval = _lavmapping.toString().replaceAll("[\n\r\t]", "_");
@@ -103,7 +103,7 @@ public class LavMappingsController {
         Optional<LavMapping> optionalLavMapping = repository.findById(lavMappingSubgraph.getLAVMappingID());
         if (optionalLavMapping.isPresent()) {
             LavMapping lavMapping = optionalLavMapping.get();
-            lavMapping.setGraphicalSubgraph(String.join(", ",  lavMappingSubgraph.getGraphicalSubGraph()));
+            lavMapping.setGlobalQuery(String.join(", ",  lavMappingSubgraph.getGraphicalSubGraph()));
             repository.save(lavMapping);
         }
         return new ResponseEntity<>(HttpStatus.OK);
