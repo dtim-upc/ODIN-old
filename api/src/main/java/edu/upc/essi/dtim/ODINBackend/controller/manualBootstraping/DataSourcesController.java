@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 
 @RestController
@@ -125,7 +126,14 @@ public class DataSourcesController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteDataSources(@PathVariable("id") String id) {
+    public ResponseEntity<HttpStatus> deleteDataSources(@PathVariable("id") String id) throws IOException {
+        //Delete the file
+        Optional<DataSource> optionalDataSource = repository.findById(id);
+        if (optionalDataSource.isPresent()) {
+            DataSource ds = optionalDataSource.get();
+            storageService.delete(ds.getJson_path());
+        }
+        //Delete from MongoDB
         dataSourceService.delete(id);
         LOGGER.info(LOG_MSG, "deleteDataSources", id, HttpStatus.NO_CONTENT.toString() );
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

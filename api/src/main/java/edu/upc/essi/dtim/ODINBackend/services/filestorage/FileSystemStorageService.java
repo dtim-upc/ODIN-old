@@ -1,6 +1,7 @@
 package edu.upc.essi.dtim.ODINBackend.services.filestorage;
 
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -11,6 +12,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,8 @@ public class FileSystemStorageService implements StorageService {
 
     private final Path rootLocation;
     private String randomSeed;
+    @Value("${db.files.upload.absolute.path}")
+    private String absolutePath;
 
     public void setRandomSeed(String randomSeed) {
         this.randomSeed = randomSeed;
@@ -96,6 +100,12 @@ public class FileSystemStorageService implements StorageService {
     @Override
     public void deleteAll() {
         FileSystemUtils.deleteRecursively(rootLocation.toFile());
+    }
+
+    @Override
+    public void delete(String path) throws IOException {
+        System.out.println(absolutePath + '/' + path);
+        FileSystemUtils.deleteRecursively(Paths.get('/' + absolutePath + '/' + path));
     }
 
     @Override
