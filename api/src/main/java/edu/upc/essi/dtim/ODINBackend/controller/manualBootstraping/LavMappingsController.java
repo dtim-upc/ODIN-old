@@ -50,6 +50,21 @@ public class LavMappingsController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<LavMapping> getLavMapping(@PathVariable String id) {
+        System.out.println("Recieved");
+        try {
+            Optional<LavMapping> optionalLavMapping = repository.findById(id);
+            if (optionalLavMapping.isPresent()) {
+                LavMapping lavMapping = optionalLavMapping.get();
+                return new ResponseEntity<>(lavMapping, HttpStatus.OK);
+            }
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     @PutMapping("id")
     public ResponseEntity<HttpStatus> editDataSources(@PathVariable("id") String id, @RequestBody LavMapping lavMapping) {
         try {
@@ -103,7 +118,7 @@ public class LavMappingsController {
         Optional<LavMapping> optionalLavMapping = repository.findById(lavMappingSubgraph.getLAVMappingID());
         if (optionalLavMapping.isPresent()) {
             LavMapping lavMapping = optionalLavMapping.get();
-            lavMapping.setGlobalQuery(String.join(", ",  lavMappingSubgraph.getGraphicalSubGraph()));
+            lavMapping.setGlobalQuery(lavMappingSubgraph.getGraphicalSubGraph());
             repository.save(lavMapping);
         }
         return new ResponseEntity<>(HttpStatus.OK);

@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Getter @Setter
 @NoArgsConstructor
@@ -14,13 +15,13 @@ public class LavMapping {
     private String globalGraphId;
     private String wrapperId;
     private SameAs[] sameAs;
-    private String globalQuery;
+    private List<String> globalQuery;
 
-    public LavMapping(String globalGraphId, String wrapperId, SameAs[] sameAs, String graphicalSubgraph) {
+    public LavMapping(String globalGraphId, String wrapperId, SameAs[] sameAs, List<String> globalQuery) {
         this.globalGraphId = globalGraphId;
         this.wrapperId = wrapperId;
         this.sameAs = sameAs;
-        this.globalQuery = graphicalSubgraph;
+        this.globalQuery = globalQuery;
     }
 
     @Override

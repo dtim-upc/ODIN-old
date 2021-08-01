@@ -580,7 +580,9 @@ module.exports =  function (graph) {
         // editor mode is just for global graph but let's consider changing the name later
         //if ( graph.options().defaultConfig().editorMode === "true" ) {
             var globalGraphID = getParameterByName("id");
-            if (globalGraphID !== "") {
+            var lavMappingID = getParameterByName("LAVMappingID");
+            console.log({globalGraphID, lavMappingID});
+            if (globalGraphID !== "" && lavMappingID === "") {
               // retrieve global graph data.
                 const content = JSON.parse($.ajax({
                     type: "GET",
@@ -589,6 +591,29 @@ module.exports =  function (graph) {
                 }).responseText);
                 currentGlobalGraph = content;
                 console.log({currentGlobalGraph});
+            }
+            if(globalGraphID !== "" && lavMappingID !== ""){
+                
+                var data = JSON.parse($.ajax({
+                    type: "GET",
+                    url: odinApi+"/lavMapping/"+lavMappingID,
+                    async: false
+                }).responseText);
+
+
+                console.log({data});
+            
+                if(data.globalQuery){
+                    currentSubGraph = data.globalQuery;
+                    console.log({currentGlobalGraph})
+                }
+                currentGlobalGraph = JSON.parse($.ajax({
+                    type: "GET",
+                    url: odinApi+"/globalGraph/"+data.globalGraphId,
+                    async: false
+                }).responseText);
+                
+                console.log(currentGlobalGraph);
             }
         //}
 
@@ -631,28 +656,12 @@ module.exports =  function (graph) {
         // currentSubGraph = undefined;
         // currentGlobalGraph = undefined;
         //
-        var lavMappingID = getParameterByName("LAVMappingID");
         // var globalGraphID = getParameterByName("globalGraphID");
         //
         // var ontologyID = getParameterByName("dataSourceID");
         // var intID = getParameterByName("IntegratedDataSourceID")
         //
-        if(lavMappingID !== ""){
-            var data = JSON.parse($.ajax({
-                type: "GET",
-                url: odinApi+"/LAVMapping/"+lavMappingID,
-                async: false
-            }).responseText);
-        
-            if(data.graphicalSubGraph)
-                currentSubGraph = data.graphicalSubGraph;
-        
-            currentGlobalGraph = JSON.parse($.ajax({
-                type: "GET",
-                url: odinApi+"/globalGraph/"+data.globalGraphID,
-                async: false
-            }).responseText);
-        }
+
         // }else if(globalGraphID !== ""){
         //     currentGlobalGraph = JSON.parse($.ajax({
         //         type: "GET",
