@@ -102,6 +102,8 @@ module.exports = function (graphContainerSelector) {
         
         deletedURIClasses = new Set(),
         deletedURIProperties = new Set();
+        newURIClasses = new Set();
+        newURIProperties = new Set();
     //var prefixModule=require("./prefixRepresentationModule")(graph);
     var NodePrototypeMap = createLowerCasePrototypeMap(nodePrototypeMap);
     var PropertyPrototypeMap = createLowerCasePrototypeMap(propertyPrototypeMap);
@@ -117,6 +119,15 @@ module.exports = function (graphContainerSelector) {
     graph.deletedURIProperties = function () {
         return Array.from(deletedURIProperties);
     }
+
+    graph.newURIClasses = function () {
+        return Array.from(newURIClasses)
+    }
+
+    graph.newURIProperties = function () {
+        return Array.from(newURIProperties);
+    }
+
 
     graph.math = function () {
         return math;
@@ -3180,6 +3191,8 @@ module.exports = function (graphContainerSelector) {
         aNode.frozen(graph.paused());
         aNode.locked(graph.paused());
         aNode.enableEditing(autoEditElement);
+
+        newURIClasses.add({nodeIri: aNode.iri(), nodeIriType: aNode.iriType()});
     }
 
 
@@ -3603,6 +3616,15 @@ module.exports = function (graphContainerSelector) {
         graph.activateHoverElementsForProperties(true,aProp,false,touchDevice);
         aProp.labelObject().increasedLoopAngle=true;
         aProp.enableEditing(autoEditElement);
+        var dataDelProperty = new Object();
+        dataDelProperty.sIRI = aProp.domain().iri();
+        dataDelProperty.pIRI = aProp.iri();
+        dataDelProperty.oIRI = aProp.range().iri();
+        newURIProperties.add({property: dataDelProperty.pIRI, 
+                                subject: dataDelProperty.sIRI, 
+                                object: dataDelProperty.oIRI, 
+                                iriType: aProp.iriType()});
+
     }
 
     graph.createDataTypeProperty = function (node) {

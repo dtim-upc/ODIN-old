@@ -9,7 +9,6 @@ import edu.upc.essi.dtim.ODINBackend.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.ODINBackend.repository.LavMappingRepository;
 import edu.upc.essi.dtim.ODINBackend.repository.WrapperRepository;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.GraphOperations;
-import net.minidev.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.Optional;
@@ -25,6 +24,16 @@ public class LAVMappingService {
     private LavMappingRepository lavMappingRepository;
     @Autowired
     private GraphOperations graphOperations;
+
+    public void deleteLavMappingByGlobalGraphId(String globalGraphId) {
+        Iterable<LavMapping> lavMappingIterable = lavMappingRepository.findAllByGlobalGraphId(globalGraphId);
+
+        for (LavMapping l: lavMappingIterable) {
+            lavMappingRepository.deleteById(l.getId());
+            //Serà
+            //delete(l.getId());
+        }
+    }
 
     //Saves LavMapping to repository
     //Create sameAs relations in the datasource graph of a wrapper.
@@ -55,56 +64,36 @@ public class LAVMappingService {
         }
     }
 
-    public void updateLAVMappingMapsTo(LavMapping lavMapping){
+    public void removeLavMappingFromMongo(String lavMappingId) {
+        lavMappingRepository.deleteById(lavMappingId);
+    }
 
-        Optional<Wrapper> optionalWrapper = wrapperRepository.findById(lavMapping.getWrapperId());
-        String dsIRI = "";
-        String wIRI = "";
-        if (optionalWrapper.isPresent()) {
-            Wrapper wrapper = optionalWrapper.get();
-            wIRI = wrapper.getIri();
-            Optional<DataSource> optionalDataSource =  dataSourcesRepository.findById(wrapper.getDataSourcesId());
-            if (optionalDataSource.isPresent()) {
-                DataSource dataSource = optionalDataSource.get();
-                dsIRI = dataSource.getIri();
+    public void delete(String LAVMappingID){
+        Optional<LavMapping> optionalLavMapping = lavMappingRepository.findById(LAVMappingID);
+        if (optionalLavMapping.isPresent()) {
+            LavMapping lavMapping = optionalLavMapping.get();
+            Optional<Wrapper> optionalWrapper = wrapperRepository.findById(LAVMappingID);
+            Optional<DataSource> optionalDataSource = dataSourcesRepository.findById(LAVMappingID);
+            if (optionalWrapper.isPresent() && optionalDataSource.isPresent()) {
+                delete(lavMapping, optionalWrapper.get(), optionalDataSource.get());
             }
         }
 
-        String finalDsIri = dsIRI;
-        String finalWIri = wIRI;
-
-        //updateTriples(lavMapping.getSameAs(), lavMapping.getId(), finalWIri, finalDsIri);
-
     }
-    /**
-     * Updates feature iri in datasource, lavmapping and deletes triples from wrapper.
-     * @param features array of modified features.
-     * @param LAVMappingID id of the LAVMapping to be updated in mongodb.
-     * @param wrapperIRI IRI of the wrapper to be deleted in jena.
-     * @param datasourceIRI IRI of the datasource to be updated in jena.
-     **/
-    public void updateTriples(JSONArray features, String LAVMappingID, String wrapperIRI, String datasourceIRI){
 
-        for (Object selectedElement : features) {
-            /*JSONObject objSelectedElement = (JSONObject) selectedElement;
-            String oldIRI = objSelectedElement.getAsString("featureOld");
-            String newIRI = objSelectedElement.getAsString("featureNew");
-
-            updateLavMappingSameAsFeature(LAVMappingID,oldIRI,newIRI);
-            graphOperations.updateResourceNodeIRI(datasourceIRI,oldIRI,newIRI);*/
+    public void delete(LavMapping lavMapping, Wrapper wrapper, DataSource dataSource){
+        // Remove the sameAs edges
+        for (SameAs el : lavMapping.getSameAs()) {
+            String feature = el.getFeature();
+            String attribute = el.getAttribute();
+            graphOperations.deleteTriples(dataSource.getIri(),
+                    attribute, Namespaces.owl.val() + "sameAs",feature);
         }
 
-        graphOperations.deleteAllTriples(wrapperIRI);
-        //deleteGraphicalSubgraph(LAVMappingID);
-    }
+        //Remove the named graph of that mapping
+        graphOperations.removeGraph(wrapper.getIri());
 
-    /**
-     * Updates the feature IRI from sameAs array of a LavMapping collection in MongoDB
-     * @param LAVMappingID lavmapping id to be updated.
-     * @param oldIRI actual iri.
-     * @param newIRI new iri.
-     */
-    public void updateLavMappingSameAsFeature(String LAVMappingID, String oldIRI, String newIRI){
-        //lavMappingRepository.update(LAVMappingMongo.FIELD_sameAsFeature.val(),oldIRI,LAVMappingMongo.FIELD_sameAsFeatureUpdate.val(), newIRI);
+        //Remove the associated metadata from MongoDB
+        removeLavMappingFromMongo(lavMapping.getId());
     }
 }

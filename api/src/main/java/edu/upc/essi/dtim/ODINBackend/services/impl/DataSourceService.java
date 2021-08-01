@@ -20,23 +20,27 @@ public class DataSourceService {
     private DataSourcesRepository repository;
     @Autowired
     private WrapperRepository wrapperRepository;
+    @Autowired
+    private LAVMappingService lavMappingService;
     
     public void delete(String id) {
+        Optional<DataSource> optionalDataSource = repository.findById(id);
+
         //First Step: Find wrappers with _dataSourceId == id and delete them
-        //Second Step: Delete the data source with _id = id
-        Optional<DataSource> optionalDataSources = repository.findById(id);
-
         Iterable<Wrapper> wrapperIterable = wrapperRepository.findAllByDataSourcesId(id);
-        for (Wrapper w: wrapperIterable)
+        for (Wrapper w: wrapperIterable) {
+            graphOperations.removeGraph(w.getIri());
+            if (!(w.getLavMappingId().equals("") || w.getLavMappingId() == null)) {
+                lavMappingService.removeLavMappingFromMongo(w.getLavMappingId());
+            }
             wrapperRepository.deleteById(w.getId());
-        repository.deleteById(id);
-        optionalDataSources.ifPresent(dataSources ->
-                graphOperations.deleteTriples(dataSources.getIri(),
-                                                dataSources.getIri(),
-                                        Namespaces.rdf.val() + "type",
-                                                SourceGraph.DATA_SOURCE.val())
-        );
+        }
 
+        //Second Step: Delete the data source with _id = id
+        optionalDataSource.ifPresent(dataSource ->
+                graphOperations.removeGraph(dataSource.getIri())
+        );
+        repository.deleteById(id);
     }
 
 }

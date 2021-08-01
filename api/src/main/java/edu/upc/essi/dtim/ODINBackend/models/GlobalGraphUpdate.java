@@ -14,5 +14,7 @@ public class GlobalGraphUpdate {
     String ttl;
     @JsonProperty("deleted")
     Deleted deleted;
+    @JsonProperty("new")
+    Added added;
 }
 

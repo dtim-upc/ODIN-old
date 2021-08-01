@@ -3,8 +3,10 @@ package edu.upc.essi.dtim.ODINBackend.controller.manualBootstraping;
 import edu.upc.essi.dtim.ODINBackend.models.GlobalGraph;
 import edu.upc.essi.dtim.ODINBackend.models.GlobalGraphUpdate;
 import edu.upc.essi.dtim.ODINBackend.models.JenaPropertyTriplet;
+import edu.upc.essi.dtim.ODINBackend.models.NodeIRI;
 import edu.upc.essi.dtim.ODINBackend.repository.GlobalGraphRespository;
 import edu.upc.essi.dtim.ODINBackend.services.impl.GlobalGraphService;
+import edu.upc.essi.dtim.ODINBackend.services.impl.LAVMappingService;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.GraphOperations;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.query.ResultSetFormatter;
@@ -19,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static edu.upc.essi.dtim.ODINBackend.config.Namespaces.rdf;
+
 @RestController
 @RequestMapping("/globalGraph")
 public class GlobalGraphController {
@@ -30,6 +34,8 @@ public class GlobalGraphController {
     private GraphOperations graphOperations;
     @Autowired
     private GlobalGraphService globalGraphService;
+    @Autowired
+    private LAVMappingService lavMappingService;
 
 
     @Autowired
@@ -118,7 +124,9 @@ public class GlobalGraphController {
         Optional<GlobalGraph> optionalGlobalGraph = repository.findById(id);
 
         if (optionalGlobalGraph.isPresent()) {
+            //Global Graph stored at Mongodb
             GlobalGraph _globalGraph = optionalGlobalGraph.get();
+            //Global Graph Body
             GlobalGraph globalGraph = data.getGlobalGraph();
             boolean first_save = _globalGraph.getGraphicalGraph().equals("");
             if (!globalGraph.getName().equals(""))
@@ -133,11 +141,13 @@ public class GlobalGraphController {
                 LOGGER.info( "[\"@PutMapping(\"/{id}\")\"] Modified" );
                 // The field deleted should contain keys “classes” and “properties”.
                 System.out.println("Modified equals true");
-                //Overwritten field (Temporal)
+                //Saves ttl to MongoDB
                 _globalGraph.setGraphicalGraph(globalGraph.getGraphicalGraph());
                 if (first_save) {
+                    //Saves TTL to JENA
                     graphOperations.loadTTL(globalGraph.getNamedGraph(), data.getTtl());
                 } else {
+                    //----------------- Not first save --------------------
                     //Delete Nodes
                     for (String subject : data.getDeleted().getClasses()) {
                         globalGraphService.deleteNode(globalGraph.getNamedGraph(), subject);
@@ -148,6 +158,15 @@ public class GlobalGraphController {
                                                             jenaPropertyTriplet.getSubject(),
                                                             jenaPropertyTriplet.getProperty(),
                                                             jenaPropertyTriplet.getObject());
+                    }
+                    //New Nodes
+                    for (NodeIRI nodeIRI : data.getAdded().getClasses()) {
+                        graphOperations.addTriple(globalGraph.getNamedGraph(), nodeIRI.getNodeIri(), rdf.val() + "type", nodeIRI.getNodeIriType());
+                    }
+                    //New Propeties
+                    for (JenaPropertyTriplet jenaPropertyTriplet: data.getAdded().getProperties()) {
+                        graphOperations.addTriple(globalGraph.getNamedGraph(), jenaPropertyTriplet.getProperty(), rdf.val() + "type", jenaPropertyTriplet.getIriType());
+                        graphOperations.addTriple(globalGraph.getNamedGraph(), jenaPropertyTriplet.getSubject(), jenaPropertyTriplet.getProperty(), jenaPropertyTriplet.getObject());
                     }
                 }
 
@@ -197,7 +216,14 @@ public class GlobalGraphController {
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteGlobalGraph(@PathVariable("id") String id) {
         try {
-            repository.deleteById(id);
+            //1. Delete LavMappings
+            //2. Delete From Jena
+            //3. Delete at Mongodb
+            Optional<GlobalGraph> optionalGlobalGraph = repository.findById(id);
+            if (optionalGlobalGraph.isPresent()) {
+                lavMappingService.deleteLavMappingByGlobalGraphId(id);
+                repository.deleteById(id);
+            }
             LOGGER.info(LOG_MSG, "deleteGlobalGraph", id, HttpStatus.NO_CONTENT.toString() );
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {

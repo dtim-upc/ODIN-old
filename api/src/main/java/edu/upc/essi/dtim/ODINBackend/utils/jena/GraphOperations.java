@@ -52,7 +52,12 @@ public class GraphOperations {
             Model graph = ds.getNamedModel(namedGraph);
             graph.read(new ByteArrayInputStream(contentTTL.getBytes()), null, "TTL");
         });
+    }
 
+    public void removeGraph(String iri){
+        Txn.executeWrite(ds, ()-> {
+            ds.removeNamedModel(iri);
+        });
     }
 
     public void addTriple(String namedGraph, String s, String p, String o) {
@@ -78,6 +83,13 @@ public class GraphOperations {
             graph.remove(new ResourceImpl(subjectIRI), new PropertyImpl(predicateIRI), new ResourceImpl(objectIRI));
         });
     }
+    public void deleteAllTriples(String namedGraph){
+        Txn.executeWrite(ds, ()-> {
+            Model graph = ds.getNamedModel(namedGraph);
+            graph.removeAll();
+        });
+    }
+
     /*
     * QUERIES
     * */

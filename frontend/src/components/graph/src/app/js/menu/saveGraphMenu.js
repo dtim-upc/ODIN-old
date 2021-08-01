@@ -70,6 +70,7 @@ module.exports = function (graph) {
         console.log("loadingModule.currentGlobalGraph()")
         console.log(loadingModule.currentGlobalGraph());
         console.log("DEBUG")
+
         console.log(graph.prepareChangesObject());
         console.log(typeof(exportMenu.exportTurtleText()));
         console.log(graph.deletedURIProperties())
@@ -85,6 +86,10 @@ module.exports = function (graph) {
               classes: graph.deletedURIClasses(),
               properties: graph.deletedURIProperties(),
             },
+            new: {
+                classes: graph.newURIClasses(),
+                properties: graph.newURIProperties(),
+            }
         };
         data.globalGraph.graphicalGraph = exportMenu.getJson();
         console.log({data})

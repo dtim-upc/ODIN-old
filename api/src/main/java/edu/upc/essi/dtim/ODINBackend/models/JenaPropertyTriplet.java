@@ -13,4 +13,6 @@ public class JenaPropertyTriplet {
     String subject;
     @JsonProperty("property")
     String property;
+    @JsonProperty("iriType")
+    String iriType;
 }

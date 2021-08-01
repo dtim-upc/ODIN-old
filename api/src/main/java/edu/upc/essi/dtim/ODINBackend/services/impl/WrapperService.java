@@ -55,8 +55,8 @@ public class WrapperService {
     }
 
     public void delete(String id) {
-        //Delete from Jena
         Optional<Wrapper> optionalWrapper = wrapperRepository.findById(id);
+/*
         if (optionalWrapper.isPresent()) {
             Wrapper w = optionalWrapper.get();
             DataSource ds = new DataSource();
@@ -67,6 +67,14 @@ public class WrapperService {
             delete(w, ds);
 
         }
+*/
+
+        //Delete from Jena
+        if (optionalWrapper.isPresent()) {
+            Wrapper w = optionalWrapper.get();
+            graphOperations.removeGraph(w.getIri());
+        }
+        //Delete from Mongo
     }
 
     public void delete(Wrapper w, DataSource ds) {
