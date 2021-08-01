@@ -216,7 +216,7 @@
           <q-chip
             text-color="white"
             color="accent"
-            v-if="props.row.graphicalSubgraph === ''"
+            v-if="props.row.globalQuery === null"
           >
             missing global query</q-chip
           >
@@ -368,10 +368,8 @@ export default defineComponent({
       this.newLavMapping.globalGraphId = this.globalGraphsContent.filter(
         (e) => e.name === this.selectedGlobalGraph
       )[0].id;
-      console.log(this.newLavMapping);
       odinApi.post("/lavMapping", this.newLavMapping).then((response) => {
         if (response.status == 201) {
-          console.log(response.data);
           response.data.wrapper = this.wrapper.filter(
             (elem) => elem.id === response.data.wrapperId
           )[0].name;
@@ -403,7 +401,6 @@ export default defineComponent({
         .get("/globalGraph")
         .then((response) => {
           if (response.status == 200) {
-            console.log(response.data);
             this.globalGraphsContent = response.data;
             for (const elem of response.data) {
               this.globalGraphsLabels.push(elem.name);
@@ -413,15 +410,12 @@ export default defineComponent({
         .then(() =>
           odinApi.get("/wrapper").then((response) => {
             if (response.status == 200) {
-              console.log("WRAPPERS");
-              console.log(response.data);
               this.wrapper = response.data;
             }
           })
         )
         .then(() =>
           odinApi.get("/lavMapping").then((response) => {
-            console.log(response.status);
             if (response.status == 200 || response.status == 204) {
               if (response.data) {
                 response.data = response.data.map(
@@ -445,10 +439,12 @@ export default defineComponent({
                       id: e.id,
                       wrapperId: e.wrapperId,
                       globalGraphId: e.globalGraphId,
-                      saveAs: e.saveAs,
-                      graphicalSubgraph: e.graphicalSubgraph,
+                      sameAs: e.sameAs,
+                      globalQuery: e.globalQuery,
                     })
                 );
+                console.log("ROWS:")
+                console.log(response.data)
                 this.rows = response.data;
               } else {
                 this.rows = [];
@@ -458,15 +454,12 @@ export default defineComponent({
         );
     },
     getFeaturesFromGlobalGraph() {
-      console.log("THIS:");
-      console.log(this.selectedFeatures);
       const globalGraph = this.globalGraphsContent.find(
         (e) => e.name === this.selectedGlobalGraph
       );
       if (globalGraph) {
         if (globalGraph.namedGraph === this.features.namedGraph)
           return this.features.featuresArr;
-        console.log("GET Request");
         odinApi
           .get(`/globalGraph/${globalGraph.id}/featuresConcepts`)
           .then((response) => {
@@ -483,7 +476,6 @@ export default defineComponent({
         : [];
     },
     deleteRow(props: any) {
-      console.log(props);
       odinApi.delete(`/lavMapping/${props.row.id}`).then((response) => {
         if (response.status == 204) {
           this.$q.notify({
@@ -506,7 +498,6 @@ export default defineComponent({
       });
     },
     editRow(props: any) {
-      console.log(props);
       this.show_edit_dialog = true;
       const row = props.row;
       this.newLavMapping.id = row.id;
