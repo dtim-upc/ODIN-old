@@ -96,4 +96,40 @@ public class LAVMappingService {
         //Remove the associated metadata from MongoDB
         removeLavMappingFromMongo(lavMapping.getId());
     }
+
+    public void updateLAVMappingMapsTo(SameAs[] sameAsArr, LavMapping lavMapping) {
+        Optional<Wrapper> optionalWrapper = wrapperRepository.findById(lavMapping.getWrapperId());
+        if (optionalWrapper.isPresent()) {
+            Wrapper wrapper = optionalWrapper.get();
+            Optional<DataSource> optionalDataSource = dataSourcesRepository.findById(wrapper.getDataSourcesId());
+            if (optionalDataSource.isPresent()) {
+                DataSource dataSource = optionalDataSource.get();
+                updateTriples(sameAsArr, lavMapping.getId(),
+                        wrapper.getIri(), dataSource.getIri());
+            }
+        }
+    }
+    /**
+     * Updates feature iri in datasource, lavmapping and deletes triples from wrapper.
+     * @param features array of modified features.
+     * @param LAVMappingID id of the LAVMapping to be updated in mongodb.
+     * @param wrapperIRI IRI of the wrapper to be deleted in jena.
+     * @param datasourceIRI IRI of the datasource to be updated in jena.
+     */
+    public void updateTriples(SameAs[] features, String LAVMappingID, String wrapperIRI, String datasourceIRI) {
+
+        return;
+        /*
+        for (Object selectedElement : features) {
+            JSONObject objSelectedElement = (JSONObject) selectedElement;
+            String oldIRI = objSelectedElement.getAsString("featureOld");
+            String newIRI = objSelectedElement.getAsString("featureNew");
+
+            updateLavMappingSameAsFeature(LAVMappingID,oldIRI,newIRI);
+            graphOperations.updateResourceNodeIRI(datasourceIRI,oldIRI,newIRI);
+        }
+        graphOperations.deleteAllTriples(wrapperIRI);
+        deleteGraphicalSubgraph(LAVMappingID);
+        */
+    }
 }

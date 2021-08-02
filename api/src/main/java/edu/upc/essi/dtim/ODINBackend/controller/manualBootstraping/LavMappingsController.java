@@ -3,6 +3,7 @@ package edu.upc.essi.dtim.ODINBackend.controller.manualBootstraping;
 import edu.upc.essi.dtim.ODINBackend.controller.AdminController;
 import edu.upc.essi.dtim.ODINBackend.models.DataSource;
 import edu.upc.essi.dtim.ODINBackend.models.LavMapping;
+import edu.upc.essi.dtim.ODINBackend.models.SameAs;
 import edu.upc.essi.dtim.ODINBackend.repository.LavMappingRepository;
 import edu.upc.essi.dtim.ODINBackend.models.LavMappingSubgraph;
 
@@ -65,19 +66,22 @@ public class LavMappingsController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @PutMapping("id")
-    public ResponseEntity<HttpStatus> editDataSources(@PathVariable("id") String id, @RequestBody LavMapping lavMapping) {
+    @PutMapping("/{id}")
+    public ResponseEntity<HttpStatus> editLavMapping(@PathVariable("id") String id, @RequestBody SameAs[] sameAsArr) {
         try {
+            for (SameAs sameAs: sameAsArr) {
+                System.out.println(sameAs.toString());
+            }
             Optional<LavMapping> optionalLavMapping = repository.findById(id);
             if (optionalLavMapping.isPresent()) {
-                LavMapping lm  = optionalLavMapping.get();
-                lm.setSameAs(lm.getSameAs());
-                lm.setGlobalQuery(lm.getGlobalQuery());
-                lm.setWrapperId(lm.getWrapperId());
-                lm.setGlobalGraphId(lm.getGlobalGraphId());
-                repository.save(lm);
+                LavMapping lavMapping = optionalLavMapping.get();
+                //Update Jena
+                //lavMappingService.updateLAVMappingMapsTo(sameAsArr, lavMapping);
+                //Update Mongo
+                lavMapping.setSameAs(sameAsArr);
+                repository.save(lavMapping);
             }
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

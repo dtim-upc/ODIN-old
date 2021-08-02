@@ -11,4 +11,12 @@ public class SameAs {
     private String attribute;
     @JsonProperty("feature")
     private String feature;
+
+    @Override
+    public String toString() {
+        return "SameAs{" +
+                "attribute='" + attribute + '\'' +
+                ", feature='" + feature + '\'' +
+                '}';
+    }
 }
