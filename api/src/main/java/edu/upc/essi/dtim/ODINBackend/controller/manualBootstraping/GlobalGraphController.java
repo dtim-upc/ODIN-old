@@ -221,7 +221,9 @@ public class GlobalGraphController {
             //3. Delete at Mongodb
             Optional<GlobalGraph> optionalGlobalGraph = repository.findById(id);
             if (optionalGlobalGraph.isPresent()) {
+                GlobalGraph globalGraph = optionalGlobalGraph.get();
                 lavMappingService.deleteLavMappingByGlobalGraphId(id);
+                graphOperations.removeGraph(globalGraph.getNamedGraph());
                 repository.deleteById(id);
             }
             LOGGER.info(LOG_MSG, "deleteGlobalGraph", id, HttpStatus.NO_CONTENT.toString() );

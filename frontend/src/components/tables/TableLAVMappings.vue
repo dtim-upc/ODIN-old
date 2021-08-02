@@ -92,15 +92,14 @@
             </q-card-section>
 
             <q-card-section>
-              <q-form @submit="onSubmitEdit" @reset="onReset" class="q-gutter-md">
+              <q-form
+                @submit="onSubmitEdit"
+                @reset="onReset"
+                class="q-gutter-md"
+              >
                 <div class="row">
                   <div class="col">
-                    <q-select
-                      v-model="selectedWrapper"
-                      :options="wrapper ? wrapper.map((e) => e.name) : []"
-                      label="Wrapper"
-                    />
-                    <h6>Attributes</h6>
+                    <h6>{{selectedWrapper}}</h6>
                     <q-field
                       outlined
                       v-for="at in getAttributes()"
@@ -118,16 +117,7 @@
                     </q-field>
                   </div>
                   <div class="col">
-                    <q-select
-                      v-model="selectedGlobalGraph"
-                      :options="
-                        globalGraphsContent
-                          ? globalGraphsContent.map((e) => e.name)
-                          : []
-                      "
-                      label="Global Graph"
-                    />
-                    <h6>Features</h6>
+                    <h6>{{selectedGlobalGraph}}</h6>
                     <q-select
                       v-model="selectedFeatures[elem]"
                       v-for="elem in Array.from(
@@ -174,14 +164,6 @@
             round
             flat
             color="grey"
-            @click="editRow(props)"
-            icon="edit"
-          ></q-btn>
-          <q-btn
-            dense
-            round
-            flat
-            color="grey"
             @click="deleteRow(props)"
             icon="delete"
           ></q-btn>
@@ -194,7 +176,7 @@
             round
             flat
             color="grey"
-            :to="'/LAVMappings/subgraphselect/' + props.row.globalGraphId + '/' + props.row.id"
+            @click="editRow(props)"
             icon="search"
           ></q-btn>
         </q-td>
@@ -206,7 +188,12 @@
             round
             flat
             color="grey"
-            :to="'/LAVMappings/subgraphselect/' + props.row.globalGraphId + '/' + props.row.id"
+            :to="
+              '/LAVMappings/subgraphselect/' +
+              props.row.globalGraphId +
+              '/' +
+              props.row.id
+            "
             icon="search"
           ></q-btn>
         </q-td>
@@ -240,13 +227,7 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { odinApi } from "boot/axios";
-import {
-  DataSources,
-  GlobalGraph,
-  LavMapping,
-  Wrapper,
-} from "components/models";
-import { QTd } from "quasar";
+import { GlobalGraph, LavMapping, Wrapper } from "components/models";
 export default defineComponent({
   name: "TableDataSources",
   // props:{
@@ -296,7 +277,7 @@ export default defineComponent({
       },
       {
         name: "actions",
-        label: "actions",
+        label: "delete",
         align: "center",
         field: "actions",
         sortable: false,
@@ -310,6 +291,7 @@ export default defineComponent({
     const show_dialog = false;
     const selectedGlobalGraph: string = "";
     const selectedWrapper: string = "";
+    const selectedLavMappingId: string = "";
     const newLavMapping = {
       id: "",
       wrapperId: "",
@@ -326,7 +308,7 @@ export default defineComponent({
       namedGraph: "",
       featuresArr: [],
     };
-    const selectedFeatures = [];
+    const selectedFeatures : string[] = [];
     const show_edit_dialog: boolean = false;
 
     return {
@@ -343,6 +325,7 @@ export default defineComponent({
       features,
       selectedFeatures,
       show_edit_dialog,
+      selectedLavMappingId,
     };
   },
   mounted() {
@@ -443,8 +426,8 @@ export default defineComponent({
                       globalQuery: e.globalQuery,
                     })
                 );
-                console.log("ROWS:")
-                console.log(response.data)
+                console.log("ROWS:");
+                console.log(response.data);
                 this.rows = response.data;
               } else {
                 this.rows = [];
@@ -498,22 +481,65 @@ export default defineComponent({
       });
     },
     editRow(props: any) {
-      this.show_edit_dialog = true;
+      console.log("editRow");
       const row = props.row;
-      this.newLavMapping.id = row.id;
-      this.newLavMapping.wrapperId = row.wrapperId;
-      this.newLavMapping.globalGraphId = row.globalGraphId;
-      this.newLavMapping.sameAs = row.sameAs;
-      this.newLavMapping.graphicalSubgraph = row.graphicalSubgraph;
+      console.log({ row });
+      this.selectedWrapper = row.wrapper;
+      this.selectedGlobalGraph = row.globalGraph;
+      this.selectedLavMappingId = row.id;
+      odinApi
+        .get(`/globalGraph/${row.globalGraphId}/featuresConcepts`)
+        .then((response) => {
+          console.log("FEATURES");
+          console.log(response.data);
+          console.log("ATTRIBUTES");
+          console.log(this.getAttributes())
+          this.selectedFeatures = [];
+          const sameAs = row.sameAs;
+          for (var i = 0; i < sameAs.length; ++i) {
+            console.log(sameAs[i].feature);
+            this.selectedFeatures[i] = sameAs[i].feature;
+          }
+          this.show_edit_dialog = true;          
+        });
+      //selectedFeatures
+      //Edit Struct; edit_data
+      /*
+      {
+
+      }
+      */
     },
     onSubmitEdit(props: any) {
       this.show_edit_dialog = false;
-      odinApi.put(`/lavMapping/${this.newLavMapping.id}`, this.newLavMapping).then((response) => {
-        if (response.status === 201 || response.status === 204) {
-          console.log("Editing");
-        }
-      });
-    }
+      console.log(this.selectedLavMappingId);
+      console.log(this.selectedFeatures);
+      const attibs = this.getAttributes();
+      var sameAsArr = [{
+          attribute: "",
+          feature: "",
+        }];
+      sameAsArr.pop();
+
+      var i = 0;
+      for (const at of attibs) {
+        const obj = {
+          attribute: at,
+          feature: this.selectedFeatures[i],
+        };
+        sameAsArr.push(obj);
+        i++;
+      }
+      console.log({sameAsArr})
+      odinApi
+        .put(`/lavMapping/${this.selectedLavMappingId}`, sameAsArr)
+        .then((response) => {
+          console.log({response});
+          if (response.status === 201 || response.status === 204) {
+            console.log("Editing");
+          }
+        });
+    },
   },
 });
 </script>

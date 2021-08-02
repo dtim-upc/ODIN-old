@@ -4,6 +4,7 @@ import edu.upc.essi.dtim.ODINBackend.config.Namespaces;
 import edu.upc.essi.dtim.ODINBackend.config.SourceGraph;
 import edu.upc.essi.dtim.ODINBackend.models.DataSource;
 import edu.upc.essi.dtim.ODINBackend.models.Wrapper;
+import edu.upc.essi.dtim.ODINBackend.repository.LavMappingRepository;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.GraphOperations;
 import edu.upc.essi.dtim.ODINBackend.models.Attribute;
 import edu.upc.essi.dtim.ODINBackend.repository.DataSourcesRepository;
@@ -21,6 +22,9 @@ public class WrapperService {
     private DataSourcesRepository dataSourcesRepository;
     @Autowired
     private WrapperRepository wrapperRepository;
+
+    @Autowired
+    private LavMappingRepository lavMappingRepository;
     /**
     @pre:
       INPUT: Wrapper name, dataSourceId, Array of strings of the names of the attributes.
@@ -69,12 +73,16 @@ public class WrapperService {
         }
 */
 
-        //Delete from Jena
+
         if (optionalWrapper.isPresent()) {
             Wrapper w = optionalWrapper.get();
+            //Delete from Jena
             graphOperations.removeGraph(w.getIri());
+            //Delete all lavMappings with lavMappingId
+            lavMappingRepository.deleteById(w.getLavMappingId());
         }
         //Delete from Mongo
+        wrapperRepository.deleteById(id);
     }
 
     public void delete(Wrapper w, DataSource ds) {
