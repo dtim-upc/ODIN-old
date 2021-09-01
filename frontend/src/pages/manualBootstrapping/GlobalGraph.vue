@@ -5,7 +5,7 @@
 </template>
 
 
-<script lang="ts">
+<script >
 
 import TableGlobalGraph from 'components/tables/TableGlobalGraph.vue';
 

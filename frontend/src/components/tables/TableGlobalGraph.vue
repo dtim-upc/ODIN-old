@@ -18,11 +18,7 @@
             @click="show_dialog = true"
           />
         </div>
-        <q-input dense debounce="400" color="primary" v-model="search">
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
+
 
         <q-dialog v-model="show_dialog" persistent>
           <q-card style="width: 700px; max-width: 80vw">
@@ -119,13 +115,12 @@
       </template>
 
       <template v-slot:top-right="props">
-        <q-btn
-          flat
-          round
-          dense
-          :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
-          @click="props.toggleFullscreen"
-        >
+        <q-input outlined dense debounce="400" color="primary" v-model="search">
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
+        <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"  @click="props.toggleFullscreen">
           <q-tooltip :disable="$q.platform.is.mobile" v-close-popup>
             {{ props.inFullscreen ? "Exit Fullscreen" : "Toggle Fullscreen" }}
           </q-tooltip>
@@ -199,11 +194,10 @@
 
 
 
-<script lang="ts">
+<script >
 import { defineComponent } from "vue";
 import { odinApi } from "boot/axios";
-import { GlobalGraph } from "components/models";
-import { properties } from "../graph/src/webvowl/js/entry";
+// import { properties } from "../graph/src/webvowl/js/entry";
 export default defineComponent({
   name: "TableGlobalGraph",
   // props:{
@@ -253,10 +247,10 @@ export default defineComponent({
         sortable: false,
       },
     ];
-    const rows: GlobalGraph[] = [];
+    const rows = [];
     const title = "Global Graphs";
     const show_dialog = false;
-    const show_edit_dialog: boolean = false;
+    const show_edit_dialog= false;
     const newGlobalGraph = {
       id: "",
       name: "",
@@ -284,7 +278,7 @@ export default defineComponent({
     // namedGraph:string;
     // graphicalGraph:string;
     // namespace:string;
-    editRow(props: any) {
+    editRow(props) {
       this.show_edit_dialog = true;
       const row = props.row;
       this.newGlobalGraph.id = row.id;
@@ -382,7 +376,7 @@ export default defineComponent({
       });
     },
 
-    deleteRow(props: any) {
+    deleteRow(props) {
       odinApi.delete(`/globalGraph/${props.row.id}`).then((response) => {
         if (response.status == 204 || response.status == 200) {
           console.log(response);

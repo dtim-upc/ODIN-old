@@ -18,11 +18,7 @@
             @click="show_dialog = true"
           />
         </div>
-        <q-input dense debounce="400" color="primary" v-model="search">
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
+
 
         <q-dialog v-model="show_dialog" persistent>
           <q-card style="width: 700px; max-width: 80vw">
@@ -155,13 +151,12 @@
       </template>
 
       <template v-slot:top-right="props">
-        <q-btn
-          flat
-          round
-          dense
-          :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
-          @click="props.toggleFullscreen"
-        >
+        <q-input outlined dense debounce="400" color="primary" v-model="search">
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
+        <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'" @click="props.toggleFullscreen">
           <q-tooltip :disable="$q.platform.is.mobile" v-close-popup>
             {{ props.inFullscreen ? "Exit Fullscreen" : "Toggle Fullscreen" }}
           </q-tooltip>
@@ -223,10 +218,10 @@
 
 
 
-<script lang="ts">
+<script >
 import { defineComponent } from "vue";
 import { odinApi } from "boot/axios";
-import { Wrapper, Attribute } from "components/models";
+
 export default defineComponent({
   name: "TableDataSources",
   // props:{
@@ -269,21 +264,21 @@ export default defineComponent({
         sortable: false,
       },
     ];
-    const rows: Wrapper[] = [];
+    const rows = [];
     const title = "Wrappers";
     const show_dialog = false;
     const show_edit_dialog = false;
     const newWrapper = {
       id: "",
       name: "",
-      attributes: Array<Attribute>(),
+      attributes: [],
       dataSourcesId: "",
       dataSourcesLabel: "",
     };
-    const dataSources: { label: string; value: string }[] = [];
-    const attrib: string = "";
-    const currentInferredDataSourceId: string = "";
-    const inferring_schema: boolean = false;
+    const dataSources = [];
+    const attrib = "";
+    const currentInferredDataSourceId = "";
+    const inferring_schema = false;
 
     return {
       columns,
@@ -303,7 +298,7 @@ export default defineComponent({
     this.retrieveData();
   },
   methods: {
-    editRow(props: any) {
+    editRow(props) {
       this.show_edit_dialog = true;
       const row = props.row;
       this.newWrapper.id = row.id;
@@ -312,7 +307,7 @@ export default defineComponent({
       this.newWrapper.dataSourcesId = row.dataSourcesId;
       this.newWrapper.dataSourcesLabel = row.dataSourcesLabel;
     },
-    deleteRow(props: any) {
+    deleteRow(props) {
       odinApi.delete(`/wrapper/${props.row.id}`).then((response) => {
         if (response.status == 204) {
           this.$q.notify({
@@ -382,7 +377,7 @@ export default defineComponent({
               if (e.id === this.newWrapper.id) {
                 e.id = this.newWrapper.id;
                 e.name = this.newWrapper.name;
-                const aux: [Attribute] = [{ isID: false, name: "" }];
+                const aux = [{ isID: false, name: "" }];
                 aux.pop();
                 for (const a of this.newWrapper.attributes) {
                   aux.push(a);
@@ -440,7 +435,7 @@ export default defineComponent({
         }
       });
     },
-    getDataSources(data: any) {
+    getDataSources(data) {
       odinApi.get("/dataSource").then((response) => {
         if (response.status == 200) {
           for (const elem of response.data) {
@@ -454,9 +449,9 @@ export default defineComponent({
         }
       });
     },
-    getDataSourcesLabels(ds: { label: string; value: string }[], data: any) {
+    getDataSourcesLabels(ds, data) {
       this.rows = data.map(
-        (elem: { [x: string]: string; dataSourcesId: string }) => {
+        (elem) => {
           if (elem.dataSourcesId) {
             const index = ds.map((e) => e.value).indexOf(elem.dataSourcesId);
             if (index !== -1) {
@@ -480,7 +475,7 @@ export default defineComponent({
         this.newWrapper.attributes.push({ isID: false, name: this.attrib });
       this.attrib = "";
     },
-    removeAttrib(att: Attribute) {
+    removeAttrib(att) {
       this.newWrapper.attributes = this.newWrapper.attributes
         .map((e) => e)
         .filter((e) => e !== att);

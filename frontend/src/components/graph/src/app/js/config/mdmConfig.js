@@ -4,7 +4,7 @@ module.exports = function () {
             editorMode: "true",
             selectSG: "false",
             OMQ_mode: "false",
-            bdi: "false",
+            source_graph: "false",
             bdi_manualAl: "false",
             testIncDI: "false"
         },
@@ -12,7 +12,7 @@ module.exports = function () {
             editorMode: "false",
             selectSG: "true",
             OMQ_mode: "false",
-            bdi: "false",
+            source_graph: "false",
             bdi_manualAl: "false",
             testIncDI: "false"
         },
@@ -20,12 +20,12 @@ module.exports = function () {
             editorMode: "false",
             selectSG: "false",
             OMQ_mode: "true",
-            bdi: "false",
+            source_graph: "false",
             bdi_manualAl: "false",
             testIncDI: "false"
         },
-        bdi_visualization = {
-            bdi: "true",
+        source_graph = { //bdi_visualization
+            source_graph: "true",
             editorMode: "false",
             selectSG: "false",
             OMQ_mode: "false",
@@ -33,14 +33,14 @@ module.exports = function () {
             testIncDI: "false"
         },
         bdi_manual_alignments = {
-            bdi: "false",
+            source_graph: "false",
             editorMode: "false",
             selectSG: "false",
             OMQ_mode: "false",
             bdi_manualAl: "true"
         },
         test_visualization = { //test for incremental algorithm
-            bdi: "false",
+            source_graph: "false",
             editorMode: "false",
             selectSG: "false",
             OMQ_mode: "false",
@@ -51,7 +51,7 @@ module.exports = function () {
             editorMode: "false",
             selectSG: "false",
             OMQ_mode: "false",
-            bdi: "false",
+            source_graph: "false",
             bdi_manualAl: "false",
             testIncDI: "false"
         };
@@ -64,8 +64,8 @@ module.exports = function () {
                 return global_Graph_Edit;
             case "omq":
                 return omq;
-            case "bdi_visualization":
-                return bdi_visualization;
+            case "source_graph":
+                return source_graph;
             case "bdi_manual_alignments":
                 return bdi_manual_alignments;
             case "test_visualization":
@@ -88,8 +88,8 @@ module.exports = function () {
     config.omq = function () {
         return omq;
     };
-    config.bdi_visualization = function () {
-        return bdi_visualization;
+    config.source_graph = function () {
+        return source_graph;
     };
     config.bdi_manual_alignments = function () {
         return bdi_manual_alignments;

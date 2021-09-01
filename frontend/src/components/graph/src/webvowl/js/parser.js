@@ -325,6 +325,7 @@ module.exports = function (graph) {
 						property.attributes(deduplicatedAttributes.values());
 					}
 					combinations.push(property);
+					console.log("P IS: "+ property.label())
 				} else {
 					console.error("Unknown element type: " + element.type);
 				}

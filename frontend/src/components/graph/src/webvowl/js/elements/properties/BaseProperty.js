@@ -206,10 +206,14 @@ module.exports = (function () {
 				info.iri = that.iri();
 				var url = window.location.href;
 				info.id = url.substring(url.lastIndexOf("=") + 1, url.length);
-				info.type = "objectProperty";
+				info.type = "object property";
 				info.isSelected = that.focused();
-				if(that.domain().baseIri() === "http://www.w3.org/2001/XMLSchema" || that.range().baseIri() === "http://www.w3.org/2001/XMLSchema")
-					info.type = "dataProperty";
+				if(that.domain().baseIri() === "http://www.w3.org/2001/XMLSchema/" || that.range().baseIri() === "http://www.w3.org/2001/XMLSchema/")
+					info.type = "datatype property";
+        info.baseIri = that.baseIri();
+        info.label = that.label();
+      info.domain = that.domain().iri();
+        info.range = that.range().iri();
 				var msg = new CustomEvent('clickEle_msg', { detail:info})
 				window.parent.dispatchEvent(msg);
 			}

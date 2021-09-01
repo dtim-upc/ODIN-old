@@ -1,4 +1,11 @@
 var properties = [];
+
+properties.push(require("./implementations/integration/IntegrationDataProperty"));
+properties.push(require("./implementations/integration/IntegrationObjectProperty"));
+
+properties.push(require("./implementations/sourceGraph/Property"));
+properties.push(require("./implementations/sourceGraph/ContainerMembershipProperty"));
+
 properties.push(require("./implementations/Has_FeatureProperty"));
 properties.push(require("./implementations/Has_RelationProperty"));
 properties.push(require("./implementations/Part_OfProperty"));

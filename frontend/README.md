@@ -1,6 +1,6 @@
-# Quasar App (tm)
+# odin (odin)
 
-A Quasar Framework app
+Project description...
 
 ## Install the dependencies
 ```bash

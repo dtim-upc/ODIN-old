@@ -28,7 +28,7 @@ module.exports = function (graph) {
                 hideOMQ(false);
                 hideSelection(true);
                 saveGraphMenu.hide(true);
-            } else if (config.bdi_manualAl === "true" || config.bdi === "true") {
+            } else if (config.bdi_manualAl === "true" || config.source_graph === "true") {
                 hideOMQ(true);
                 hideSelection(true);
                 saveGraphMenu.hide(true);

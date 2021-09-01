@@ -5,7 +5,7 @@
 </template>
 
 
-<script lang="ts">
+<script >
 
 import TableDataSources from 'components/tables/TableDataSources.vue';
 

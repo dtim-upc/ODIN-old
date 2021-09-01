@@ -8,13 +8,73 @@ const odinApi = "http://localhost:8082/odin"
 const Namespaces = {
     S: "http://www.essi.upc.edu/~snadal/BDIOntology/Source/",
     G: "http://www.essi.upc.edu/~snadal/BDIOntology/Global/",
+  I: "http://www.essi.upc.edu/dtim/ontology/Global/",
     owl: "http://www.w3.org/2002/07/owl#",
-    rdf:"http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-    rdfs:"http://www.w3.org/2000/01/rdf-schema#",
+    RDF:"http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    RDFS:"http://www.w3.org/2000/01/rdf-schema#",
     dct: "http://purl.org/dc/terms/",
     dcat: "http://www.w3.org/ns/dcat#",
     sc: "http://schema.org/"
 };
+
+const SourceGraph_JSON = {
+  ContainerMembershipProperty: {
+    iri: Namespaces.RDFS+"ContainerMembershipProperty",
+    name: "RDFS:ContainerMembershipProperty",
+    gui_name: "RDFS:ContainerMembershipProperty",
+    color: "#33CCCC",
+    isID: false
+  },
+  Seq: {
+    iri: Namespaces.RDF+"Seq",
+    name: "RDF:Seq",
+    gui_name: "RDF:Seq",
+    color: "#33CCCC",
+    isID: false
+  },
+  Property:{
+      iri: Namespaces.RDF+"Property",
+      name: "RDF:Property",
+      gui_name: "RDF:Property",
+      color: "#33CCCC",
+      isID: false
+  },
+  RDF_Class:{
+      iri: Namespaces.RDFS+"Class",
+      name: "RDFS:Class",
+      gui_name: "RDFS:Class",
+      color: "#33CCCC",
+      isID: false
+  }
+
+}
+
+const Integration = {
+
+  IntegrationClass:{
+    iri: Namespaces.I+"IntegrationClass",
+    name: Namespaces.I+"IntegrationClass",
+    gui_name: "IntegrationClass",
+    color: "#33CCCC",
+    isID: false
+  },
+  IntegrationDProperty:{
+    iri: Namespaces.I+"IntegrationDProperty",
+    name: Namespaces.I+"IntegrationDProperty",
+    gui_name: "IntegrationDProperty",
+    color: "#33CCCC",
+    isID: false
+  },
+  IntegrationOProperty:{
+    iri: Namespaces.I+"IntegrationOProperty",
+    name: "IntegrationOProperty",
+    gui_name: "IntegrationOProperty",
+    color: "#33CCCC",
+    isID: false
+  }
+
+
+}
 
 const Global = {
     CONCEPT: {
@@ -86,6 +146,9 @@ const Global = {
     */
 };
 
+
+
+
 const Source = {
     EVENT: {
         iri: Namespaces.S+"Event",
@@ -98,7 +161,7 @@ const Source = {
         color: "#FECB98"
     },
     ATTRIBUTE: {
-        iri: Namespaces.rdfs+"Attribute",
+        iri: Namespaces.RDFS+"Attribute",
         name: "Attribute",
         color: "#00CCFF"
     }

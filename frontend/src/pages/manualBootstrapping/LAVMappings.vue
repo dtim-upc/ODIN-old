@@ -5,7 +5,7 @@
 </template>
 
 
-<script lang="ts">
+<script >
 
 import TableLAVMappings from 'components/tables/TableLAVMappings.vue';
 

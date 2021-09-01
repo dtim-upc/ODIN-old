@@ -8,8 +8,8 @@
   </q-page>
 </template>
 
-<script lang="ts">
-import { Todo, Meta } from "components/models";
+<script >
+
 import Webvowl from "components/graph/Webvowl.vue";
 import { defineComponent, ref } from "vue";
 

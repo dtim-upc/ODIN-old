@@ -1,9 +1,9 @@
 <template lang="html">
 
-  <iframe :src="`html/index.html?` + view + params()" 
+  <iframe :src="`html/index.html?` + view + params()"
     frameborder="0"
-    allowfullscreen class="fit" 
-    style="min-height: inherit;min-width: inherit;">
+    allowfullscreen class="fit"
+    style="min-width: inherit; min-height: inherit;">
    </iframe>
 
 </template>
@@ -44,10 +44,39 @@ export default defineComponent({
   methods: {
 
     params() {
-      if(this.id !== '') {
-        return "&id="+this.id+"&LAVMappingID="+this.LAVMappingID
+
+      console.log(this.view)
+      console.log("****")
+      switch (this.view) {
+        case "source_graph":
+          return "&dataSourceID="+this.id
+          break;
+        case "mappings_Graph_select":
+          return "&id="+this.id+"&LAVMappingID="+this.LAVMappingID
+          break;
+        case "bdi_manual_alignments":
+          return "&dataSourceID="+this.id
+          break;
+        case "global_Graph_Edit":
+          return "&id="+this.id
+        default:
+          return "";
       }
-      return ""
+      // if(this.view == "source_graph"){
+      //
+      //   if(this.id !== '') {
+      //     return "&dataSourceID="+this.id
+      //   }
+      //   return ""
+      //
+      // } else {
+      //   if(this.id !== '') {
+      //     return "&id="+this.id+"&LAVMappingID="+this.LAVMappingID
+      //   }
+      //   return ""
+      // }
+
+
     }
 
   }

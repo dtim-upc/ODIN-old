@@ -1,4 +1,11 @@
 var nodes = [];
+nodes.push(require("./implementations/integration/IntegrationClass"));
+nodes.push(require("./implementations/integration/IntegrationData"));
+nodes.push(require("./implementations/integration/IntegrationObject"));
+
+nodes.push(require("./implementations/sourceGraph/RDF_Class"));
+nodes.push(require("./implementations/sourceGraph/Seq"));
+
 nodes.push(require("./implementations/ConceptGClass"));
 nodes.push(require("./implementations/FeatureG_ID_Class"));
 nodes.push(require("./implementations/FeatureGClass"));

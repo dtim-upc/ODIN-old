@@ -224,10 +224,10 @@
 
 
 
-<script lang="ts">
+<script >
 import { defineComponent, ref } from "vue";
 import { odinApi } from "boot/axios";
-import { GlobalGraph, LavMapping, Wrapper } from "components/models";
+
 export default defineComponent({
   name: "TableDataSources",
   // props:{
@@ -283,15 +283,15 @@ export default defineComponent({
         sortable: false,
       },
     ];
-    const rows: LavMapping[] = [];
-    const globalGraphsContent: GlobalGraph[] = [];
-    const wrapper: Wrapper[] = [];
-    const globalGraphsLabels: string[] = [];
+    const rows = [];
+    const globalGraphsContent = [];
+    const wrapper = [];
+    const globalGraphsLabels= [];
     const title = "LAVMappings";
     const show_dialog = false;
-    const selectedGlobalGraph: string = "";
-    const selectedWrapper: string = "";
-    const selectedLavMappingId: string = "";
+    const selectedGlobalGraph = "";
+    const selectedWrapper = "";
+    const selectedLavMappingId = "";
     const newLavMapping = {
       id: "",
       wrapperId: "",
@@ -308,8 +308,8 @@ export default defineComponent({
       namedGraph: "",
       featuresArr: [],
     };
-    const selectedFeatures : string[] = [];
-    const show_edit_dialog: boolean = false;
+    const selectedFeatures = [];
+    const show_edit_dialog = false;
 
     return {
       columns,
@@ -458,7 +458,7 @@ export default defineComponent({
             .attributes.map((e) => e.name)
         : [];
     },
-    deleteRow(props: any) {
+    deleteRow(props) {
       odinApi.delete(`/lavMapping/${props.row.id}`).then((response) => {
         if (response.status == 204) {
           this.$q.notify({
@@ -480,7 +480,7 @@ export default defineComponent({
         }
       });
     },
-    editRow(props: any) {
+    editRow(props) {
       console.log("editRow");
       const row = props.row;
       console.log({ row });
@@ -500,7 +500,7 @@ export default defineComponent({
             console.log(sameAs[i].feature);
             this.selectedFeatures[i] = sameAs[i].feature;
           }
-          this.show_edit_dialog = true;          
+          this.show_edit_dialog = true;
         });
       //selectedFeatures
       //Edit Struct; edit_data
@@ -510,7 +510,7 @@ export default defineComponent({
       }
       */
     },
-    onSubmitEdit(props: any) {
+    onSubmitEdit(props) {
       this.show_edit_dialog = false;
       console.log(this.selectedLavMappingId);
       console.log(this.selectedFeatures);

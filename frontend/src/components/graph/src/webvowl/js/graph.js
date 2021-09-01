@@ -99,7 +99,7 @@ module.exports = function (graphContainerSelector) {
         adjustingGraphSize = false,
         showReloadButtonAfterLayoutOptimization=false,
         zoom,
-        
+
         deletedURIClasses = new Set(),
         deletedURIProperties = new Set();
         newURIClasses = new Set();
@@ -1624,7 +1624,7 @@ module.exports = function (graphContainerSelector) {
     };
 
     function updateNodesForSG(){
-        if(graph.options().defaultConfig().bdi === "true" ||
+        if(graph.options().defaultConfig().source_graph === "true" ||
             graph.options().defaultConfig().bdi_manualAl ==="true" ||
             graph.options().defaultConfig().test_incDI_visualize ==="true"
     )
@@ -1654,7 +1654,7 @@ module.exports = function (graphContainerSelector) {
     function markNode(flag,node){
         if(node)
             d3.select(options.graphContainerSelector()).select("#" + node.id()).style("opacity", "1");
-        
+
         var selectionGraph = options.selectionGraph();
 
         if(selectionGraph.all().length >1){
@@ -3620,9 +3620,9 @@ module.exports = function (graphContainerSelector) {
         dataDelProperty.sIRI = aProp.domain().iri();
         dataDelProperty.pIRI = aProp.iri();
         dataDelProperty.oIRI = aProp.range().iri();
-        newURIProperties.add({property: dataDelProperty.pIRI, 
-                                subject: dataDelProperty.sIRI, 
-                                object: dataDelProperty.oIRI, 
+        newURIProperties.add({property: dataDelProperty.pIRI,
+                                subject: dataDelProperty.sIRI,
+                                object: dataDelProperty.oIRI,
                                 iriType: aProp.iriType()});
 
     }

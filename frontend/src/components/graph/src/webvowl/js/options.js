@@ -374,7 +374,7 @@ module.exports = function () {
     defaultOptionsConfig.mode_multiColor="false";
     defaultOptionsConfig.debugFeatures="false";
     defaultOptionsConfig.rect=0;
-    defaultOptionsConfig.bdi = "false";
+    defaultOptionsConfig.source_graph = "false";
 	defaultOptionsConfig.test_incDI_visualize = "false";
 	defaultOptionsConfig.bdi_manualAl = "false"; //for showing just the graph and define manual alignments.
 
@@ -401,14 +401,14 @@ module.exports = function () {
 	       	initCfg.mode_pnp="false";
 			initCfg.debugFeatures="false";
            	initCfg.rect=0;
-           	initCfg.bdi = "false";
+           	initCfg.source_graph = "false";
            	initCfg.test_incDI_visualize = "false"
 			initCfg.bdi_manualAl = "false";
 		return initCfg;
     };
 
-	options.setEditModeForBdiVisualize=function(val){
-		defaultOptionsConfig.bdi=String(val);
+	options.setEditModeForSource_Graph=function(val){
+		defaultOptionsConfig.source_graph=String(val);
 		if(mdmController)
 			mdmController.updateGui();
 	};

@@ -83,8 +83,10 @@ module.exports = (function () {
 				info.iri = that.iri();
 				var url = window.location.href;
 				info.id = url.substring(url.lastIndexOf("=") + 1, url.length);
-				info.type = "Class";
+				info.type = "class";
 				info.isSelected = that.focused();
+				info.baseIri = that.baseIri();
+				info.label = that.label()
 				var msg = new CustomEvent('clickEle_msg', { detail:info})
 				window.parent.dispatchEvent(msg);
 			}

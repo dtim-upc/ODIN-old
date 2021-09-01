@@ -19,17 +19,21 @@ module.exports = function (graph) {
                     $("#dataModal").modal("show");
                     graphical_omq.selection = selection;
                     graphical_omq.projectedFeatures = graph.getSelectedFeatures();
+                    console.log( JSON.stringify(graphical_omq))
                     $.ajax({
-                        url: '/OMQ/fromGraphicalToSPARQL',
+                        url: odinApi+'/OMQ/fromGraphicalToSPARQL',
                         method: "POST",
-                        data: graphical_omq
+                      contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(graphical_omq)
                     }).done(function (res) {
+                      console.log("answer: ")
+                      console.log(res)
                         var sparql_omq = new Object();
                         sparql_omq.sparql = res.sparql;
                         sparql_omq.namedGraph = graph.options().loadingModule().currentGlobalGraph().namedGraph;
                         sparql_omq.features = graph.getSelectedFeatures();
                         $.ajax({
-                            url: '/OMQ/fromSPARQLToRA',
+                            url: odinApi+'/OMQ/fromSPARQLToRA',
                             method: "POST",
                             data: sparql_omq
                         }).done(function (res) {
@@ -41,7 +45,7 @@ module.exports = function (graph) {
                             sql_omq.features = graph.getSelectedFeatures();
 
                             $.ajax({
-                                url: '/OMQ/fromSQLtoDATA',
+                                url: odinApi+'/OMQ/fromSQLtoDATA',
                                 method: "POST",
                                 data: sql_omq
                             }).done(function(data) {
@@ -57,7 +61,7 @@ module.exports = function (graph) {
                                     tableCol.push(col);
                                     // $('#dataTable').find('thead > tr').append($('<td>').append($('<b>').text(f)));
                                 });
-                        
+
 
                                 $('#dataTable').show();
 
@@ -138,4 +142,3 @@ module.exports = function (graph) {
 
     return clearQuery;
 };
-

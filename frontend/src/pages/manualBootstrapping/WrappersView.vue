@@ -4,7 +4,7 @@
       <!-- <h1> {{ $route.params.id }} </h1> -->
       <h4 style="margin-bottom: 6px">Wrapper View</h4>
       <p class="text-subtitle1">{{ wrapperId }}</p>
-      
+
       <q-input v-model="this.wrapper.name" label="name" readonly />
       <q-input
         v-model="this.wrapper.attributes"
@@ -20,20 +20,15 @@
 </template>
 
 
-<script lang="ts">
-import { Wrapper } from "src/components/models";
+<script >
+
 import { odinApi } from "boot/axios";
 import { defineComponent } from 'vue';
 
 export default defineComponent({
   data() {
-    const wrapperId: string | string[] = this.$route.params.id;
-    const wrapper: Wrapper = {
-        id: "",
-        name: "",
-        attributes: [{isID: false, name: ""}],
-        dataSourcesId: "",
-        dataSourcesLabel: "",
+    const wrapperId= this.$route.params.id;
+    const wrapper = {        id: "",        name: "",        attributes: [{isID: false, name: ""}],        dataSourcesId: "",        dataSourcesLabel: "",
     };
     return { wrapperId, wrapper };
   },

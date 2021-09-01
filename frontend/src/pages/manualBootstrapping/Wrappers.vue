@@ -5,7 +5,7 @@
 </template>
 
 
-<script lang="ts">
+<script >
 
 import TableWrappers from 'components/tables/TableWrappers.vue';
 

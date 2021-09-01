@@ -581,7 +581,11 @@ module.exports =  function (graph) {
         //if ( graph.options().defaultConfig().editorMode === "true" ) {
             var globalGraphID = getParameterByName("id");
             var lavMappingID = getParameterByName("LAVMappingID");
-            console.log({globalGraphID, lavMappingID});
+
+            var dataSourceID = getParameterByName("dataSourceID");
+
+
+            console.log({globalGraphID, lavMappingID, dataSourceID});
             if (globalGraphID !== "" && lavMappingID === "") {
               // retrieve global graph data.
                 const content = JSON.parse($.ajax({
@@ -593,7 +597,7 @@ module.exports =  function (graph) {
                 console.log({currentGlobalGraph});
             }
             if(globalGraphID !== "" && lavMappingID !== ""){
-                
+
                 var data = JSON.parse($.ajax({
                     type: "GET",
                     url: odinApi+"/lavMapping/"+lavMappingID,
@@ -602,7 +606,7 @@ module.exports =  function (graph) {
 
 
                 console.log({data});
-            
+
                 if(data.globalQuery){
                     currentSubGraph = data.globalQuery;
                     console.log({currentGlobalGraph})
@@ -612,8 +616,18 @@ module.exports =  function (graph) {
                     url: odinApi+"/globalGraph/"+data.globalGraphId,
                     async: false
                 }).responseText);
-                
+
                 console.log(currentGlobalGraph);
+            } else if(dataSourceID !== ""){
+
+              const content = JSON.parse($.ajax({
+                  type: "GET",
+                  url: odinApi+"/dataSource/"+dataSourceID,
+                  async: false
+              }).responseText);
+              currentGlobalGraph = content;
+              console.log({currentGlobalGraph});
+
             }
         //}
 
