@@ -4,6 +4,7 @@ import edu.upc.essi.dtim.ODINBackend.config.db.JenaConnection;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.query.SelectQuery;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.apache.jena.rdf.model.impl.ResourceImpl;
 import org.apache.jena.system.Txn;
@@ -28,6 +29,26 @@ public class GraphOperations {
     @PostConstruct
     public void init(){
         ds = jenaConnection.getTDBDataset();
+    }
+
+    public Dataset getDataset(){return ds;};
+
+    public Model getGraph(String iri){
+
+        if(ds.containsNamedModel(iri)){
+            Model m = ds.getNamedModel(iri);
+            return ModelFactory.createModelForGraph(m.getGraph());
+        }
+        return null;
+
+    }
+
+
+    public void addModel(String namedGraph, Model model){
+        Txn.executeWrite(ds, ()-> {
+            Model graph = ds.getNamedModel(namedGraph);
+            graph.add(model);
+        });
     }
 
 
@@ -91,8 +112,8 @@ public class GraphOperations {
     }
 
     /*
-    * QUERIES
-    * */
+     * QUERIES
+     * */
 
     public ResultSet runAQuery(Query query) {
 

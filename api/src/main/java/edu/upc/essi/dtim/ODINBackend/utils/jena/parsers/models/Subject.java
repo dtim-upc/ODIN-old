@@ -2,7 +2,6 @@ package edu.upc.essi.dtim.ODINBackend.utils.jena.parsers.models;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.XSD;
 

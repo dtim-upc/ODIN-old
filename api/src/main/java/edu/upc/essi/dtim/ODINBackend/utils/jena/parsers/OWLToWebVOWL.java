@@ -2,7 +2,6 @@ package edu.upc.essi.dtim.ODINBackend.utils.jena.parsers;
 
 
 import com.google.gson.Gson;
-import edu.upc.essi.dtim.ODINBackend.config.vocabulary.GlobalGraph;
 import edu.upc.essi.dtim.ODINBackend.config.vocabulary.Namespaces;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.GraphOperations;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.parsers.models.*;
@@ -12,18 +11,11 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.impl.PropertyImpl;
-import org.apache.jena.rdf.model.impl.ResourceImpl;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.dtim.odin.storage.bdi.extraction.Namespaces;
-////import org.dtim.odin.storage.db.jena.GraphOperations;
-//import org.dtim.odin.storage.model.metamodel.GlobalGraph;
-//import org.dtim.odin.storage.parsers.models.*;
 
-import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

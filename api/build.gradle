@@ -48,6 +48,8 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 //	implementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
 	checkstyle 'com.puppycrawl.tools:checkstyle:8.39'
+
+	implementation fileTree(dir: 'lib', include: ['*.jar'])
 }
 
 test {

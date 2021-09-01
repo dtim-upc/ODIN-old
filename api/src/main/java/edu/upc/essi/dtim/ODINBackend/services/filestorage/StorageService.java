@@ -11,7 +11,7 @@ public interface StorageService {
 
     void init();
 
-    void store(MultipartFile file);
+    String store(MultipartFile file);
 
     Stream<Path> loadAll();
 
@@ -23,5 +23,5 @@ public interface StorageService {
 
     void delete(String path) throws IOException;
 
-    void setRandomSeed(String randomSeed);
+//    void setRandomSeed(String randomSeed);
 }

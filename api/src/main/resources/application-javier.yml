@@ -1,9 +1,11 @@
 
 db:
   jena:
-    dir: /Users/javierflores/Documents/UPC Projects/2/newODIN/api
+    dir: /Users/javierflores/Documents/UPC_projects/new/newODIN
     name: jena2
-
+  files:
+    upload:
+      dir: /Users/javierflores/Documents/UPC_projects/new/newODIN/uploads
 
 logging:
   level:

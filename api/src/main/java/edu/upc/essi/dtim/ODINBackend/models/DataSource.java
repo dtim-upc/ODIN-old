@@ -1,6 +1,6 @@
 package edu.upc.essi.dtim.ODINBackend.models;
 
-import edu.upc.essi.dtim.ODINBackend.config.SourceGraph;
+import edu.upc.essi.dtim.ODINBackend.config.vocabulary.SourceGraph;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,13 +16,16 @@ public class DataSource {
     private String id;
     private String name;
     private String iri;
-    private String Json_path;
+    private String path;
+    private String graphicalGraph;
+
     @NotBlank
     private String type;
 
     public DataSource(String name, String type) {
         this.name = name;
         this.type = type;
+        this.graphicalGraph = "";
         this.iri = createDataSourceIri(name);
     }
 
@@ -33,7 +36,7 @@ public class DataSource {
     @Override
     public String toString() {
         return String.format(
-                "DataSources[name=%s, type='%s']",
-                name, type);
+                "DataSources[name=%s, type='%s', iri='%s]",
+                name, type,iri);
     }
 }

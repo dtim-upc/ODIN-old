@@ -1,7 +1,7 @@
 package edu.upc.essi.dtim.ODINBackend.controller.manualBootstraping;
 
-import edu.upc.essi.dtim.ODINBackend.config.Namespaces;
-import edu.upc.essi.dtim.ODINBackend.config.SourceGraph;
+import edu.upc.essi.dtim.ODINBackend.config.vocabulary.Namespaces;
+import edu.upc.essi.dtim.ODINBackend.config.vocabulary.SourceGraph;
 import edu.upc.essi.dtim.ODINBackend.controller.AdminController;
 import edu.upc.essi.dtim.ODINBackend.models.DataSource;
 import edu.upc.essi.dtim.ODINBackend.repository.DataSourcesRepository;
@@ -9,7 +9,6 @@ import edu.upc.essi.dtim.ODINBackend.repository.WrapperRepository;
 import edu.upc.essi.dtim.ODINBackend.services.filestorage.StorageService;
 import edu.upc.essi.dtim.ODINBackend.services.impl.DataSourceService;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.GraphOperations;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.*;
 
 @RestController
@@ -45,22 +43,19 @@ public class DataSourcesController {
     @Autowired
     private DataSourceService dataSourceService;
 
-    @PostMapping
-    public ResponseEntity<DataSource> createDataSources(@RequestBody DataSource dataSource) {
-        try {
-            DataSource _dataSource = new DataSource(dataSource.getName(), dataSource.getType());
-            this.latest_generated_random_string = RandomStringUtils.randomAlphanumeric(16);
-            System.out.println(upload_dir);
-            _dataSource.setJson_path(upload_dir + '/' + this.latest_generated_random_string + ".json");
 
-            repository.save(_dataSource);
-            storageService.setRandomSeed(latest_generated_random_string);
-            graphOperations.addTriple(_dataSource.getIri(),
-                    _dataSource.getIri(),
-                    Namespaces.rdf.val() + "type",
-                    SourceGraph.DATA_SOURCE.val());
+    @PostMapping( consumes = {"multipart/form-data"})
+    public ResponseEntity<DataSource> createDataSources(@RequestPart DataSource dataSource, @RequestPart MultipartFile file, @RequestPart Boolean bootstrappingType) {
+        try {
+
+            DataSource _dataSource = dataSourceService.create(dataSource, bootstrappingType, file);
+
+//            storageService.setRandomSeed(latest_generated_random_string);
+
             String input = dataSource.toString().replaceAll("[\n\r\t]", "_");
             String returnval = _dataSource.toString().replaceAll("[\n\r\t]", "_");
+
+
             LOGGER.info(LOG_MSG, "createDataSources", input, returnval);
             return new ResponseEntity<>(_dataSource, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -68,11 +63,18 @@ public class DataSourcesController {
         }
     }
 
-    @PostMapping("/uploadFile")
-    public ResponseEntity<HttpStatus> uploadMultipartFile(@RequestParam MultipartFile file) throws IOException {
-        storageService.store(file);
-        return new ResponseEntity<>(null, HttpStatus.OK);
-    }
+    // TODO: maybe a @PostMapping for adding new files to a datasource is useful.
+
+//    @PostMapping("/uploadFile")
+//    public ResponseEntity<HttpStatus> uploadMultipartFile(@RequestParam MultipartFile file) throws IOException {
+//        String path = storageService.store(file);
+//        System.out.println(path);
+//
+//
+//        return new ResponseEntity<>(null, HttpStatus.OK);
+//    }
+
+
 
     @GetMapping
     public ResponseEntity<List<DataSource>> getAllDataSources() {
@@ -93,7 +95,7 @@ public class DataSourcesController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("/view/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<DataSource> getAllDataSources(@PathVariable("id") String id) {
 
         try {
@@ -131,7 +133,7 @@ public class DataSourcesController {
         Optional<DataSource> optionalDataSource = repository.findById(id);
         if (optionalDataSource.isPresent()) {
             DataSource ds = optionalDataSource.get();
-            storageService.delete(ds.getJson_path());
+            storageService.delete(ds.getPath());
         }
         //Delete from MongoDB
         dataSourceService.delete(id);

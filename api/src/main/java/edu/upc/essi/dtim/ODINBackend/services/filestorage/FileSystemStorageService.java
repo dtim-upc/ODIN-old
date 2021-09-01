@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -23,13 +24,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileSystemStorageService implements StorageService {
 
     private final Path rootLocation;
-    private String randomSeed;
-    @Value("${db.files.upload.absolute.path}")
-    private String absolutePath;
+//    private String randomSeed;
 
-    public void setRandomSeed(String randomSeed) {
-        this.randomSeed = randomSeed;
-    }
+//    public void setRandomSeed(String randomSeed) {
+//        this.randomSeed = randomSeed;
+//    }
 
     @Autowired
     public FileSystemStorageService(StorageProperties properties) {
@@ -37,13 +36,13 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public void store(MultipartFile file) {
+    public String store(MultipartFile file) {
         try {
             if (file.isEmpty()) {
                 throw new StorageException("Failed to store empty file.");
             }
             Path destinationFile = this.rootLocation.resolve(
-                    Paths.get(this.randomSeed + ".json"))
+                    Paths.get(RandomStringUtils.randomAlphanumeric(16) +"_"+ file.getOriginalFilename()))
                     .normalize().toAbsolutePath();
             if (!destinationFile.getParent().equals(this.rootLocation.toAbsolutePath())) {
                 // This is a security check
@@ -54,8 +53,8 @@ public class FileSystemStorageService implements StorageService {
                 Files.copy(inputStream, destinationFile,
                         StandardCopyOption.REPLACE_EXISTING);
             }
-        }
-        catch (IOException e) {
+            return destinationFile.toString();
+        } catch (IOException e) {
             throw new StorageException("Failed to store file.", e);
         }
     }
@@ -104,8 +103,11 @@ public class FileSystemStorageService implements StorageService {
 
     @Override
     public void delete(String path) throws IOException {
-        System.out.println(absolutePath + '/' + path);
-        FileSystemUtils.deleteRecursively(Paths.get('/' + absolutePath + '/' + path));
+        if(path == null || path.equals("") ) {
+            return;
+        }
+        System.out.println( path);
+        FileSystemUtils.deleteRecursively(Paths.get(path));
     }
 
     @Override

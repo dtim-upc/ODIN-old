@@ -26,7 +26,7 @@ public class JSON_Wrapper extends Wrapper {
     }
     public JSON_Wrapper(DataSource ds, String queryParameters) {
         super("preview");
-        this.path = ds.getJson_path();
+        this.path = ds.getPath();
     }
 
     public String getPath() {
