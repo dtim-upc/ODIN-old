@@ -25,3 +25,4 @@ build/
 # Jena
 /jena2
 
+/uploads/*
