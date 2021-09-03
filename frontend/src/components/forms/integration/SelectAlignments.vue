@@ -9,7 +9,6 @@
         </q-item-section>
 
         <q-card-section class="row items-center q-pb-none">
-          <!--                            <div class="text-h6">Close icon</div>-->
           <q-space/>
           <q-btn icon="close" flat round dense v-close-popup @click="close"/>
         </q-card-section>
@@ -40,8 +39,7 @@
 
                   <q-input outlined v-model="selectedA_baseIri" prefix="Namespace: " disable dense/>
 
-                  <q-input outlined v-model="selectedA_label" prefix="Label: " :suffix="selectedA_type"
-                           disable dense/>
+                  <q-input outlined v-model="selectedA_label" prefix="Label: " :suffix="selectedA_type" disable dense/>
                 </div>
 
               </div>
@@ -57,8 +55,7 @@
                 <div class="q-gutter-md">
 
                   <q-input outlined v-model="selectedB_baseIri" prefix="Namespace: " disable dense/>
-                  <q-input outlined v-model="selectedB_label" prefix="Label:" :suffix="selectedB_type"
-                           disable dense/>
+                  <q-input outlined v-model="selectedB_label" prefix="Label:" :suffix="selectedB_type" disable dense/>
                 </div>
 
               </div>
@@ -72,38 +69,27 @@
               <q-input outlined v-model="integratedLabel" prefix="Integrated label: " dense/>
             </div>
             <div class="col-3">
-              <q-btn outline color="primary" label="Add alignment" @click="addAlignment"/>
+              <q-btn outline color="primary" label="Add alignment" @click="addAlignment" :disable="disableAdd"/>
               <q-btn outline color="primary" label="Close" @click="close"/>
             </div>
 
-            <!--                  </div>-->
           </q-card-section>
         </q-card-section>
-
-
       </q-card-section>
-
     </q-card>
-
-
   </q-dialog>
-
 </template>
 
 <script>
 import {defineComponent, ref} from "vue";
 
 import Webvowl from "components/graph/Webvowl.vue";
-// import { useQuasar } from 'quasar'
-
-// uncomment next line if you're making calls to ODIN API
-// import { odinApi } from "boot/axios";
 
 export default defineComponent({
   name: "SelectAlignments",
   components: {Webvowl},
   setup() {
-    // const $q = useQuasar()
+
     return {
       selectedA_label: ref(""),
       selectedA_type: ref(""),
@@ -116,6 +102,7 @@ export default defineComponent({
       integratedLabel: ref(""),
       alertAlignmentType: ref(false),
       fullscreen: ref(false),
+      disableAdd: ref(true),
       // toggle (e) {
       //   console.log(e)
       //   const target = e.target.parentNode.parentNode.parentNode.parentNode
@@ -133,8 +120,8 @@ export default defineComponent({
     }
   },
   props: {
-    dsA: {type: Object, default: {id:"", name:"", type:"", graphicalGraph:"", iri:"", path:""}},
-    dsB: {type: Object, default: {id:"", name:"", type:"", graphicalGraph:"", iri:"", path:""}},
+    dsA: {type: Object, default: {id: "", name: "", type: "", graphicalGraph: "", iri: "", path: ""}},
+    dsB: {type: Object, default: {id: "", name: "", type: "", graphicalGraph: "", iri: "", path: ""}},
     show_dialog: {type: Boolean, default: false}
   },
   emits: {
@@ -147,14 +134,14 @@ export default defineComponent({
       this.resetLabelsA()
       this.resetLabelsB()
     },
-    resetLabelsA(){
+    resetLabelsA() {
       this.selectedA_label = "";
       this.selectedA_type = "";
       this.selectedA_baseIri = "";
       this.selectedA_iri = "";
       this.integratedLabel = "";
     },
-    resetLabelsB(){
+    resetLabelsB() {
       this.selectedB_label = "";
       this.selectedB_type = "";
       this.selectedB_baseIri = "";
@@ -167,11 +154,11 @@ export default defineComponent({
     removeHandler() {
       window.removeEventListener('clickEle_msg', this.selectAlignment);
     },
-    addAlignment(){
+    addAlignment() {
 
       this.$emit("add-alignment", {
-        row: { iriA: this.selectedA_iri, iriB: this.selectedB_iri, l: this.integratedLabel, type: this.selectedA_type}
-      } )
+        row: {iriA: this.selectedA_iri, iriB: this.selectedB_iri, l: this.integratedLabel, type: this.selectedA_type}
+      })
       this.resetLabelsA()
       this.resetLabelsB()
 
@@ -214,9 +201,12 @@ export default defineComponent({
       }
 
       if (this.selectedA_label && this.selectedB_label) {
+
+        this.disableAdd = false;
         this.integratedLabel = this.selectedA_label + "_" + this.selectedB_label;
       } else {
         this.integratedLabel = ""
+        this.disableAdd = true
       }
 
     }

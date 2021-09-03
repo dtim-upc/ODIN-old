@@ -1,6 +1,6 @@
 <template>
 
-  <q-table :rows="rows" :columns="columns" :class="{ 'no-shadow': no_shadow }"
+  <q-table :rows="alignments" :columns="columns" :class="{ 'no-shadow': no_shadow }"
            row-key="uriA"
            no-data-label="Consider adding some alignments to start the integration process"
            no-results-label="The filter didn't uncover any results" >
@@ -42,28 +42,33 @@
     </template>
   </q-table>
 
-  <SelectAlignments :show_dialog="show_dialog" :ds-a="dsA" :ds-b="dsB"  @close-dialog="show_dialog=false" @add-alignment="addRow"/>
+  <SelectAlignments :show_dialog="show_dialog" :ds-a="selectedDS[0]" :ds-b="selectedDS[1]"  @close-dialog="show_dialog=false" @add-alignment="addRow"/>
 
 </template>
 
 <script >
-import {ref} from 'vue'
+import {computed, ref} from 'vue'
 import {defineComponent} from "vue";
 import SelectAlignments from "components/forms/integration/SelectAlignments.vue";
-
+import {useStore} from "vuex";
+import {useQuasar} from "quasar";
+// import alerts from "components/hooks/alerts"
+import notify from 'components/hooks/notify';
 
 export default defineComponent({
   name: "TableAlignments",
   components: {SelectAlignments},
   props: {
     no_shadow: {type: Boolean, default: false},
-    dsA: {type: Object, default: {id:"", name:"", type:"", graphicalGraph:"", iri:"", path:""}},
-    dsB: {type: Object, default: {id:"", name:"", type:"", graphicalGraph:"", iri:"", path:""}},
+    alignments: {type :Array, default: []}
   },
-  emits: {
-    "alignments": null,
-  },
-  data() {
+  // emits: {
+  //   "alignments": null,
+  // },
+  setup(props , {emit}){
+    const store = useStore()
+    const $q = useQuasar()
+    const selectedDS = computed(() => store.state.datasource.selectedDatasources)
 
     const columns = [
       {name: "uriA", required: true, label: "Name A", align: "center", field: "iriA", sortable: true,},
@@ -72,84 +77,43 @@ export default defineComponent({
       {name: "type", required: true, label: "Type", align: "center", field: "type", sortable: true,},
       {name: "actions", label: "actions", align: "center", field: "actions", sortable: false,},
     ];
-    const rows = [];
+    // const rows = [];
     const title = "Alignments";
 
-    // const datasourceA: DataSourceModel = {id: '612c3940a4e8f763dbf907a2', name: 'name1', type: '', graphicalGraph:""};
-    // const datasourceB: DataSourceModel = {id: '612c3940a4e8f763dbf907a2', name: 'name2', type: '', graphicalGraph:""};
 
-    // const show_dialog = false;
-    // const show_edit_dialog: boolean = false;
-    // const newGlobalGraph = {
-    //   id: "",
-    //   name: "",
-    //   namedGraph: "",
-    //   namespace: "",
-    //   graphicalGraph: "",
-    // };
+    const addRow= (props2  )=> {
+      if(props2){
+        if(props2.row){
 
-    return {
-      // datasourceA,
-      // datasourceB,
-      columns,
-      rows,
-      title,
-      // show_dialog,
-      show_dialog: ref(false),
-      // search: "",
-      // show_edit_dialog,
-    };
-  },
-  mounted(){
-    // this.rows.push({
-    //   uriA: "http://www.essi.upc.edu/~snadal/BDIOntology/Source/DataSource/bikes",
-    //   uriB: "http://www.essi.upc.edu/~snadal/BDIOntology/Source/DataSource/cities",
-    //   label: "bikes_cities",
-    //   type: "Class"
-    // })
-  },
-  methods:{
-    addRow(props){
-      if(props){
-        if(props.row){
-          // console.log("add _")
-          // console.log(props.row)
-
-          // this.rows.push({
-          //   uriA: "http://www.essi.upc.edu/~snadal/BDIOntology/Source/DataSource/bikes",
-          //   uriB: "http://www.essi.upc.edu/~snadal/BDIOntology/Source/DataSource/cities",
-          //   label: "bikes_cities",
-          //   type: "Class"
-          // })
-
-          console.log(this.rows)
+          console.log(props.alignments)
           console.log(props.row)
-          console.log(this.rows.indexOf(props.row))
-          if(this.rows.indexOf(props.row) === -1) {
-            this.rows.push(props.row);
+          console.log(props.alignments.indexOf(props2.row))
+          if(props.alignments.indexOf(props2.row) === -1) {
+            props.alignments.push(props2.row);
             // console.log(this.items);
           }
 
-          // this.rows.push(props.row)
-          this.$emit("alignments", { data: this.rows          } )
-          this.$q.notify({
-            color: "positive",
-            textColor: "white",
-            icon: "check_circle",
-            message: `Alignment ${props.row.l} added`,
-          });
-
+          console.log("emitted")
+          emit("update:alignments", props.alignments )
+          notify.positive(`Alignment ${props2.row.l} added`)
           // console.log(this.rows)
         }
       }
 
 
-    },
-    deleteRow(props){
-      this.rows.splice(props.rowIndex, 1);
-      this.$emit("alignments", { data: this.rows          } )
     }
+    const deleteRow = (props2) =>{
+      props.alignments.splice(props2.rowIndex, 1);
+      emit("update:alignments", props.alignments )
+      // emit("alignments", { data: rows          } )
+      // this.this.$emit("alignments", { data: this.rows          } )
+    }
+
+
+    return {selectedDS, columns, title,show_dialog: ref(false), deleteRow, addRow}
+
   }
+
 
 });
 </script>

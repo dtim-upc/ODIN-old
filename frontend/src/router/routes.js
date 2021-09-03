@@ -15,6 +15,7 @@ const routes = [
       { path: 'dataSources/webvowl/:id', component: () => import('pages/webvowl/DatasourceWebVowl.vue') },
 
       { path: 'integration', component: () => import('pages/Integration.vue') },
+      { path: 'pruebas', component: () => import('pages/Pruebas.vue') },
 
       { path: 'wrappers', component: () => import('pages/manualBootstrapping/Wrappers.vue') },
       { path: 'wrappers/view/:id', component: () => import('pages/manualBootstrapping/WrappersView.vue') },

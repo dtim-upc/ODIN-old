@@ -153,11 +153,12 @@
 
 
 <script >
-import {defineComponent} from "vue";
+import {defineComponent, ref, onMounted, computed} from "vue";
 import {odinApi} from "boot/axios";
 import NewDataSourceForm from "components/forms/NewDataSourceForm.vue";
-import {ref} from 'vue'
-
+// import {ref} from 'vue'
+import {mapGetters} from "vuex";
+import {useStore} from 'vuex'
 
 export default defineComponent({
   name: "TableDataSources",
@@ -166,6 +167,26 @@ export default defineComponent({
     no_shadow: {type: Boolean, default: false},
     view: {type: String, default: "datasources"}
   },
+
+  setup() {
+
+    const store = useStore()
+
+    const datasources = computed( () => {
+      return store.state.datasource.datasources
+    } )
+
+    onMounted(() => {
+      if(datasources.value.length == 0){
+        store.dispatch("getDatasources")
+      }
+    })
+
+    return {datasources}
+
+
+  },
+
   data() {
     const columns = [
       {name: "Name", required: true, label: "Name", align: "center", field: "name", sortable: true,},

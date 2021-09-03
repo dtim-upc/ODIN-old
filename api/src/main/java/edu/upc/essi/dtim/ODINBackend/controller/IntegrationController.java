@@ -44,7 +44,7 @@ public class IntegrationController {
         DataSource integratedDatasource = new DataSource();
         integratedDatasource.setType("integrated");
         integratedDatasource.setPath("");
-        integratedDatasource.setName("namei3");
+        integratedDatasource.setName("namei1sa");
         integratedDatasource.setIri(integratedIRI);
 
         OWLToWebVOWL vowl = new OWLToWebVOWL();
