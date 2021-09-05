@@ -1659,7 +1659,7 @@ main {
 #scrollRightButton:before{
 	content: ">";
 }
-#centerGraphButton,#zoomInButton,#zoomOutButton {
+#zoomInButton,#zoomOutButton {
 	border: 1px solid #000000;
 	text-align: center;
 	margin:-1px 0 0 0;
@@ -1667,6 +1667,15 @@ main {
 	padding: 0;
 	height: 28px;
 }
+#centerGraphButton{
+  border: 1px solid #000000;
+  text-align: center;
+  margin:-1px 0 0 0;
+  font-size: 1.1em;
+  padding: 0;
+  height: 28px;
+}
+
 .noselect {
 	-webkit-touch-callout: none; /* iOS Safari */
 	-webkit-user-select: none; /* Safari */
