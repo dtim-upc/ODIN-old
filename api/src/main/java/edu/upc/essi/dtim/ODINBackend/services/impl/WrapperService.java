@@ -1,18 +1,29 @@
 package edu.upc.essi.dtim.ODINBackend.services.impl;
 
+import edu.upc.essi.dtim.ODINBackend.config.DataSourceTypes;
 import edu.upc.essi.dtim.ODINBackend.config.Namespaces;
 import edu.upc.essi.dtim.ODINBackend.config.SourceGraph;
 import edu.upc.essi.dtim.ODINBackend.models.DataSource;
 import edu.upc.essi.dtim.ODINBackend.models.Wrapper;
 import edu.upc.essi.dtim.ODINBackend.repository.LavMappingRepository;
+import edu.upc.essi.dtim.ODINBackend.services.omq.WrapperI;
+import edu.upc.essi.dtim.ODINBackend.services.omq.wrapper_implementations.CSV_Wrapper;
+import edu.upc.essi.dtim.ODINBackend.services.omq.wrapper_implementations.JSON_Wrapper;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.GraphOperations;
 import edu.upc.essi.dtim.ODINBackend.models.Attribute;
 import edu.upc.essi.dtim.ODINBackend.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.ODINBackend.repository.WrapperRepository;
+import org.apache.jena.rdf.model.Model;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 public class WrapperService {
@@ -25,6 +36,15 @@ public class WrapperService {
 
     @Autowired
     private LavMappingRepository lavMappingRepository;
+
+    private Map<DataSourceTypes, WrapperI> wrappers;
+
+    @Autowired
+    public WrapperService(List<WrapperI> wrappers) {
+        this.wrappers =  wrappers.stream().collect(Collectors.toMap(WrapperI::getType, Function.identity()));
+    }
+
+
     /**
     @pre:
       INPUT: Wrapper name, dataSourceId, Array of strings of the names of the attributes.
@@ -39,7 +59,7 @@ public class WrapperService {
     (triple <http://www.essi.upc.edu/~snadal/BDIOntology/Source/DataSource/Teams/teamName> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.essi.upc.edu/~snadal/BDIOntology/Source/Attribute>)
     (triple <http://www.essi.upc.edu/~snadal/BDIOntology/Source/DataSource/Teams/id> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.essi.upc.edu/~snadal/BDIOntology/Source/Attribute>)
     * */
-    public void create(String wname, Attribute[] attrNames, String dataSourceId) {
+    public Model create(String wname, Attribute[] attrNames, String dataSourceId) {
         Optional<DataSource> optionalDataSources = dataSourcesRepository.findById(dataSourceId);
         if (optionalDataSources.isPresent()) {
             DataSource ds = optionalDataSources.get();
@@ -52,7 +72,10 @@ public class WrapperService {
                 graphOperations.addTriple(ds.getIri(), attIRI, Namespaces.rdf.val() + "type", SourceGraph.ATTRIBUTE.val());
                 graphOperations.addTriple(ds.getIri(), wIRI, SourceGraph.HAS_ATTRIBUTE.val(), attIRI);
             }
+
+            return graphOperations.getGraph(ds.getIri());
         }
+        return null;
     }
     private String createWrapperIri(String name) {
         return SourceGraph.WRAPPER.val() + '/' + name;
@@ -103,4 +126,14 @@ public class WrapperService {
         //Delete from Mongo
         wrapperRepository.deleteById(w.getId());
     }
+
+
+    public List<String> inferSchema(DataSource ds) throws Exception {
+
+        WrapperI w = wrappers.get( ds.getType() );
+        return w.inferSchema( ds );
+
+
+    }
+
 }

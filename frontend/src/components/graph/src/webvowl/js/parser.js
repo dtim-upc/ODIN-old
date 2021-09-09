@@ -288,6 +288,8 @@ module.exports = function (graph) {
 				if (Prototype) {
 					// Create the matching object and set the properties
 					var property = new Prototype(graph);
+
+
 					property.annotations(element.annotations)
 						.baseIri(element.baseIri)
 						.cardinality(element.cardinality)
@@ -325,7 +327,13 @@ module.exports = function (graph) {
 						property.attributes(deduplicatedAttributes.values());
 					}
 					combinations.push(property);
-					console.log("P IS: "+ property.label())
+          if(element.label == "rdf-schema#subPropertyOf"){
+            console.log("P label is " +element.label)
+            console.log("DOM: "+element.domain)
+            console.log(element.range)
+            console.log("P IS: "+ property.domain())
+          }
+
 				} else {
 					console.error("Unknown element type: " + element.type);
 				}
@@ -503,6 +511,7 @@ module.exports = function (graph) {
 
 			if (property.domain() === undefined) {
 				console.warn("No Domain was found for id:" + property.id());
+				console.log(property.iri())
 				return;
 			}
 

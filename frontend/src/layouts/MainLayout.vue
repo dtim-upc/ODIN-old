@@ -5,9 +5,9 @@
         <q-btn flat @click="drawer = !drawer" round dense icon="menu"/>
 
         <q-toolbar-title>
-<!--          <q-avatar>-->
-<!--            <img src="~assets/logoODIN.png"/>-->
-<!--          </q-avatar>-->
+          <!--          <q-avatar>-->
+          <!--            <img src="~assets/logoODIN.png"/>-->
+          <!--          </q-avatar>-->
           ODIN
         </q-toolbar-title>
 
@@ -48,32 +48,25 @@
 
           <q-item style="max-width: 200px">
             <q-item-section>
-              <q-img src="~assets/logoODIN.png" style="max-width: 180px; " fit="contain"/>
+              <q-img src="~assets/logoODIN.png" style="max-width: 180px; max-height: 35px; " fit="contain"/>
               <!--                <img src="~assets/logoODIN.png"/>-->
-<!--              :src=" miniState ? '/assets/logoODIN_short.png':'/assets/logoODIN.png'"-->
+              <!--              :src=" miniState ? '/assets/logoODIN_short.png':'/assets/logoODIN.png'"-->
             </q-item-section>
           </q-item>
 
-
+          <q-separator/>
           <q-item @click="miniState = !miniState">
             <q-item-section avatar>
-              <q-btn
-                dense
-                round
-                unelevated
-                color="accent"
-                icon="chevron_left"
-                @click="miniState = !miniState"
-              />
+              <q-btn dense round unelevated :icon="miniState == true ? 'mdi-arrow-collapse-right' : 'mdi-arrow-collapse-left'" @click="miniState = !miniState"/>
             </q-item-section>
             <!--            <q-item-section avatar>-->
             <!--              <q-icon name="chevron_left" />-->
             <!--            </q-item-section>-->
           </q-item>
-          <q-separator/>
+
           <q-item clickable v-ripple to="/" active-class="bg-active" exact>
             <q-item-section avatar>
-              <q-icon name="inbox"/>
+              <q-icon name="o_cottage"/>
             </q-item-section>
 
             <q-item-section>
@@ -93,7 +86,8 @@
 
           <q-item clickable v-ripple to="/globalGraph" active-class="bg-active">
             <q-item-section avatar>
-              <q-icon name="mdiGraphql"/>
+              <!--              o_hub-->
+              <q-icon name="o_hub"/>
             </q-item-section>
 
             <q-item-section>
@@ -101,11 +95,12 @@
             </q-item-section>
           </q-item>
 
-          <q-separator/>
+<!--          <q-separator/>-->
 
           <q-item clickable v-ripple to="/dataSources" active-class="bg-active">
             <q-item-section avatar>
-              <q-icon name="drafts"/>
+              <!--      o_file_copy o_spoke   o_category  workspaces   category spoke-->
+              <q-icon name="o_bubble_chart "/>
             </q-item-section>
 
             <q-item-section>
@@ -115,7 +110,8 @@
 
           <q-item clickable v-ripple to="/wrappers" active-class="bg-active">
             <q-item-section avatar>
-              <q-icon name="drafts"/>
+              <!--              settings_input_svideo-->
+              <q-icon name="mdi-google-circles-communities"/>
             </q-item-section>
 
             <q-item-section>
@@ -125,7 +121,8 @@
 
           <q-item clickable v-ripple to="/lavmappings" active-class="bg-active">
             <q-item-section avatar>
-              <q-icon name="drafts"/>
+              <!--          link   google-circles-extended mdi-vector-circle  egg_alt-->
+              <q-icon name="mdi-google-circles-extended "/>
             </q-item-section>
 
             <q-item-section>
@@ -135,7 +132,7 @@
 
           <q-item clickable v-ripple to="/omq" active-class="bg-active">
             <q-item-section avatar>
-              <q-icon name="drafts"/>
+              <q-icon name="mdi-selection-search"/>
             </q-item-section>
 
             <q-item-section>

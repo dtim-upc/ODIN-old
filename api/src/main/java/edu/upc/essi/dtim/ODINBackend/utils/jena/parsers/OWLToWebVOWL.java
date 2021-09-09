@@ -2,6 +2,7 @@ package edu.upc.essi.dtim.ODINBackend.utils.jena.parsers;
 
 
 import com.google.gson.Gson;
+import edu.upc.essi.dtim.ODINBackend.config.SourceGraph;
 import edu.upc.essi.dtim.ODINBackend.config.vocabulary.Namespaces;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.GraphOperations;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.parsers.models.*;
@@ -30,6 +31,7 @@ public class OWLToWebVOWL {
     String namespace = "";
     String title = "";
     HashMap<String, String> nodesId;
+    HashMap<String, String> propertiesId;
 
 
     List<Triple> triples;
@@ -47,6 +49,15 @@ public class OWLToWebVOWL {
     public OWLToWebVOWL() {
         setUp();
     }
+
+    public OWLToWebVOWL(String namespace, String title) {
+
+        this.namespace = namespace;
+        this.title = title;
+        this.prefix = "";
+        setUp();
+    }
+
     public void setUp(){
         triples = new ArrayList<>();
         nodes = new ArrayList<>();
@@ -56,6 +67,7 @@ public class OWLToWebVOWL {
         proA = new ArrayList<>();
 
         nodesId = new HashMap<String, String>();
+        propertiesId= new HashMap<String, String>();
         cleanTriples = new ArrayList<>();
 
     }
@@ -100,22 +112,42 @@ public class OWLToWebVOWL {
         graph.setModel(model);
 
         List<Subject> listS = new ArrayList<>();
+//        List<Subject> subClassP = new ArrayList<>();
 
         for( Resource r : model.listSubjects().toList() ) {
 
             Subject s = new Subject();
             s.setIri(r.getURI());
 
-            for (Statement statement : r.listProperties().toList()){
+            for (Statement statement : r.listProperties().toList()) {
 
-                if(statement.getPredicate().equals(RDF.type)){
+                if (statement.getPredicate().equals(RDF.type)) {
                     s.setType(statement.getObject().toString());
-                } else if(statement.getPredicate().equals(RDFS.domain)){
+                } else if (statement.getPredicate().equals(RDFS.domain)) {
                     s.setDomain(statement.getObject().toString());
-                } else if(statement.getPredicate().equals(RDFS.range)){
+                } else if (statement.getPredicate().equals(RDFS.range)) {
                     s.setRange(statement.getObject().toString());
-                } else{
+                } else if (statement.getPredicate().getURI().equals(SourceGraph.HAS_ATTRIBUTE.val()) || statement.getPredicate().getURI().equals(SourceGraph.HAS_WRAPPER.val())) {
+
+                    Subject property = new Subject();
+                    property.setIri(statement.getPredicate().getURI());
+                    property.setType(statement.getPredicate().getURI());
+                    property.setDomain(s.getIri());
+                    property.setRange(statement.getObject().toString());
+                    listS.add(property);
+                } else if(statement.getPredicate().equals(RDFS.subClassOf)  || statement.getPredicate().equals(RDFS.subPropertyOf)
+
+                ) {
+
+                    Subject property = new Subject();
+                    property.setIri(statement.getPredicate().getURI());
+                    property.setType(statement.getPredicate().getURI());
+                    property.setDomain(statement.getSubject().toString());
+                    property.setRange(statement.getObject().toString());
+                    listS.add(property);
+            } else{
                     // do nothing. Probably statement not useful for graphical graph
+                    System.out.println("NOT USEFUL: "+ statement.getSubject() +","+statement.getPredicate()+", "+statement.getObject() );
                 }
 
             }
@@ -134,13 +166,23 @@ public class OWLToWebVOWL {
             propertiesTypes.add(OWL.DatatypeProperty.getURI());
             propertiesTypes.add(OWL.ObjectProperty.getURI());
             propertiesTypes.add(RDFS.ContainerMembershipProperty.getURI());
+
+            propertiesTypes.add(RDFS.subPropertyOf.getURI());
+            propertiesTypes.add(RDFS.subClassOf.getURI());
+
         propertiesTypes.add(Vocabulary.IntegrationDProperty.val());
         propertiesTypes.add(Vocabulary.IntegrationOProperty.val());
+
+        propertiesTypes.add(SourceGraph.HAS_WRAPPER.val() );
+        propertiesTypes.add(SourceGraph.HAS_ATTRIBUTE.val() );
+
 //        "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"
         List<Subject> classesInfo = listS.stream()
                 .filter(s -> !propertiesTypes.contains(s.getType()) ).collect(Collectors.toList());
         List<Subject> propertiesInfo = listS.stream()
-                .filter(s -> propertiesTypes.contains(s.getType()) ).collect(Collectors.toList());
+                .filter(s -> propertiesTypes.contains(s.getType()) && !s.getType().equals(RDFS.subPropertyOf.getURI()) ).collect(Collectors.toList());
+        List<Subject> subProperties = listS.stream()
+                .filter(s -> s.getType().equals(RDFS.subPropertyOf.getURI())).collect(Collectors.toList());
 
         // create nodes
         int nodeId = 1;
@@ -156,6 +198,7 @@ public class OWLToWebVOWL {
 
             String id = "property" + iProperties;
             String type = s.getPropertyType();
+            propertiesId.put(s.getIri(), id);
 
             String domainID = nodesId.get(s.getDomain());
             String rangeID = nodesId.get(s.getRange());
@@ -171,6 +214,22 @@ public class OWLToWebVOWL {
 
             iProperties++;
         }
+
+
+        for (Subject s : subProperties) {
+
+            String id = "property" + iProperties;
+            String type = s.getPropertyType();
+
+            String domainID = propertiesId.get(s.getDomain());
+            String rangeID = propertiesId.get(s.getRange());
+
+            properties.add(new Property(id,typeWithPrefix( s.getType() ) ));
+            proA.add( new PropertyAttribute( id, s.getIri(), domainID, rangeID ) )  ;
+
+            iProperties++;
+        }
+
 
 //        graph.runAQuery(sparqlQueryPrefixes + " SELECT ?s ?p ?o WHERE { ?s ?p ?o . FILTER NOT EXISTS {?s G:sameAs ?o .}  FILTER NOT EXISTS {  ?s ?p <"+Namespaces.SCHEMA.val() + "identifier>. }} ").forEachRemaining(res -> {
 //            triples.add(new Triple(new ResourceImpl(res.get("s").toString()).asNode(),
@@ -248,6 +307,8 @@ public class OWLToWebVOWL {
             return "RDFS:" + type.replace(RDFS.getURI(), "");
         } else if (type.contains(OWL.getURI())){
             return "OWL:"+type.replace(OWL.getURI(), "");
+        } else if( type.contains(Namespaces.S.val()) ){
+            return "S:"+ type.replace(Namespaces.S.val() , "");
         }
         return type;
 

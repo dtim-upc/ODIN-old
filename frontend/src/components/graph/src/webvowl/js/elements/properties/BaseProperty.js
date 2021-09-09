@@ -205,8 +205,18 @@ module.exports = (function () {
 				var info = new Object();
 				info.iri = that.iri();
 				var url = window.location.href;
-				info.id = url.substring(url.lastIndexOf("=") + 1, url.length);
-				info.type = "object property";
+
+
+        var dataSourceID = getParameterByName("dataSourceID");
+        if(dataSourceID) {
+          info.id = dataSourceID;
+        } else {
+          info.id = url.substring(url.lastIndexOf("=") + 1, url.length);
+        }
+
+
+
+        info.type = "object property";
 				info.isSelected = that.focused();
 				if(that.domain().baseIri() === "http://www.w3.org/2001/XMLSchema/" || that.range().baseIri() === "http://www.w3.org/2001/XMLSchema/")
 					info.type = "datatype property";
@@ -856,7 +866,15 @@ module.exports = (function () {
 
         };
 
-        // update hover elements
+    function getParameterByName(name) {
+      name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+      var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+      return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+
+
+    // update hover elements
 		function updateHoverElements(enable) {
             if (graph.ignoreOtherHoverEvents() === false) {
                 var inversed = false;

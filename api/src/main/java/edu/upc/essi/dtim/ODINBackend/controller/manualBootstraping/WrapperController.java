@@ -6,7 +6,9 @@ import edu.upc.essi.dtim.ODINBackend.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.ODINBackend.repository.WrapperRepository;
 
 import edu.upc.essi.dtim.ODINBackend.services.impl.WrapperService;
-import edu.upc.essi.dtim.ODINBackend.services.omq.wrapper_implementations.JSON_Wrapper;
+import edu.upc.essi.dtim.ODINBackend.utils.jena.parsers.OWLToWebVOWL;
+import org.apache.jena.rdf.model.Model;
+import org.apache.spark.sql.SparkSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,8 @@ public class WrapperController {
     @Autowired
     private WrapperService wrapperService;
 
+
+
     @PostMapping
     public ResponseEntity<Wrapper> createWrapper(@RequestBody Wrapper wrapper) {
         try {
@@ -43,11 +47,32 @@ public class WrapperController {
             //Save to Mongodb
             repository.save(_wrapper);
             //Save to Jena
-            wrapperService.create(wrapper.getName(), wrapper.getAttributes(), wrapper.getDataSourcesId());
+            Model m = wrapperService.create(wrapper.getName(), wrapper.getAttributes(), wrapper.getDataSourcesId());
+
+
+
+            Optional<DataSource> ds =  dataSourcesRepository.findById(wrapper.getDataSourcesId());
+            if(ds.isPresent()){
+
+
+                DataSource _ds = ds.get();
+
+
+                OWLToWebVOWL vowl = new OWLToWebVOWL();
+                vowl.setNamespace(_ds.getIri());
+                vowl.setTitle(_ds.getName());
+                vowl.setPrefix("");
+                String vowlJson = vowl.convertSchema(m);
+                _ds.setGraphicalGraph(vowlJson);
+
+                dataSourcesRepository.save(_ds);
+
+            }
+
             //Log message
             String input = wrapper.toString().replaceAll("[\n\r\t]", "_");
             String returnval = _wrapper.toString().replaceAll("[\n\r\t]", "_");
-            LOGGER.info(LOG_MSG, "createDataSources", input, returnval );
+            LOGGER.info(LOG_MSG, "createWrapper", input, returnval );
             return new ResponseEntity<>(_wrapper, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -74,20 +99,17 @@ public class WrapperController {
         }
     }
     @GetMapping("/inferschema")
-    public ResponseEntity<String[]> getInferredSchema(@RequestParam("dataSourceId") String dataSourceId) {
+    public ResponseEntity<List<String>> getInferredSchema(@RequestParam("dataSourceId") String dataSourceId) {
         System.out.println(dataSourceId);
         Optional<DataSource> optionalDataSource = dataSourcesRepository.findById(dataSourceId);
         if (optionalDataSource.isPresent()) {
-            DataSource ds = optionalDataSource.get();
-            JSON_Wrapper json_wrapper = new JSON_Wrapper(ds, "");
             try {
-                String[] schema = json_wrapper.inferSchema();
-                for (String s : schema)
-                    System.out.println(s);
-                return new ResponseEntity<>(schema, HttpStatus.OK);
+                List<String> schema = wrapperService.inferSchema(optionalDataSource.get());
+                return  new ResponseEntity<>(schema, HttpStatus.OK);
             } catch (Exception e) {
                 System.out.println("Error trying to infer schema");
             }
+
         }
         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }

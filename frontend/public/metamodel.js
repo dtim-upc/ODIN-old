@@ -17,6 +17,55 @@ const Namespaces = {
     sc: "http://schema.org/"
 };
 
+const Wrapper = {
+
+  Attribute: {
+
+    iri: Namespaces.S+"Attribute",
+    name: "S:Attribute",
+    gui_name: "S:Attribute",
+    color: "#33CCCC",
+    isID: false
+  },
+
+  DataSource: {
+
+    iri: Namespaces.S+"DataSource",
+    name: "S:DataSource",
+    gui_name: "S:DataSource",
+    color: "#4256d7",
+    isID: false
+  },
+
+  Wrapper: {
+
+    iri: Namespaces.S+"Wrapper",
+    name: "S:Wrapper",
+    gui_name: "S:Wrapper",
+    color: "#1a92b7",
+    isID: false
+  },
+
+  hasWrapper:{
+
+    iri: Namespaces.S+"hasWrapper",
+    name: "S:hasWrapper",
+    gui_name: "S:hasWrapper",
+    color: "#33CCCC",
+    isID: false
+  },
+  hasAttribute:{
+
+    iri: Namespaces.S+"hasAttribute",
+    name: "S:hasAttribute",
+    gui_name: "S:hasAttribute",
+    color: "#33CCCC",
+    isID: false
+  }
+
+}
+
+
 const SourceGraph_JSON = {
   ContainerMembershipProperty: {
     iri: Namespaces.RDFS+"ContainerMembershipProperty",
@@ -55,21 +104,21 @@ const Integration = {
     iri: Namespaces.I+"IntegrationClass",
     name: Namespaces.I+"IntegrationClass",
     gui_name: "IntegrationClass",
-    color: "#33CCCC",
+    color: "#dfffd6",
     isID: false
   },
   IntegrationDProperty:{
     iri: Namespaces.I+"IntegrationDProperty",
     name: Namespaces.I+"IntegrationDProperty",
     gui_name: "IntegrationDProperty",
-    color: "#33CCCC",
+    color: "#dfffd6",
     isID: false
   },
   IntegrationOProperty:{
     iri: Namespaces.I+"IntegrationOProperty",
     name: "IntegrationOProperty",
     gui_name: "IntegrationOProperty",
-    color: "#33CCCC",
+    color: "#dfffd6",
     isID: false
   }
 

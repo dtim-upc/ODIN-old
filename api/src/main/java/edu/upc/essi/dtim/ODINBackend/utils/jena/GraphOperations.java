@@ -35,11 +35,16 @@ public class GraphOperations {
 
     public Model getGraph(String iri){
 
-        if(ds.containsNamedModel(iri)){
-            Model m = ds.getNamedModel(iri);
-            return ModelFactory.createModelForGraph(m.getGraph());
-        }
-        return null;
+        return Txn.calculateRead(ds, ()-> {
+            if(ds.containsNamedModel(iri)){
+                Model m = ds.getNamedModel(iri);
+//                return ModelFactory.createModelForGraph(m.getGraph());
+                return ModelFactory.createDefaultModel().add(m);
+            }
+            return null;
+
+        });
+
 
     }
 

@@ -584,6 +584,10 @@ module.exports =  function (graph) {
 
             var dataSourceID = getParameterByName("dataSourceID");
 
+      var minimal = getParameterByName("minimal_integration_graph");
+
+      var integration = getParameterByName("integration_graph");
+
 
             console.log({globalGraphID, lavMappingID, dataSourceID});
             if (globalGraphID !== "" && lavMappingID === "") {
@@ -620,11 +624,26 @@ module.exports =  function (graph) {
                 console.log(currentGlobalGraph);
             } else if(dataSourceID !== ""){
 
-              const content = JSON.parse($.ajax({
+              let content = JSON.parse($.ajax({
                   type: "GET",
                   url: odinApi+"/dataSource/"+dataSourceID,
                   async: false
               }).responseText);
+
+              console.log("****")
+              console.log(minimal)
+              console.log(integration)
+
+
+
+              if(minimal){
+                console.log("minimal...")
+                content.graphicalGraph = content.graphicalMinimalIntegration
+              } else if(integration) {
+                console.log("integration...")
+                content.graphicalGraph = content.graphicalIntegration
+              }
+
               currentGlobalGraph = content;
               console.log({currentGlobalGraph});
 

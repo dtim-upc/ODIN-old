@@ -1,41 +1,37 @@
 <template>
-  <q-page>
-
-    <div class="q-pa-lg">
-    <q-stepper v-model="step" ref="stepper" color="primary" animated class="no-padding-stepper">
-      <q-step :name="1" title="Select data sources" icon="settings" :done="step > 1">
-        For each ad campaign that you create, you can control how much you're willing to
-        spend on clicks and conversions, which networks and geographical locations you want
-        your ads to show on, and more.
-
-        <TableDataSourcesAndIntegrations :no_shadow="true" view="integration"/>
-      </q-step>
-
-      <q-step :name="2" title="Alignments" icon="create_new_folder" :done="step > 2">
-
-        <q-input outlined v-model="integratedName" label="Integrated datasource name" placeholder="Type a name for the integrated source" />
-        <TableAlignments :no_shadow="true" :alignments.sync="alignments"/>
-      </q-step>
 
 
-      <q-step :name="3" title="Result" icon="settings" >
-        <q-responsive :ratio="1" style="max-height: 65vh">
-          <Webvowl view="source_graph" :id="integratedId" minimal-i="true"/>
-        </q-responsive>
+      <q-stepper style="max-width: calc(100vw - 48px); " v-model="step" ref="stepper" color="primary" animated class="no-padding-stepper">
+        <q-step :name="1" title="Select data sources" icon="settings" :done="step > 1">
+          For each ad campaign that you create, you can control how much you're willing to
+          spend on clicks and conversions, which networks and geographical locations you want
+          your ads to show on, and more.
 
-      </q-step>
+          <TableDataSourcesAndIntegrations :no_shadow="true" view="integration"/>
+        </q-step>
 
-      <template v-slot:navigation>
-        <q-stepper-navigation>
-          <q-btn @click="clickOk" :disable="disableStepBtn()" color="primary" :label="stepLabel()"/>
-          <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()"   :label="step === 3 ? 'Delete' : 'Back'" class="q-ml-sm"/>
-        </q-stepper-navigation>
-      </template>
-    </q-stepper>
-    </div>
+        <q-step :name="2" title="Alignments" icon="create_new_folder" :done="step > 2">
+
+          <q-input outlined v-model="integratedName" label="Integrated datasource name" placeholder="Type a name for the integrated source" />
+          <TableAlignments :no_shadow="true" :alignments.sync="alignments"/>
+        </q-step>
 
 
-  </q-page>
+        <q-step :name="3" title="Result" icon="settings" >
+          <q-responsive :ratio="1" style="max-height: 65vh">
+            <Webvowl view="source_graph" :id="integratedId" minimal-i="true"/>
+          </q-responsive>
+
+        </q-step>
+
+        <template v-slot:navigation>
+          <q-stepper-navigation>
+            <q-btn @click="clickOk" :disable="disableStepBtn()" color="primary" :label="stepLabel()"/>
+            <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()"   :label="step === 3 ? 'Delete' : 'Back'" class="q-ml-sm"/>
+          </q-stepper-navigation>
+        </template>
+      </q-stepper>
+
 </template>
 
 <script >
@@ -51,10 +47,11 @@ import {useStore, mapActions} from "vuex";
 import notify from 'components/hooks/notify';
 
 export default defineComponent({
-  name: "Template",
+  name: "IntegrationStepper",
   components: {TableAlignments, TableDataSourcesAndIntegrations, Webvowl},
   props: {  setStep: { type: Number, default: 0} },
-  setup(props) {
+  emits: ["finished"],
+  setup(props, {emit}) {
     const store = useStore()
     const integratedId = ref("")
 
@@ -76,7 +73,7 @@ export default defineComponent({
     const disableStepBtn = () =>{
       switch (step.value){
         case 1:
-          return selectedDS.value.filter(v => (v.graphicalGraph ) ).length != 2
+          return selectedDS.value.filter(v => (v.graphicalGraph  || v.graphicalMinimalIntegration  ) ).length != 2
           // return false;
           break;
         case 2:
@@ -128,7 +125,7 @@ export default defineComponent({
               notify.positive("Integration succeeded")
               // console.log(response.data)
               integratedId.value = response.data.id
-                step.value++
+              step.value++
             } else {
               notify.negative("There was an error for the integration task")
             }
@@ -138,6 +135,7 @@ export default defineComponent({
           return false;
           break;
         case 3:
+          emit("finished")
           return false;
           break;
         default:
@@ -149,7 +147,7 @@ export default defineComponent({
 
     return {
       disableStepBtn,
-        stepLabel,
+      stepLabel,
       integratedId,
       integratedName,
       // datasourceA,

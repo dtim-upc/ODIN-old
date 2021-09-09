@@ -12,9 +12,9 @@ const routes = [
       { path: 'omq/:id', component: () => import('pages/OMQWebvowl.vue') },
       { path: 'dataSources', component: () => import('pages/manualBootstrapping/DataSources.vue') },
       { path: 'dataSources/view/:id', component: () => import('pages/manualBootstrapping/DataSourcesView.vue') },
-      { path: 'dataSources/webvowl/:id', component: () => import('pages/webvowl/DatasourceWebVowl.vue') },
+      { path: 'dataSources/webvowl/:id', name:'webvowl', props:true, component: () => import('pages/webvowl/DatasourceWebVowl.vue') },
 
-      { path: 'integration', component: () => import('pages/Integration.vue') },
+      { path: 'integration', name:'integration',props: route => ({setStep: parseInt(route.params.setStep)}), component: () => import('pages/Integration.vue') },
       { path: 'pruebas', component: () => import('pages/Pruebas.vue') },
 
       { path: 'wrappers', component: () => import('pages/manualBootstrapping/Wrappers.vue') },

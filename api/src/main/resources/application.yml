@@ -8,6 +8,15 @@ spring:
       database: odin
       port: 27017
 
+spark:
+  name: "ODIN_spark"
+  bindAddress: "localhost"
+  master: "local[*]"
+  driver:
+      memory: "471859200"
+  testing:
+      memory: "471859200"
+
 info:
   component: Odin is a system that supports incremental pay-as-you-go integration of data sources into dataspaces and provides user-friendly
     querying mechanisms on top of them

@@ -39,23 +39,39 @@ export default defineComponent({
     LAVMappingID: {
       type:String,
       default:''
-    }
+    },
+    minimalI:{type: Boolean, default: false},
+    integrated:{type: Boolean, default: false}
   },
   methods: {
 
     params() {
 
       console.log(this.view)
-      console.log("****")
+      // console.log("****")
       switch (this.view) {
         case "source_graph":
-          return "&dataSourceID="+this.id
+          console.log("int..:" +this.integrated)
+          if(this.minimalI) {
+            return "&dataSourceID="+this.id+"&minimal_integration_graph=true"
+          } else if(this.integrated) {
+            return "&dataSourceID="+this.id+"&integration_graph=true"
+          } else {
+            return "&dataSourceID="+this.id
+          }
+
           break;
         case "mappings_Graph_select":
           return "&id="+this.id+"&LAVMappingID="+this.LAVMappingID
           break;
         case "bdi_manual_alignments":
-          return "&dataSourceID="+this.id
+          if(this.minimalI) {
+            return "&dataSourceID="+this.id+"&minimal_integration_graph=true"
+          } else if(this.integrated) {
+            return "&dataSourceID="+this.id+"&integration_graph=true"
+          } else {
+            return "&dataSourceID="+this.id
+          }
           break;
         case "global_Graph_Edit":
           return "&id="+this.id

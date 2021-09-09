@@ -12,13 +12,13 @@ module.exports = (function () {
       .baseIri(Namespaces.RDFS)
       .iriType(Integration.IntegrationOProperty.iri);
 
-    var label = Integration.IntegrationOProperty.iri.split("/").slice(-1)[0];
-
-    // Disallow overwriting the label
-    this.label = function (p) {
-      if (!arguments.length) return label;
-      return this;
-    };
+    // var label = Integration.IntegrationOProperty.iri.split("/").slice(-1)[0];
+    //
+    // // Disallow overwriting the label
+    // this.label = function (p) {
+    //   if (!arguments.length) return label;
+    //   return this;
+    // };
   };
   o.prototype = Object.create(BaseProperty.prototype);
   o.prototype.constructor = o;

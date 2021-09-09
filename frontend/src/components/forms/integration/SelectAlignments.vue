@@ -27,11 +27,11 @@
 
 
             <q-card-section class="col">
-              <div class="row bg-primary justify-center text-white">
+              <div class="row bg-primary justify-center text-white q-pa-xs">
                 {{ dsA.name }}
               </div>
               <q-responsive :ratio="4/3" style="max-height: 53vh">
-                <Webvowl :view="'bdi_manual_alignments'" :id="dsA.id"/>
+                <Webvowl :view="'bdi_manual_alignments'" :id="dsA.id" :minimal-i="dsA.type == 'INTEGRATED'? true: false"/>
               </q-responsive>
               <div class="q-pt-md">
 
@@ -46,9 +46,9 @@
             </q-card-section>
 
             <q-card-section class="col q-pl-none">
-              <div class="row bg-primary justify-center text-white">{{ dsB.name }}</div>
+              <div class="row bg-primary justify-center text-white q-pa-xs">  {{ dsB.name }}</div>
               <q-responsive :ratio="4/3" style="max-height: 53vh">
-                <Webvowl :view="'bdi_manual_alignments'" :id="dsB.id"/>
+                <Webvowl :view="'bdi_manual_alignments'" :id="dsB.id"   :minimal-i="dsB.type == 'INTEGRATED'? true: false"/>
               </q-responsive>
 
               <div class="q-pt-md">

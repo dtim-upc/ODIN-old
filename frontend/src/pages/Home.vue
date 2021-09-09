@@ -6,28 +6,31 @@
       <h6>Here is what you have done in ODIN</h6>
 
       <div class="row q-col-gutter-lg justify-center">
-        <div class="col-3">
+        <div class="col-3 col-sm-4">
           <q-card class="my-card started-cards text-center column" >
             <q-card-section class="">
-              <img  src="~assets/getStarted/add_datasources.png">
+              <img class="full-width"  src="~assets/getStarted/add_datasources.png">
             </q-card-section>
 
             <q-card-section class="no-padding">
-              <h6 class="no-margin">1. Add data sources</h6>
-              <span>First things first, lets add at least two data sources to ODIN</span>
+              <div>
+
+                <h6 class="no-margin">1. Add data sources</h6>
+                <span>First things first, lets add at least two data sources to ODIN</span>
+              </div>
             </q-card-section>
 
             <q-card-section class="q-mt-auto">
-              <q-btn color="primary" icon="mail" label="Add" />
+              <q-btn rounded :color="datasources.length >1? 'positive':'warning'" icon="note_add" :label="datasources.length >1? 'done': datasources.length+'/2 data sources'" @click="createDS = true"/>
             </q-card-section>
           </q-card>
 
         </div>
-        <div class="col-3">
+        <div class="col-3 col-sm-4">
 
           <q-card class="my-card started-cards text-center column">
             <q-card-section>
-              <img src="~assets/getStarted/integration.png">
+              <img class="full-width" src="~assets/getStarted/integration.png">
             </q-card-section>
 
             <q-card-section class="no-padding">
@@ -36,19 +39,27 @@
             </q-card-section>
 
 
-            <q-card-section class="q-mt-auto">
-              <q-btn color="primary" icon="mail" label="Manual" />
-              <q-btn color="primary" icon="mail" label="Automatic" />
+            <q-card-section class="q-pa-xs">
+
+              <q-btn-group rounded>
+                <q-btn rounded color="primary" icon="person" label="Manual" />
+
+                <q-btn rounded color="primary" icon="memory" label="Automatic" @click="startIntegration =true" />
+
+                </q-btn-group>
+<!--              -->
+<!--              <q-btn rounded color="primary" icon="person" label="Manual" />-->
+<!--              <q-btn rounded color="primary" icon="memory" label="Automatic" />-->
             </q-card-section>
 
           </q-card>
 
         </div>
-        <div class="col-3">
+        <div class="col-3 col-sm-4">
 
           <q-card class="my-card started-cards text-center column ">
             <q-card-section>
-              <img src="~assets/getStarted/query.png">
+              <img class="full-width" src="~assets/getStarted/query.png">
             </q-card-section>
 
             <q-card-section class="no-padding">
@@ -95,6 +106,15 @@
 <!--        </div>-->
 <!--      </div>-->
 
+      <q-dialog v-model="createDS" >
+        <NewDatasourceWrapperStepper style="max-width: calc(100vh - 48px)" @finished="createDS = false"/>
+      </q-dialog>
+
+      <q-dialog v-model="startIntegration" full-width>
+        <IntegrationStepper  @finished="startIntegration = false"/>
+      </q-dialog>
+
+<!--min-width: calc(50vw - 48px)-->
 
     </div>
 
@@ -104,12 +124,35 @@
 
 <script >
 
-import TableGlobalGraph from 'components/tables/TableGlobalGraph.vue';
+// import TableGlobalGraph from 'components/tables/TableGlobalGraph.vue';
+import {computed, ref, onMounted} from 'vue'
+import NewDatasourceWrapperStepper from "components/stepper/NewDatasourceWrapperStepper";
+import IntegrationStepper from "components/stepper/IntegrationStepper";
+import {useStore} from "vuex";
 
 export default {
 
   name: 'Home',
-  components: {TableGlobalGraph }
+  components: {NewDatasourceWrapperStepper, IntegrationStepper },
+  setup() {
+
+    const store = useStore()
+    const createDS = ref(false)
+    const startIntegration = ref(false)
+
+    const datasources = computed(() => store.state.datasource.datasources)
+
+
+
+    onMounted(() => {
+
+        store.dispatch("getDatasources")
+
+    })
+
+    return { createDS, datasources, startIntegration}
+
+  }
 
 }
 

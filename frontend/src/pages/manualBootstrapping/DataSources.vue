@@ -1,18 +1,19 @@
 <template>
   <q-page>
-      <TableDataSources/>
+<!--      <TableDataSources/>-->
+    <TableDataSourcesAndIntegrations />
   </q-page>
 </template>
 
 
 <script >
 
-import TableDataSources from 'components/tables/TableDataSources.vue';
+import TableDataSourcesAndIntegrations from 'components/tables/integration/TableDataSourcesAndIntegrations';
 
 export default {
 
   name: 'PageDataSources',
-  components: {TableDataSources }
+  components: {TableDataSourcesAndIntegrations }
 
 }
 

@@ -1,9 +1,12 @@
 package edu.upc.essi.dtim.ODINBackend.services.impl;
 
+import edu.upc.essi.dtim.ODINBackend.config.DataSourceTypes;
 import edu.upc.essi.dtim.ODINBackend.config.vocabulary.Namespaces;
 import edu.upc.essi.dtim.ODINBackend.config.vocabulary.SourceGraph;
 import edu.upc.essi.dtim.ODINBackend.models.DataSource;
 import edu.upc.essi.dtim.ODINBackend.models.Wrapper;
+import edu.upc.essi.dtim.ODINBackend.models.impl.CSV_datasource;
+import edu.upc.essi.dtim.ODINBackend.models.impl.File_datasource;
 import edu.upc.essi.dtim.ODINBackend.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.ODINBackend.repository.WrapperRepository;
 import edu.upc.essi.dtim.ODINBackend.services.filestorage.StorageProperties;
@@ -60,7 +63,9 @@ public class DataSourceService {
     }
 
     public DataSource create(DataSource dataSource, Boolean bootstrappingType, MultipartFile file) throws IOException {
+        System.out.println("datasource service");
         String path = storageService.store(file);
+
         DataSource _dataSource = new DataSource(dataSource.getName(), dataSource.getType());
         _dataSource.setPath(path);
         _dataSource.setType(getDataSourcetype(file.getOriginalFilename()));
@@ -84,14 +89,16 @@ public class DataSourceService {
         }
     }
 
-    public String getDataSourcetype(String fileName){
+    public DataSourceTypes getDataSourcetype(String fileName){
 
-        return FilenameUtils.getExtension(fileName).toLowerCase();
-//        TODO: maybe  a switch with cases "json" "csv"
-//        switch (FilenameUtils.getExtension(fileName).toLowerCase() ) {
-//            X
-//        }
-
+        switch (FilenameUtils.getExtension(fileName).toLowerCase().trim()) {
+            case "csv":
+                return DataSourceTypes.CSV;
+            case "json":
+                return DataSourceTypes.JSON;
+            default:
+                return null;
+        }
 
     }
 

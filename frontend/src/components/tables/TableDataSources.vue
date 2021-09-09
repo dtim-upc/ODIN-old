@@ -177,9 +177,9 @@ export default defineComponent({
     } )
 
     onMounted(() => {
-      if(datasources.value.length == 0){
+      // if(datasources.value.length == 0){
         store.dispatch("getDatasources")
-      }
+      // }
     })
 
     return {datasources}

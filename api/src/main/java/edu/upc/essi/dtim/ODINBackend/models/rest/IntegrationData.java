@@ -8,10 +8,11 @@ import lombok.Setter;
 import java.util.List;
 
 @Getter @Setter
-public class IntegrationData extends Alignment {
+public class IntegrationData {
 
     private DataSource dsA;
     private DataSource dsB;
+    private String integratedName;
     private List<Alignment> alignments;
 
 //    private String uriA;

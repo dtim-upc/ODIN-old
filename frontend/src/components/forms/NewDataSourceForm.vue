@@ -1,21 +1,22 @@
 <template>
-  <q-dialog v-model="show_dialog" persistent>
-    <q-card style="width: 700px; max-width: 80vw">
-      <q-card-section>
-        <div class="text-h6">Create new data source</div>
-      </q-card-section>
+<!--  <q-dialog v-model="show" persistent>-->
+<!--    <q-card style="width: 700px; max-width: 80vw">-->
+<!--      <q-card-section>-->
+<!--        <div class="text-h6">Create new data source</div>-->
+<!--      </q-card-section>-->
 
-      <q-card-section>
+<!--      <q-card-section>-->
 
-        <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
+        <q-form ref="form" @submit="onSubmit" @reset="onReset" class="q-gutter-md">
           <q-input filled v-model="newDataSources.name" label="Introduce a data source name" lazy-rules
-                   :rules="[                      (val) => (val && val.length > 0) || 'Please type a name',                    ]"/>
+                   :rules="[(val) => (val && val.length > 0) || 'Please type a name', ]"/>
           <q-select v-model="DataSourceType" :options="options" label="Type" class="q-mt-none"/>
 
-          <q-file outlined v-model="uploadedFile" auto-expand label="Select the file you would like to import."
-                  :headers="{ 'content-type': 'multipart/form-data' }" accept="text/csv, application/json">
+          <q-file ref="fileds" outlined v-model="uploadedFile" auto-expand label="Select the file you would like to import."
+                  :headers="{ 'content-type': 'multipart/form-data' }" accept="text/csv, application/json" :max-files="1"
+                  lazy-rules :rules="[(val) => (val && val.name !== '') || 'Please upload a file' ]">
             <template v-slot:prepend>
-              <q-icon name="attach_file"/>
+              <q-icon name="attach_file" @click="this.$refs.fileds.pickFiles();"/>
             </template>
 
 
@@ -25,112 +26,33 @@
           <q-option-group name="bootstrapping_type" v-model="bootstrappingType"
                           :options="[{label: 'Automatically', value: 'auto'},{label: 'Manual', value: 'manual'}]"
                           color="primary" inline/>
-          <div>
+          <div v-if="showFormButtons" >
             <q-btn label="Submit" type="submit" color="primary"/>
             <q-btn label="Cancel" type="reset" color="primary" flat class="q-ml-sm"/>
           </div>
         </q-form>
-      </q-card-section>
-    </q-card>
-  </q-dialog>
+<!--      </q-card-section>-->
+<!--    </q-card>-->
+<!--  </q-dialog>-->
 
-
-  <!--  <q-dialog v-model="show_dialog" persistent>-->
-  <!--    <q-stepper v-model="step" header-nav ref="stepper" color="primary" animated style="width: 700px; max-width: 80vw;">-->
-  <!--      <q-step :name="1" title="Create" icon="settings" :done="step > 1" :header-nav="step > 1">-->
-
-
-  <!--        <q-form ref="DSForm" @submit="onSubmit" class="q-gutter-md">-->
-  <!--          <q-input filled v-model="newDataSources.name" label="Introduce a name for the data source" lazy-rules-->
-  <!--                   :rules="[(val) => (val && val.length > 0) || 'Please type a name',]"/>-->
-
-  <!--          <q-select v-model="newDataSources.type" :options="options" label="Select a datasource type" class="q-mt-none"/>-->
-
-  <!--          <q-file outlined v-model="uploadedFile" multiple label="Select the file you would like to import." auto-expand-->
-  <!--                  :headers="{ 'content-type': 'multipart/form-data' }" accept="text/csv, application/json">-->
-  <!--            <template v-slot:prepend>-->
-  <!--              <q-icon name="attach_file"/>-->
-  <!--            </template>-->
-  <!--          </q-file>-->
-
-  <!--        </q-form>-->
-  <!--        <q-stepper-navigation>-->
-
-  <!--          &lt;!&ndash;          () => { done1 = true; step = 2 }&ndash;&gt;-->
-  <!--          <q-btn @click="validate()" color="primary" label="Create"/>-->
-  <!--          <q-btn @click="onReset" label="Cancel" type="reset" color="primary" flat class="q-ml-sm"/>-->
-  <!--        </q-stepper-navigation>-->
-  <!--      </q-step>-->
-
-  <!--      <q-step :name="2" title="Preview" caption="Optional" icon="create_new_folder" :done="step > 2"-->
-  <!--              :header-nav="step > 2">-->
-
-  <!--        <div class="row q-col-gutter-md">-->
-  <!--          <div class="col-3">-->
-  <!--            <p>hola</p>-->
-
-  <!--          </div>-->
-  <!--          <div class="col-9">-->
-
-  <!--            <p>adios</p>-->
-
-  <!--          </div>-->
-
-  <!--        </div>-->
-
-  <!--        <q-stepper-navigation>-->
-  <!--          <q-btn @click="() => { done2 = true; step = 3 }" color="primary" label="Continue"/>-->
-  <!--          <q-btn flat @click="step = 1" color="primary" label="Back" class="q-ml-sm"/>-->
-  <!--        </q-stepper-navigation>-->
-  <!--      </q-step>-->
-
-  <!--      <q-step-->
-  <!--        :name="3"-->
-  <!--        title="Finish"-->
-  <!--        icon="add_comment"-->
-  <!--        :header-nav="step > 3"-->
-  <!--      >-->
-  <!--        Try out different ad text to see what brings in the most customers, and learn how to-->
-  <!--        enhance your ads using features like ad extensions. If you run into any problems with-->
-  <!--        your ads, find out how to tell if they're running and how to resolve approval issues.-->
-
-  <!--        <q-stepper-navigation>-->
-  <!--          <q-btn color="primary" @click="done3 = true" label="Finish"/>-->
-  <!--          <q-btn flat @click="step = 2" color="primary" label="Back" class="q-ml-sm"/>-->
-  <!--        </q-stepper-navigation>-->
-  <!--      </q-step>-->
-  <!--    </q-stepper>-->
-  <!--  </q-dialog>-->
 </template>
 
-<script >
-import {defineComponent} from "vue";
+<script>
+import {defineComponent, ref} from "vue";
 import {odinApi} from "boot/axios";
-import {ref} from 'vue'
-import {QForm} from "quasar";
-// import * as ODIN_Alerts from "components/ODIN_alerts";
+import notify from "components/hooks/notify";
+import {useStore} from "vuex";
 
 export default defineComponent({
   name: "NewDataSourceForm",
   props: {
-    show_dialog: {
-      type: Boolean,
-      default: false
-    }
+    showFormButtons: {type: Boolean, default: true},
   },
-  emits: {
-    "close-dialog": null
-  },
-  setup() {
-    // const DSForm = ref<QForm>(null)
+  emits: ["submit-sucess"],
+  setup(props , {emit}) {
 
-    return {
-      step: ref(1),
-      bootstrappingType: ref('auto'),
-      // DSForm
-    }
-  },
-  data() {
+    const store = useStore()
+    const form = ref(null)
 
     const options = [
       // "Avro",
@@ -139,116 +61,104 @@ export default defineComponent({
       // "Neo4j",
       // "Parquet",
       // "RESTAPI",
-      "SQLDatabase",
-      "Upload file"
+      "SQLDatabase", "Upload file"
     ];
+    const uploadedFile  = ref(null);
+    const DataSourceType = ref("Upload file");
+    const newDataSources = ref({id: "", name: "", type: ""});
+    const bootstrappingType = ref('auto');
+    const onReset = () => {
 
-    const uploadedFile = new File([], "");
-    const DataSourceType = "";
+      // emit("update:prueb", 2)
+      // console.log(props.show)
+      // props.show = !props.show
+      // console.log("resettting.d..")
 
-    const newDataSources = {
-      id: "",
-      name: "",
-      type: ""
-    };
+      newDataSources.value.name = "";
+      newDataSources.value.type = "";
+      uploadedFile.value = null;
+      bootstrappingType.value = "auto";
 
-    return {
-      DataSourceType,
-      options,
-      newDataSources,
-      uploadedFile,
-    };
-  },
-  mounted() {
-    this.DataSourceType =  "Upload file";
-    // this.newDataSources.type = "Upload file";
-  },
-  methods: {
+      // props.show = false
 
-    // validate() {
-    //
-    //   (this.$refs.DSForm as QForm).validate().then(success => {
-    //     if (success) {
-    //       // yay, models are correct
-    //       // this.onSubmit()
-    //       (this.$refs.DSForm as any).resetValidation()
-    //       console.log("completed")
-    //
-    //     } else {
-    //       // oh no, user has filled in at least one invalid value
-    //       console.log("validation failed")
-    //     }
-    //   })
-    //
-    // },
+    }
 
-    onSubmit() {
-
+    const onSubmit = () => {
       var data = new FormData();
-      data.append("file", this.uploadedFile);
-
-
-      data.append("dataSource", new Blob([JSON.stringify(this.newDataSources)], {
+      // console.log(uploadedFile)
+      data.append("file", uploadedFile.value);
+      // console.log(uploadedFile.value)
+      newDataSources.value.type = "UNKNOWN"
+      data.append("dataSource", new Blob([JSON.stringify(newDataSources.value)], {
         type: "application/json"
       }));
-      var btype = this.bootstrappingType == "auto"? true: false;
+      // console.log(newDataSources.value)
+      var btype = bootstrappingType.value == "auto" ? true : false;
       data.append("bootstrappingType", new Blob([JSON.stringify(btype)], {
         type: "application/json"
       }));
 
-      odinApi
-        .post("/dataSource", data, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
+      odinApi.post("/dataSource", data, {headers: {"Content-Type": "multipart/form-data"},})
         .then((response) => {
           if (response.status == 201) {
-            // console.log("ytesjkjk")
-            // ODIN_Alerts.positiveAlert(`Data Source ${this.newDataSources.name} sucessfully created`)
-            this.$q.notify({
-              color: "positive",
-              textColor: "white",
-              icon: "check_circle",
-              message: `Data Source ${this.newDataSources.name} sucessfully created`,
-            });
+
+            notify.positive(`Data Source ${newDataSources.value.name} successfully created`)
+            onReset()
+            form.value.resetValidation()
             response.data.wrappers = 0;
-            // this.rows.push(response.data);
-            // this.show_dialog = false;
+            // console.log(response.data)
 
 
-            this.step = 2;
 
-            this.newDataSources.name = "";
-            this.bootstrappingType = "auto";
-            this.uploadedFile = new File([], "");
+            let data = {ds: response.data, bootstrapping: btype }
 
-            this.$emit("close-dialog",{
-              status: "created",
-              data: response.data
-            })
+
+            store.dispatch("addDatasource", response.data)
+            emit("submit-sucess", data)
           } else {
-            this.$q.notify({
-              message: "Something went wrong in the server.",
-              color: "negative",
-              icon: "cancel",
-              textColor: "white",
-            });
+            // console.log("error")
+            notify.negative("Cannot create datasource. Something went wrong in the server.")
           }
-        })
-    },
+        }).catch( (error) => {
+        notify.negative("Something went wrong in the server.")
+      });
+    }
 
-    onReset() {
-      this.newDataSources.name = "";
-      this.newDataSources.type = "";
-      this.uploadedFile = new File([], "");
-      this.bootstrappingType = "auto";
-      this.$emit("close-dialog", {
-        status: "cancel",
-      })
-    },
 
+
+
+    return {
+      DataSourceType, options, newDataSources, uploadedFile, bootstrappingType, onSubmit, onReset, form
+    }
   },
+  //
+  // mounted() {
+  //   this.DataSourceType =;
+  //   this.newDataSources.type = "Upload file";
+  // },
+  // methods: {
+  //
+  //   // validate() {
+  //   //
+  //   //   (this.$refs.DSForm as QForm).validate().then(success => {
+  //   //     if (success) {
+  //   //       // yay, models are correct
+  //   //       // this.onSubmit()
+  //   //       (this.$refs.DSForm as any).resetValidation()
+  //   //       console.log("completed")
+  //   //
+  //   //     } else {
+  //   //       // oh no, user has filled in at least one invalid value
+  //   //       console.log("validation failed")
+  //   //     }
+  //   //   })
+  //   //
+  //   // },
+  //
+  //
+  //
+  //
+  // },
 });
 </script>
 

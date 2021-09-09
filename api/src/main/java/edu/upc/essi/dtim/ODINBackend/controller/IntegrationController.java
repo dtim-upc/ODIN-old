@@ -1,12 +1,17 @@
 package edu.upc.essi.dtim.ODINBackend.controller;
 
 import edu.upc.essi.dtim.Nuupdi;
+import edu.upc.essi.dtim.ODINBackend.config.DataSourceTypes;
 import edu.upc.essi.dtim.ODINBackend.models.DataSource;
 import edu.upc.essi.dtim.ODINBackend.models.rest.IntegrationData;
 import edu.upc.essi.dtim.ODINBackend.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.GraphOperations;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.parsers.OWLToWebVOWL;
+import edu.upc.essi.dtim.nuupdi.config.Namespaces;
+import edu.upc.essi.dtim.nuupdi.config.Vocabulary;
+import edu.upc.essi.dtim.nuupdi.jena.Graph;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.Lang;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,22 +42,38 @@ public class IntegrationController {
         Model graphA = graphOperations.getGraph(iData.getDsA().getIri());
         Model graphB = graphOperations.getGraph(iData.getDsB().getIri());
 
-        String integratedIRI = "http://exaple.com";
+        String integratedIRI = Namespaces.G.val() + iData.getIntegratedName();
 
         Model integratedModel = n.Integrate(graphA, graphB, iData.getAlignments());
 
-        DataSource integratedDatasource = new DataSource();
-        integratedDatasource.setType("integrated");
-        integratedDatasource.setPath("");
-        integratedDatasource.setName("namei1sa");
-        integratedDatasource.setIri(integratedIRI);
+        Graph g = new Graph();
+        g.setModel(integratedModel);
+        g.write("/Users/javierflores/Documents/UPC_projects/new/newODIN/api/uploads/int/"+iData.getIntegratedName()+".ttl", Lang.TURTLE);
 
-        OWLToWebVOWL vowl = new OWLToWebVOWL();
-        vowl.setNamespace(integratedDatasource.getIri());
-        vowl.setTitle(integratedDatasource.getName());
-        vowl.setPrefix("");
-        String vowlJson = vowl.convertSchema(n.getMinimalGraph());
-        integratedDatasource.setGraphicalGraph(vowlJson);
+
+        DataSource integratedDatasource = new DataSource();
+        integratedDatasource.setType(DataSourceTypes.INTEGRATED);
+        integratedDatasource.setPath("");
+        integratedDatasource.setName(iData.getIntegratedName());
+        integratedDatasource.setIri(integratedIRI);
+        integratedDatasource.setUnusedA( n.getUnused() );
+
+        System.out.println("unuesed");
+        System.out.println(n.getUnused().toString());
+
+        OWLToWebVOWL vowl = new OWLToWebVOWL(integratedDatasource.getIri(),integratedDatasource.getName() );
+        String vowlJson = vowl.convertSchema(integratedModel);
+
+        integratedDatasource.setGraphicalIntegration(vowlJson);
+
+
+        OWLToWebVOWL vowl2 = new OWLToWebVOWL(integratedDatasource.getIri(),integratedDatasource.getName() );
+        String vowlJson2 = vowl2.convertSchema(n.getMinimalGraph());
+
+        integratedDatasource.setGraphicalMinimalIntegration(vowlJson2);
+
+
+
 
 
         graphOperations.addModel(integratedIRI, integratedModel);

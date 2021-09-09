@@ -10,8 +10,20 @@ const state = {
 // mutations
 const mutations = {
   setDatasources: (state, payload) => {
-    state.datasources = payload
+
+    if(payload === "") { // when no datasources, api answer ""
+      state.datasources = []
+    } else {
+      state.datasources = payload
+    }
+
+
   },
+
+  addDatasource: (state, payload) => {
+    state.datasources.push(payload)
+  },
+
   pushSelectedDatasource: (state, payload) => {
     // state.selectedDatasources = payload
     // console.log("sent:")
@@ -21,14 +33,45 @@ const mutations = {
     // console.log(state.selectedDatasources)
   },
 
+  deleteDataSource:(state,payload) => {
+
+    console.log(payload)
+    console.log(state.selectedDatasources)
+    let index = state.datasources.indexOf(payload)
+    if(index > -1) {
+      console.log("dele index")
+      state.datasources.splice(index,1)
+    } else {
+      // //comes from a table
+      // console.log("filter ")
+      // console.log(payload)
+      // state.selectedDatasources = state.selectedDatasources.filter(x => x.id != payload.key)
+
+
+    }
+
+  },
+
   deleteSelectedDatasource: (state, payload) => {
-    console.log("dele")
+
     console.log(payload)
     console.log(state.selectedDatasources)
     let index = state.selectedDatasources.indexOf(payload)
     if(index > -1) {
+      console.log("dele index")
       state.selectedDatasources.splice(index,1)
+    } else {
+      //comes from a table
+      // console.log("filter ")
+      // console.log(payload)
+      // state.selectedDatasources = state.selectedDatasources.filter(x => x.id != payload.id)
+      //
+      //
     }
+
+
+
+
   }
 
 
@@ -61,7 +104,15 @@ const actions = {
   },
   deleteSelectedDatasource ({commit}, payload ) {
     commit("deleteSelectedDatasource", payload)
+  },
+  deleteDatasource ({commit}, payload ) {
+    commit("deleteDataSource", payload)
+  },
+
+  addDatasource({commit}, payload ) {
+    commit("addDatasource", payload)
   }
+
 
 }
 

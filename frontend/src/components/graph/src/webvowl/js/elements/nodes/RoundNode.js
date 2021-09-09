@@ -82,13 +82,26 @@ module.exports = (function () {
 				var info = new Object();
 				info.iri = that.iri();
 				var url = window.location.href;
-				info.id = url.substring(url.lastIndexOf("=") + 1, url.length);
+
+
+        var dataSourceID = getParameterByName("dataSourceID");
+        if(dataSourceID) {
+          info.id = dataSourceID;
+        } else {
+          info.id = url.substring(url.lastIndexOf("=") + 1, url.length);
+        }
+
+
 				info.type = "class";
 				info.isSelected = that.focused();
 				info.baseIri = that.baseIri();
 				info.label = that.label()
 				var msg = new CustomEvent('clickEle_msg', { detail:info})
 				window.parent.dispatchEvent(msg);
+
+
+
+
 			}
 			if (that.nodeElement())
 				that.nodeElement().select("circle").classed("focused", that.focused());
@@ -261,6 +274,15 @@ module.exports = (function () {
             that.textBlock(createTextBlock());
             renderingElement.select("title").text(that.labelForCurrentLanguage());
         };
+
+    function getParameterByName(name) {
+      name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+      var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+      return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+
+
 		function createTextBlock() {
 			var bgColor=that.backgroundColor();
 			if (that.attributes().indexOf("deprecated")>-1)
