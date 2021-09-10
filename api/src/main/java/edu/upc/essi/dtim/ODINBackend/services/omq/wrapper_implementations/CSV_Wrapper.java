@@ -10,7 +10,6 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;

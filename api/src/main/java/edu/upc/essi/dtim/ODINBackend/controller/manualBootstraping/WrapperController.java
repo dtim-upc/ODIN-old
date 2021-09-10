@@ -4,11 +4,9 @@ import edu.upc.essi.dtim.ODINBackend.models.DataSource;
 import edu.upc.essi.dtim.ODINBackend.models.Wrapper;
 import edu.upc.essi.dtim.ODINBackend.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.ODINBackend.repository.WrapperRepository;
-
 import edu.upc.essi.dtim.ODINBackend.services.impl.WrapperService;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.parsers.OWLToWebVOWL;
 import org.apache.jena.rdf.model.Model;
-import org.apache.spark.sql.SparkSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

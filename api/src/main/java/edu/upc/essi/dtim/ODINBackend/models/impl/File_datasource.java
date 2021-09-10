@@ -1,6 +1,5 @@
 package edu.upc.essi.dtim.ODINBackend.models.impl;
 
-import edu.upc.essi.dtim.ODINBackend.models.DataSource;
 import lombok.Getter;
 import lombok.Setter;
 

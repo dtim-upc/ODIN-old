@@ -8,7 +8,6 @@ import edu.upc.essi.dtim.ODINBackend.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.GraphOperations;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.parsers.OWLToWebVOWL;
 import edu.upc.essi.dtim.nuupdi.config.Namespaces;
-import edu.upc.essi.dtim.nuupdi.config.Vocabulary;
 import edu.upc.essi.dtim.nuupdi.jena.Graph;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;

@@ -1,7 +1,5 @@
 package edu.upc.essi.dtim.ODINBackend.controller.manualBootstraping;
 
-import edu.upc.essi.dtim.ODINBackend.config.vocabulary.Namespaces;
-import edu.upc.essi.dtim.ODINBackend.config.vocabulary.SourceGraph;
 import edu.upc.essi.dtim.ODINBackend.controller.AdminController;
 import edu.upc.essi.dtim.ODINBackend.models.DataSource;
 import edu.upc.essi.dtim.ODINBackend.repository.DataSourcesRepository;
@@ -19,7 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/dataSource")

@@ -1,7 +1,6 @@
 package edu.upc.essi.dtim.ODINBackend.utils.jena;
 
 import edu.upc.essi.dtim.ODINBackend.config.db.JenaConnection;
-import edu.upc.essi.dtim.ODINBackend.controller.manualBootstraping.LavMappingsController;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.query.SelectQuery;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;

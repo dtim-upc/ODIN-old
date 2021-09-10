@@ -4,7 +4,6 @@ package edu.upc.essi.dtim.ODINBackend.utils.jena.parsers;
 import com.google.gson.Gson;
 import edu.upc.essi.dtim.ODINBackend.config.SourceGraph;
 import edu.upc.essi.dtim.ODINBackend.config.vocabulary.Namespaces;
-import edu.upc.essi.dtim.ODINBackend.controller.manualBootstraping.LavMappingsController;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.GraphOperations;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.parsers.models.*;
 import edu.upc.essi.dtim.nuupdi.config.Vocabulary;
