@@ -134,13 +134,7 @@ public class DataSourceService {
 
         graphOperations.addModel(dataSource.getIri(), bootsrapM);
 
-//        try {
-//            Owl2Vowl vowl = new Owl2Vowl(new FileInputStream(bootstrappingFile));
-//            dataSource.setGraphicalGraph(vowl.getJsonAsString());
-//            return dataSource;
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
+
         return dataSource;
     }
 

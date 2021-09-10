@@ -63,18 +63,6 @@ public class DataSourcesController {
         }
     }
 
-    // TODO: maybe a @PostMapping for adding new files to a datasource is useful.
-
-//    @PostMapping("/uploadFile")
-//    public ResponseEntity<HttpStatus> uploadMultipartFile(@RequestParam MultipartFile file) throws IOException {
-//        String path = storageService.store(file);
-//        System.out.println(path);
-//
-//
-//        return new ResponseEntity<>(null, HttpStatus.OK);
-//    }
-
-
 
     @GetMapping
     public ResponseEntity<List<DataSource>> getAllDataSources() {

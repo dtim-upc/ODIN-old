@@ -23,5 +23,4 @@ public interface StorageService {
 
     void delete(String path) throws IOException;
 
-//    void setRandomSeed(String randomSeed);
 }

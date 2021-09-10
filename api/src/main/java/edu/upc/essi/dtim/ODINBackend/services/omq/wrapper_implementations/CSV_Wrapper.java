@@ -44,35 +44,7 @@ public class CSV_Wrapper implements WrapperI<DataSource> {
         return Arrays.asList( ds.schema().fieldNames() ) ;
     }
 
-//    @Override
-//    public String preview(List<String> attributes) throws Exception {
-//        JSONArray data = new JSONArray();
-//        Dataset<Row> ds = spark.read()
-//                .option("header",String.valueOf(this.headerInFirstRow))
-//                .option("delimiter",this.columnDelimiter)
-//                .csv(this.path);
-//        String tableName = UUID.randomUUID().toString().replace("-","");
-//        ds.createTempView(tableName);
-//
-//        spark.sql("select "+String.join(",",
-//                attributes.stream().filter(a->!a.isEmpty()).map(a -> "`"+a+"`")
-//                        .collect(Collectors.toList()))+" from "+tableName+" limit 10")
-//                .toJavaRDD()
-//                .collect()
-//                .forEach(r -> {
-//                    JSONArray arr = new JSONArray();
-//                    attributes.stream().filter(a->!a.isEmpty()).forEach(a -> {
-//                        JSONObject datum = new JSONObject();
-//                        datum.put("attribute",a);
-//                        datum.put("value",String.valueOf(r.get(r.fieldIndex(a))));
-//                        arr.add(datum);
-//                    });
-//                    data.add(arr);
-//                });
-//        spark.close();
-//        JSONObject res = new JSONObject(); res.put("data",data);
-//        return res.toJSONString();
-//    }
+
 
 
 

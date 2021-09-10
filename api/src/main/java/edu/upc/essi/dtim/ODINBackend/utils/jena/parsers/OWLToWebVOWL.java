@@ -117,7 +117,6 @@ public class OWLToWebVOWL {
         graph.setModel(model);
 
         List<Subject> listS = new ArrayList<>();
-//        List<Subject> subClassP = new ArrayList<>();
 
         for( Resource r : model.listSubjects().toList() ) {
 
