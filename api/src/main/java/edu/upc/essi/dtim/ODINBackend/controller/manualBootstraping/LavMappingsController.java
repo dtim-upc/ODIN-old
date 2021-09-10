@@ -23,7 +23,7 @@ import java.util.Optional;
 @RequestMapping("/lavMapping")
 public class LavMappingsController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LavMappingsController.class);
     private static final String LOG_MSG = "{} request finished with inputs: {} and return value: {}";
     private static final String EMPTY_INPUTS = "{}";
 
@@ -54,7 +54,7 @@ public class LavMappingsController {
 
     @GetMapping("/{id}")
     public ResponseEntity<LavMapping> getLavMapping(@PathVariable String id) {
-        System.out.println("Recieved");
+        LOGGER.info("Recieved");
         try {
             Optional<LavMapping> optionalLavMapping = repository.findById(id);
             if (optionalLavMapping.isPresent()) {
@@ -70,7 +70,7 @@ public class LavMappingsController {
     public ResponseEntity<HttpStatus> editLavMapping(@PathVariable("id") String id, @RequestBody SameAs[] sameAsArr) {
         try {
             for (SameAs sameAs: sameAsArr) {
-                System.out.println(sameAs.toString());
+                LOGGER.info(sameAs.toString());
             }
             Optional<LavMapping> optionalLavMapping = repository.findById(id);
             if (optionalLavMapping.isPresent()) {
@@ -107,7 +107,7 @@ public class LavMappingsController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteLavMapping(@PathVariable("id") String id) {
-        System.out.println(id);
+        LOGGER.info(id);
         try {
             repository.deleteById(id);
             LOGGER.info(LOG_MSG, "deleteGlobalGraph", id, HttpStatus.NO_CONTENT.toString() );

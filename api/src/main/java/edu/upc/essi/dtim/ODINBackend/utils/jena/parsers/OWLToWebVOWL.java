@@ -4,6 +4,7 @@ package edu.upc.essi.dtim.ODINBackend.utils.jena.parsers;
 import com.google.gson.Gson;
 import edu.upc.essi.dtim.ODINBackend.config.SourceGraph;
 import edu.upc.essi.dtim.ODINBackend.config.vocabulary.Namespaces;
+import edu.upc.essi.dtim.ODINBackend.controller.manualBootstraping.LavMappingsController;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.GraphOperations;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.parsers.models.*;
 import edu.upc.essi.dtim.nuupdi.config.Vocabulary;
@@ -15,6 +16,8 @@ import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -26,6 +29,8 @@ public class OWLToWebVOWL {
 
     @Autowired
     GraphOperations graphO;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(OWLToWebVOWL.class);
 
     String prefix = "G";
     String namespace = "";
@@ -147,12 +152,12 @@ public class OWLToWebVOWL {
                     listS.add(property);
             } else{
                     // do nothing. Probably statement not useful for graphical graph
-                    System.out.println("NOT USEFUL: "+ statement.getSubject() +","+statement.getPredicate()+", "+statement.getObject() );
+                    LOGGER.info("NOT USEFUL: "+ statement.getSubject() +","+statement.getPredicate()+", "+statement.getObject() );
                 }
 
             }
             if(s.getType() == null) {
-                System.out.println("SOMETHING IS WRONG IN THE MODEL. No type definition for resource "+s.getIri());
+                LOGGER.info("SOMETHING IS WRONG IN THE MODEL. No type definition for resource "+s.getIri());
             } else {
                 listS.add(s);
             }

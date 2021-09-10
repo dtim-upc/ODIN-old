@@ -39,7 +39,7 @@ public class OMQController {
 
     @PostMapping(value="fromGraphicalToSPARQL" , consumes = "application/json")
     public ResponseEntity<String> POST_omq_fromGraphicalToSPARQL(@RequestBody String body) {
-        System.out.println("[POST /OMQ/fromGraphicalToSPARQL/] body = "+body);
+        LOGGER.info("[POST /OMQ/fromGraphicalToSPARQL/] body = "+body);
         JSONObject objBody = (JSONObject) JSONValue.parse(body);
         String select = "SELECT ";
         String values = "VALUES (";
@@ -76,10 +76,10 @@ public class OMQController {
 
     @PostMapping(value ="fromSPARQLToRA", consumes = "application/json")
     public ResponseEntity<String> POST_omq_fromSPARQLToRA(@RequestBody String body) throws Exception{
-        System.out.println("[POST /omq/fromSPARQLToRA/] body = "+body);
+        LOGGER.info("[POST /omq/fromSPARQLToRA/] body = "+body);
 
 
-//        System.out.println("[POST /omq/fromSPARQLToRA/] body = "+body);
+//        LOGGER.info("[POST /omq/fromSPARQLToRA/] body = "+body);
 //        JSONObject objBody = (JSONObject) JSONValue.parse(body);
 //
 //        String SPARQL = objBody.getAsString("sparql");
@@ -158,7 +158,7 @@ public class OMQController {
 //        });
 //        String SQLstr = SQL.substring(0,SQL.length()-" UNION ".length())+";";
 //
-//        System.out.println(SQLstr);
+//        LOGGER.info(SQLstr);
 //
 //        out.put("wrappers",wrappers);
 //        out.put("sql",SQLstr);
@@ -170,7 +170,7 @@ public class OMQController {
 
     @PostMapping(value ="fromSQLToData", consumes = "application/json")
     public ResponseEntity<String> POST_omq_fromSQLToData(@RequestBody String body) {
-        System.out.println("[POST /omq/fromSQLToData/] body = "+body);
+        LOGGER.info("[POST /omq/fromSQLToData/] body = "+body);
 
         return new ResponseEntity<>("", HttpStatus.OK );
     }

@@ -1,6 +1,7 @@
 package edu.upc.essi.dtim.ODINBackend.utils.jena;
 
 import edu.upc.essi.dtim.ODINBackend.config.db.JenaConnection;
+import edu.upc.essi.dtim.ODINBackend.controller.manualBootstraping.LavMappingsController;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.query.SelectQuery;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
@@ -9,6 +10,8 @@ import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.apache.jena.rdf.model.impl.ResourceImpl;
 import org.apache.jena.system.Txn;
 import org.apache.jena.update.UpdateAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +28,8 @@ public class GraphOperations {
     private JenaConnection jenaConnection;
     private Dataset ds;
     private SelectQuery selectQuery = new SelectQuery();
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(GraphOperations.class);
 
     @PostConstruct
     public void init(){
@@ -66,9 +71,8 @@ public class GraphOperations {
             features.add(t.get("o").asNode().getURI());
         });
         String[] featuresArray = features.toArray(new String[0]);
-        System.out.println("THIS");
         for (String s : featuresArray) {
-            System.out.println(s);
+            LOGGER.info(s);
         }
         return featuresArray;
     }
@@ -142,7 +146,7 @@ public class GraphOperations {
             try {
                 UpdateAction.parseExecute(sparqlQuery, ds);
             } catch (Exception e) {
-                System.out.println("Error occurred while Updating a quiery");
+                LOGGER.error("Error occurred while Updating a quiery");
             }
         });
 

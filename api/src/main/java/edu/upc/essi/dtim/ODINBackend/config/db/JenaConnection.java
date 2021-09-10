@@ -23,19 +23,19 @@ public class JenaConnection {
     public JenaConnection() {}
 
     public Dataset getTDBDataset() {
-        System.out.println("getTDBDataset()");
-        System.out.println("Jena Dir: " + dir);
-        System.out.println("Jena Name: " + name);
+        LOGGER.info("getTDBDataset()");
+        LOGGER.info("Jena Dir: " + dir);
+        LOGGER.info("Jena Name: " + name);
         if (dataset == null) {
             try {
                 dataset = TDBFactory.createDataset(dir+"/"+name);
 
                 if(dataset== null){
-                    System.out.println("DATASET NULO");
+                    LOGGER.info("DATASET NULO");
                 }
 
             } catch (Exception e) {
-                System.out.println("An error has occurred obtaining TDB dataset");
+                LOGGER.info("An error has occurred obtaining TDB dataset");
             }
 
 
@@ -56,8 +56,7 @@ public class JenaConnection {
 
     @PreDestroy
     public void destroy() {
-        System.out.println(
-                "Callback triggered Jena Connection - @PreDestroy.");
+        LOGGER.info("Callback triggered Jena Connection - @PreDestroy.");
         close();
     }
 

@@ -63,7 +63,6 @@ public class DataSourceService {
     }
 
     public DataSource create(DataSource dataSource, Boolean bootstrappingType, MultipartFile file) throws IOException {
-        System.out.println("datasource service");
         String path = storageService.store(file);
 
         DataSource _dataSource = new DataSource(dataSource.getName(), dataSource.getType());

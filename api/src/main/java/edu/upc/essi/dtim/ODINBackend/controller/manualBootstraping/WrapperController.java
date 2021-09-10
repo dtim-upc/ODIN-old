@@ -100,14 +100,14 @@ public class WrapperController {
     }
     @GetMapping("/inferschema")
     public ResponseEntity<List<String>> getInferredSchema(@RequestParam("dataSourceId") String dataSourceId) {
-        System.out.println(dataSourceId);
+        LOGGER.info(dataSourceId);
         Optional<DataSource> optionalDataSource = dataSourcesRepository.findById(dataSourceId);
         if (optionalDataSource.isPresent()) {
             try {
                 List<String> schema = wrapperService.inferSchema(optionalDataSource.get());
                 return  new ResponseEntity<>(schema, HttpStatus.OK);
             } catch (Exception e) {
-                System.out.println("Error trying to infer schema");
+                LOGGER.info("Error trying to infer schema");
             }
 
         }

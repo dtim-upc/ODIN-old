@@ -6,12 +6,9 @@
       <h6>Here is what you have done in ODIN</h6>
 
       <div class="row q-col-gutter-lg justify-center">
-        <div class="col-3 col-sm-4">
+        <div class="col-md-3 col-sm-4">
           <q-card class="my-card started-cards text-center column" >
-            <q-card-section class="">
-              <img class="full-width"  src="~assets/getStarted/add_datasources.png">
-            </q-card-section>
-
+            <img class="full-width"  src="~assets/getStarted/add_datasources.png">
             <q-card-section class="no-padding">
               <div>
 
@@ -26,12 +23,10 @@
           </q-card>
 
         </div>
-        <div class="col-3 col-sm-4">
+        <div class="col-md-3 col-sm-4">
 
           <q-card class="my-card started-cards text-center column">
-            <q-card-section>
-              <img class="full-width" src="~assets/getStarted/integration.png">
-            </q-card-section>
+            <img class="full-width" src="~assets/getStarted/integration.png">
 
             <q-card-section class="no-padding">
               <h6 class="no-margin">2. Integrate them</h6>
@@ -55,12 +50,10 @@
           </q-card>
 
         </div>
-        <div class="col-3 col-sm-4">
+        <div class="col-md-3 col-sm-4">
 
           <q-card class="my-card started-cards text-center column ">
-            <q-card-section>
-              <img class="full-width" src="~assets/getStarted/query.png">
-            </q-card-section>
+            <img class="full-width" src="~assets/getStarted/query.png">
 
             <q-card-section class="no-padding">
               <h6 class="no-margin">3. Query global graph</h6>

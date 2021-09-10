@@ -106,7 +106,6 @@ public class FileSystemStorageService implements StorageService {
         if(path == null || path.equals("") ) {
             return;
         }
-        System.out.println( path);
         FileSystemUtils.deleteRecursively(Paths.get(path));
     }
 

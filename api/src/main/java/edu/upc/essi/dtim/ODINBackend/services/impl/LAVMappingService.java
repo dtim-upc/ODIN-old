@@ -1,6 +1,7 @@
 package edu.upc.essi.dtim.ODINBackend.services.impl;
 
 import edu.upc.essi.dtim.ODINBackend.config.Namespaces;
+import edu.upc.essi.dtim.ODINBackend.controller.manualBootstraping.LavMappingsController;
 import edu.upc.essi.dtim.ODINBackend.models.DataSource;
 import edu.upc.essi.dtim.ODINBackend.models.LavMapping;
 import edu.upc.essi.dtim.ODINBackend.models.SameAs;
@@ -9,6 +10,8 @@ import edu.upc.essi.dtim.ODINBackend.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.ODINBackend.repository.LavMappingRepository;
 import edu.upc.essi.dtim.ODINBackend.repository.WrapperRepository;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.GraphOperations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.Optional;
@@ -24,6 +27,8 @@ public class LAVMappingService {
     private LavMappingRepository lavMappingRepository;
     @Autowired
     private GraphOperations graphOperations;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(LAVMappingService.class);
 
     public void deleteLavMappingByGlobalGraphId(String globalGraphId) {
         Iterable<LavMapping> lavMappingIterable = lavMappingRepository.findAllByGlobalGraphId(globalGraphId);
@@ -53,7 +58,7 @@ public class LAVMappingService {
         }
         lavMappingRepository.save(lavMapping);
         if (optionalWrapper.isPresent()) {
-            System.out.println("Setting id = " + lavMapping.getId());
+            LOGGER.info("Setting id = " + lavMapping.getId());
             wrapper.setLavMappingId(lavMapping.getId());
             wrapperRepository.save(wrapper);
         }

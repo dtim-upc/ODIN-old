@@ -140,7 +140,7 @@ public class GlobalGraphController {
             if (data.getIsModified().equals("true")) {
                 LOGGER.info( "[\"@PutMapping(\"/{id}\")\"] Modified" );
                 // The field deleted should contain keys “classes” and “properties”.
-                System.out.println("Modified equals true");
+                LOGGER.info("Modified equals true");
                 //Saves ttl to MongoDB
                 _globalGraph.setGraphicalGraph(globalGraph.getGraphicalGraph());
                 if (first_save) {
@@ -184,14 +184,14 @@ public class GlobalGraphController {
 
     @GetMapping("/flagGET")
     public ResponseEntity<HttpStatus> GET_graph() {
-        System.out.println("flagGET");
+        LOGGER.info("flagGET");
         String out = "";
 
         try{
             ResultSet rs = graphOperations.runAQuery("SELECT * WHERE {GRAPH ?g {?s ?p ?o.}}");
             out = ResultSetFormatter.asText(rs);
-            System.out.println("RESULT:");
-            System.out.println(out);
+            LOGGER.info("RESULT:");
+            LOGGER.info(out);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
@@ -201,7 +201,7 @@ public class GlobalGraphController {
 
     @PutMapping("/{id}/graphicalGraph")
     public ResponseEntity<GlobalGraph> updateGraphicalGraph(@PathVariable("id") String id, @RequestBody String graphicalGraph) {
-        System.out.println("@PutMapping(\"/{id}/graphicalGraph\")");
+        LOGGER.info("@PutMapping(\"/{id}/graphicalGraph\")");
         Optional<GlobalGraph> tutorialData = repository.findById(id);
 
         if (tutorialData.isPresent()) {

@@ -28,14 +28,13 @@ public class AppConfig {
 
     @Bean
     public SparkConf sparkConf() {
-        SparkConf sparkConf = new SparkConf()
+        return new SparkConf()
                 .setAppName(sparkAppName)
                 .setMaster(masterURI)
                 .set("spark.driver.bindAddress", sparkBindAddress)
                 .set("spark.driver.memory", sparkDriverMemory  )
                 .set("spark.testing.memory", sparkTestingMemory  );
 
-        return sparkConf;
     }
 
     @Bean
@@ -56,18 +55,6 @@ public class AppConfig {
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
     }
-//    @Bean
-//    @DependsOn("Jena")
-//    public GraphOperations getGraphOperations() {
-//        return new GraphOperations();
-//    }
-
-//    @Bean
-//    public JenaConnection getJenaConnection() {
-//        JenaConnection conn = JenaConnection.getInstance();
-//        conn.init();
-//        return conn;
-//    }
 
 
 

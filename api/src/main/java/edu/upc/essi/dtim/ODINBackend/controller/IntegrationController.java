@@ -58,8 +58,8 @@ public class IntegrationController {
         integratedDatasource.setIri(integratedIRI);
         integratedDatasource.setUnusedA( n.getUnused() );
 
-        System.out.println("unuesed");
-        System.out.println(n.getUnused().toString());
+        LOGGER.info("unuesed");
+        LOGGER.info(n.getUnused().toString());
 
         OWLToWebVOWL vowl = new OWLToWebVOWL(integratedDatasource.getIri(),integratedDatasource.getName() );
         String vowlJson = vowl.convertSchema(integratedModel);
