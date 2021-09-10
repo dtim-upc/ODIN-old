@@ -457,7 +457,7 @@ main {
 #canvasArea #graph {
 	box-sizing: border-box;
 	margin: 0 0 2px 0;
-	background-color: #ecf0f1;
+	background-color: #f4f8fb;
 	overflow: hidden;
 	padding: 0;
 	width: 100%;

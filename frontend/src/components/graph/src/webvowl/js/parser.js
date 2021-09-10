@@ -289,6 +289,12 @@ module.exports = function (graph) {
 					// Create the matching object and set the properties
 					var property = new Prototype(graph);
 
+          console.log("P label is " +element.label)
+          console.log("DOM: "+element.baseIri)
+          console.log(element.iri)
+
+
+
 
 					property.annotations(element.annotations)
 						.baseIri(element.baseIri)
@@ -327,12 +333,12 @@ module.exports = function (graph) {
 						property.attributes(deduplicatedAttributes.values());
 					}
 					combinations.push(property);
-          if(element.label == "rdf-schema#subPropertyOf"){
-            console.log("P label is " +element.label)
-            console.log("DOM: "+element.domain)
-            console.log(element.range)
-            console.log("P IS: "+ property.domain())
-          }
+          // if(element.label == "rdf-schema#subPropertyOf"){
+          //   console.log("P label is " +element.label)
+          //   console.log("DOM: "+element.domain)
+          //   console.log(element.range)
+          //   console.log("P IS: "+ property.domain())
+          // }
 
 				} else {
 					console.error("Unknown element type: " + element.type);

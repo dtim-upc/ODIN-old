@@ -33,7 +33,7 @@ module.exports = function (graph) {
                 hideSelection(true);
                 saveGraphMenu.hide(true);
                 //hide sidebars and menu bar to keep just the graph
-                showJustGraph(false);
+                showJustGraph(true);
             } else if (config.test_incDI_visualize === "true") {
                 console.log("**config test");
                 hideOMQ(true);

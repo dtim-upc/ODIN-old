@@ -40,21 +40,35 @@ public class PropertyAttribute {
         this.attributes.add("object");
     }
 
-
     public String getLastElem(String iri) {
-        String[] bits = iri.split("/");
+        String regex = "/";
+        if(iri.contains("#")){
+            regex = "#";
+        }
+        String[] bits = iri.split(regex);
         String label = bits[bits.length - 1]; // it could throw an exception when split empty....CHECK!
+
+        if(label.contains(".")){
+            String[] bits2 = label.split("\\.");
+            label = bits2[bits2.length - 1];
+        }
+
         return label;
     }
 
     public String getBaseIri(String iri) {
-        String[] elem = iri.split("/");
+        String regex = "/";
+        if(iri.contains("#")){
+            regex = "#";
+        }
+        String[] elem = iri.split(regex);
         String baseIri = "";
         for (int i = 0; i < elem.length - 1; i++) {
             baseIri += elem[i] + "/";
         }
         return baseIri;
     }
+
 
 
 }

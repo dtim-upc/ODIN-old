@@ -321,6 +321,12 @@ public class OWLToWebVOWL {
         }
         String[] bits = iri.split(regex);
         String label = bits[bits.length - 1]; // it could throw an exception when split empty....CHECK!
+
+        if(label.contains(".")){
+            String[] bits2 = label.split("\\.");
+            label = bits2[bits2.length - 1];
+        }
+
         return label;
     }
 
