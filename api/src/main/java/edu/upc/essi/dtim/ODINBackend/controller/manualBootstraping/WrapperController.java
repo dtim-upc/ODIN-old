@@ -73,7 +73,7 @@ public class WrapperController {
             LOGGER.info(LOG_MSG, "createWrapper", input, returnval );
             return new ResponseEntity<>(_wrapper, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -93,7 +93,7 @@ public class WrapperController {
             LOGGER.info(LOG_MSG, "getAllWrappers", EMPTY_INPUTS, "" );
             return new ResponseEntity<>(wrappers, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     @GetMapping("/inferschema")
@@ -109,7 +109,7 @@ public class WrapperController {
             }
 
         }
-        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping("/view/{id}")
@@ -124,7 +124,7 @@ public class WrapperController {
             LOGGER.info(LOG_MSG, "getWrapper", id, "" );
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

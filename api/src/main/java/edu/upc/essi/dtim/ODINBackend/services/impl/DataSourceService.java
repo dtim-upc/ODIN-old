@@ -104,19 +104,17 @@ public class DataSourceService {
         String filename = FilenameUtils.getName(dataSource.getPath());
         String dir = properties.getLocation()+"/bootstrapping/";
         verifyDir(dir);
-        String bootstrappingFile =dir +FilenameUtils.getBaseName(dataSource.getPath())+".ttl";
         Model bootsrapM = ModelFactory.createDefaultModel();
         switch (FilenameUtils.getExtension(dataSource.getPath())){
             case "csv":
 
                 CSVBootstrap bootstrap = new CSVBootstrap();
                 bootsrapM = bootstrap.bootstrapSchema(dataSource.getIri(),  dataSource.getPath() );
-//                bootstrap.write(bootstrappingFile, "TTL");
+
                 break;
             case "json":
                 JSONBootstrap jsonBootstrap =  new JSONBootstrap();
                 bootsrapM = jsonBootstrap.bootstrapSchema(dataSource.getIri(),  dataSource.getPath());
-//                jsonBootstrap.write(bootstrappingFile, "TTL");
 
                 break;
             default:

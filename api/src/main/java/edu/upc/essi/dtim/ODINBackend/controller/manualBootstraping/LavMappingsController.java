@@ -38,14 +38,14 @@ public class LavMappingsController {
             repository.findAll().forEach(lavMappings::add);
 
             if (lavMappings.isEmpty()) {
-                ResponseEntity response = new ResponseEntity(HttpStatus.NO_CONTENT);
+                ResponseEntity<List<LavMapping>> response = new ResponseEntity(HttpStatus.NO_CONTENT);
                 LOGGER.info(LOG_MSG, "getAllLavMappings", "", response);
                 return response;
             }
             LOGGER.info(LOG_MSG, "getAllLavMappings", EMPTY_INPUTS, "" );
             return new ResponseEntity<>(lavMappings, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -58,9 +58,9 @@ public class LavMappingsController {
                 LavMapping lavMapping = optionalLavMapping.get();
                 return new ResponseEntity<>(lavMapping, HttpStatus.OK);
             }
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>( HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     @PutMapping("/{id}")
@@ -96,7 +96,7 @@ public class LavMappingsController {
             LOGGER.info(LOG_MSG, "createGlobalGraph", input, returnval );
             return new ResponseEntity<>(_lavmapping, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

@@ -50,14 +50,14 @@ public class GlobalGraphController {
             repository.findAll().forEach(globalGraphs::add);
 
             if (globalGraphs.isEmpty()) {
-                ResponseEntity response = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                ResponseEntity<List<GlobalGraph>> response = new ResponseEntity<>(HttpStatus.NO_CONTENT);
                 LOGGER.info(LOG_MSG, "getAllGlobalGraphs", "", response);
                 return response;
             }
             LOGGER.info(LOG_MSG, "getAllGlobalGraphs", EMPTY_INPUTS, "" );
             return new ResponseEntity<>(globalGraphs, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -73,7 +73,7 @@ public class GlobalGraphController {
             LOGGER.info(LOG_MSG, "getGlobalGraphs", id, "" );
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -85,7 +85,7 @@ public class GlobalGraphController {
             String[] features = graphOperations.getFeaturesWithConceptFromGraph(globalGraph.getNamedGraph());
             return new ResponseEntity<>(features, HttpStatus.OK);
         }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>( HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/{id}")
@@ -100,7 +100,7 @@ public class GlobalGraphController {
             LOGGER.info(LOG_MSG, "getGraphicalGraph", id, "" );
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

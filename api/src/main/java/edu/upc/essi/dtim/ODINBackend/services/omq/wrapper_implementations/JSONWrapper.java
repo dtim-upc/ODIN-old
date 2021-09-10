@@ -21,23 +21,17 @@ import java.util.Set;
 
 @Component
 @Getter @Setter
-public class JSON_Wrapper implements WrapperI<DataSource> {
+public class JSONWrapper implements WrapperI<DataSource> {
 
     @Autowired
     private SparkSession spark;
 
-
-//    private String path;
     private List<String> explodeLevels;
     private String arrayOfValues;
     private String attributeForSchema;
     private String valueForAttribute;
     private String copyToParent;
 
-    public JSON_Wrapper(){
-        super();
-
-    }
 
     @Override
     public DataSourceTypes getType() {
@@ -55,13 +49,6 @@ public class JSON_Wrapper implements WrapperI<DataSource> {
 
         String[] res = attributes.toArray(new String[0]);
 
-        /*
-        JSONObject res = new JSONObject();
-        res.put("schema", new Gson().toJson(attributes));
-         */
-//        spark.close();
-        //return res.toJSONString();
-        //return super.inferSchema();
         return Arrays.asList( res );
     }
 

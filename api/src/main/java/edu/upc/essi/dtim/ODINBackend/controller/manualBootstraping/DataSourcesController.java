@@ -53,7 +53,7 @@ public class DataSourcesController {
             LOGGER.info(LOG_MSG, "createDataSources", input, returnval);
             return new ResponseEntity<>(_dataSource, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -74,7 +74,7 @@ public class DataSourcesController {
             LOGGER.info(LOG_MSG, "getAllDataSources", EMPTY_INPUTS, "" );
             return new ResponseEntity<>(dataSources, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     @GetMapping("/{id}")
@@ -89,7 +89,7 @@ public class DataSourcesController {
             LOGGER.info(LOG_MSG, "getDataSources", id, "" );
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
