@@ -1,11 +1,13 @@
 package edu.upc.essi.dtim.ODINBackend.config.db;
+import edu.upc.essi.dtim.ODINBackend.controller.IntegrationController;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.tdb.TDBFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PreDestroy;
-import java.util.logging.Logger;
 
 @Component
 public class JenaConnection {
@@ -17,15 +19,13 @@ public class JenaConnection {
 
 
     private static JenaConnection instance = new JenaConnection();
-    private static final Logger LOGGER = Logger.getLogger(JenaConnection.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(JenaConnection.class);
     private Dataset dataset;
-
-    public JenaConnection() {}
 
     public Dataset getTDBDataset() {
         LOGGER.info("getTDBDataset()");
-        LOGGER.info("Jena Dir: " + dir);
-        LOGGER.info("Jena Name: " + name);
+        LOGGER.info("Jena Dir: {}" , dir);
+        LOGGER.info("Jena Name: {}" , name);
         if (dataset == null) {
             try {
                 dataset = TDBFactory.createDataset(dir+"/"+name);

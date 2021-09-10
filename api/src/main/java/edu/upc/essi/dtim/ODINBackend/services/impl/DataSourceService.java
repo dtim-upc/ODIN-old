@@ -66,7 +66,7 @@ public class DataSourceService {
         DataSource _dataSource = new DataSource(dataSource.getName(), dataSource.getType());
         _dataSource.setPath(path);
         _dataSource.setType(getDataSourcetype(file.getOriginalFilename()));
-        if(bootstrappingType) {
+        if(bootstrappingType == true) {
             _dataSource = bootstrap_schema(_dataSource);
         } else {
             graphOperations.addTriple(_dataSource.getIri(),

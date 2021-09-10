@@ -62,7 +62,7 @@ public class GraphOperations {
 
 
     public String[] getFeaturesWithConceptFromGraph(String namedGraph){
-        List<String> features = new ArrayList<String>();
+        List<String> features = new ArrayList<>();
 
         Query SPARQL = selectQuery.selectSubjectAndFeatureFromGraph(namedGraph,"http://www.essi.upc.edu/~snadal/BDIOntology/Global/hasFeature");
 

@@ -15,9 +15,7 @@ import org.springframework.context.annotation.Bean;
 public class MetadataStorageApplication {
 	@Bean
 	CommandLineRunner init(StorageService storageService) {
-		return (args) -> {
-			storageService.init();
-		};
+		return args -> storageService.init();
 	}
 	private static final Logger LOGGER =
 			LoggerFactory.getLogger(MetadataStorageApplication.class);

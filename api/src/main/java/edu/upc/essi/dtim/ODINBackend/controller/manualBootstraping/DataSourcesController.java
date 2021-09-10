@@ -28,9 +28,6 @@ public class DataSourcesController {
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
     private static final String LOG_MSG = "{} request finished with inputs: {} and return value: {}";
     private static final String EMPTY_INPUTS = "{}";
-    private String latest_generated_random_string = "";
-    @Value("${db.files.upload.dir}")
-    private String upload_dir;
 
     @Autowired
     private DataSourcesRepository repository;
@@ -49,8 +46,6 @@ public class DataSourcesController {
         try {
 
             DataSource _dataSource = dataSourceService.create(dataSource, bootstrappingType, file);
-
-//            storageService.setRandomSeed(latest_generated_random_string);
 
             String input = dataSource.toString().replaceAll("[\n\r\t]", "_");
             String returnval = _dataSource.toString().replaceAll("[\n\r\t]", "_");
