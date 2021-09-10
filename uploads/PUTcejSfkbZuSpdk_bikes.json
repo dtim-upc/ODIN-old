@@ -1,1 +1,0 @@
-{"id" : 1,"type" : "BIKE","address" : {"streetName" : "Gran Via...","streetNumber" : 760},"coordinates":[10,20],"nearbyStations" : [{ "id" : 24, "type" : "Metro","distance" : 500}, {"id" : 426, "type" : "Bus", "distance" : 367}]}
