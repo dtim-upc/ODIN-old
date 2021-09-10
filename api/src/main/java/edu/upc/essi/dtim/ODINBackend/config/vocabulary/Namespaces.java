@@ -7,10 +7,6 @@ public enum Namespaces {
     M("http://www.essi.upc.edu/~snadal/BDIOntology/Mappings/"),
     A("http://www.essi.upc.edu/~snadal/BDIOntology/Alignments/"),
 
-    owl("http://www.w3.org/2002/07/owl#"),
-    rdf("http://www.w3.org/1999/02/22-rdf-syntax-ns#"),
-    rdfs("http://www.w3.org/2000/01/rdf-schema#"),
-
     SCHEMA("http://schema.org/");
 
     private String element;

@@ -18,6 +18,7 @@ import edu.upc.essi.dtim.nuupdi.bootstraping.JSONBootstrap;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.vocabulary.RDF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -73,7 +74,7 @@ public class DataSourceService {
         } else {
             graphOperations.addTriple(_dataSource.getIri(),
                     _dataSource.getIri(),
-                    Namespaces.rdf.val() + "type",
+                    RDF.getURI() + "type",
                     SourceGraph.DATA_SOURCE.val());
         }
         repository.save(_dataSource);
