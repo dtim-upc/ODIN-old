@@ -41,7 +41,7 @@ public class LavMappingsController {
             repository.findAll().forEach(lavMappings::add);
 
             if (lavMappings.isEmpty()) {
-                ResponseEntity response = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                ResponseEntity response = new ResponseEntity(HttpStatus.NO_CONTENT);
                 LOGGER.info(LOG_MSG, "getAllLavMappings", "", response);
                 return response;
             }

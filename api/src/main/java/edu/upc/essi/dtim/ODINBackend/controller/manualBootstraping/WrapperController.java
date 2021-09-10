@@ -83,7 +83,7 @@ public class WrapperController {
     public ResponseEntity<List<Wrapper>> getAllWrappers() {
 
         try {
-            List<Wrapper> wrappers = new ArrayList<Wrapper>();
+            List<Wrapper> wrappers = new ArrayList<>();
 
             repository.findAll().forEach(wrappers::add);
 
