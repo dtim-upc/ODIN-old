@@ -1,5 +1,4 @@
 package edu.upc.essi.dtim.ODINBackend.config.db;
-import edu.upc.essi.dtim.ODINBackend.controller.IntegrationController;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.tdb.TDBFactory;
 import org.slf4j.Logger;

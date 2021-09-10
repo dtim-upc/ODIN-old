@@ -33,7 +33,7 @@ public class LavMappingsController {
     public ResponseEntity<List<LavMapping>> getAllLavMappings() {
 
         try {
-            List<LavMapping> lavMappings = new ArrayList<LavMapping>();
+            List<LavMapping> lavMappings = new ArrayList<>();
 
             repository.findAll().forEach(lavMappings::add);
 
@@ -72,9 +72,7 @@ public class LavMappingsController {
             Optional<LavMapping> optionalLavMapping = repository.findById(id);
             if (optionalLavMapping.isPresent()) {
                 LavMapping lavMapping = optionalLavMapping.get();
-                //Update Jena
-                //lavMappingService.updateLAVMappingMapsTo(sameAsArr, lavMapping);
-                //Update Mongo
+
                 lavMapping.setSameAs(sameAsArr);
                 repository.save(lavMapping);
             }

@@ -86,7 +86,7 @@ public class WrapperController {
             repository.findAll().forEach(wrappers::add);
 
             if (wrappers.isEmpty()) {
-                ResponseEntity response = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                ResponseEntity<List<Wrapper>> response = new ResponseEntity<>(HttpStatus.NO_CONTENT);
                 LOGGER.info(LOG_MSG, "getAllWrappers", "", response);
                 return response;
             }

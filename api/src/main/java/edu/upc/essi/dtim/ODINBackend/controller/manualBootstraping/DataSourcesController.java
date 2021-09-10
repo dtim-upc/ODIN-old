@@ -10,7 +10,6 @@ import edu.upc.essi.dtim.ODINBackend.utils.jena.GraphOperations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +24,7 @@ import java.util.Optional;
 @RequestMapping("/dataSource")
 public class DataSourcesController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataSourcesController.class);
     private static final String LOG_MSG = "{} request finished with inputs: {} and return value: {}";
     private static final String EMPTY_INPUTS = "{}";
 
@@ -63,7 +62,7 @@ public class DataSourcesController {
     public ResponseEntity<List<DataSource>> getAllDataSources() {
 
         try {
-            List<DataSource> dataSources = new ArrayList<DataSource>();
+            List<DataSource> dataSources = new ArrayList<>();
 
             repository.findAll().forEach(dataSources::add);
 

@@ -17,8 +17,6 @@ public class MetadataStorageApplication {
 	CommandLineRunner init(StorageService storageService) {
 		return args -> storageService.init();
 	}
-	private static final Logger LOGGER =
-			LoggerFactory.getLogger(MetadataStorageApplication.class);
 
 	public static void main(String[] args) {
 		SpringApplication.run(MetadataStorageApplication.class, args);
