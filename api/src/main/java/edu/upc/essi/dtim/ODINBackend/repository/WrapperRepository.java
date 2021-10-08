@@ -1,6 +1,6 @@
 package edu.upc.essi.dtim.ODINBackend.repository;
 
-import edu.upc.essi.dtim.ODINBackend.models.Wrapper;
+import edu.upc.essi.dtim.ODINBackend.models.mongo.Wrapper;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface WrapperRepository extends MongoRepository<Wrapper, String> {

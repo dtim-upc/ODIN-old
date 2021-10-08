@@ -40,6 +40,10 @@ export default defineComponent({
       type:String,
       default:''
     },
+    integratedID: {
+      type:String,
+      default:''
+    },
     minimalI:{type: Boolean, default: false},
     integrated:{type: Boolean, default: false}
   },
@@ -75,6 +79,9 @@ export default defineComponent({
           break;
         case "global_Graph_Edit":
           return "&id="+this.id
+
+        case "omq":
+          return "&dataSourceID="+this.id+"&minimal_integration_graph=true"
         default:
           return "";
       }

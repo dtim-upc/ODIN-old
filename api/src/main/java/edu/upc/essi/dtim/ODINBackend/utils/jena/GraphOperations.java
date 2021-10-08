@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Component
@@ -96,6 +97,13 @@ public class GraphOperations {
         });
     }
 
+    public void addTripleLiteral(String namedGraph, String s, String p, String o) {
+        Txn.executeWrite(ds, ()-> {
+            Model graph = ds.getNamedModel(namedGraph);
+            graph.add(new ResourceImpl(s), new PropertyImpl(p), o);
+        });
+    }
+
     public void deleteTriplesWithSubject(String graphIRI, String subjectIRI){
         runAnUpdateQuery("DELETE WHERE { GRAPH <" + graphIRI + ">" +
                 " {<"+subjectIRI+"> ?p ?o} }");
@@ -117,6 +125,23 @@ public class GraphOperations {
             Model graph = ds.getNamedModel(namedGraph);
             graph.removeAll();
         });
+    }
+
+    public void deleteAllGraphs(){
+
+        try {
+            Iterator<String> graphNames = ds.listNames();
+            List<String> graphs = new ArrayList<>();
+            while (graphNames.hasNext()) {
+                graphs.add(graphNames.next());
+
+            }
+            graphs.forEach(this::removeGraph);
+//        removeGraph(graph);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     /*

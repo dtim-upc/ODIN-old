@@ -581,6 +581,7 @@ module.exports =  function (graph) {
         //if ( graph.options().defaultConfig().editorMode === "true" ) {
             var globalGraphID = getParameterByName("id");
             var lavMappingID = getParameterByName("LAVMappingID");
+      // var omq = getParameterByName("integratedID");
 
             var dataSourceID = getParameterByName("dataSourceID");
 

@@ -8,6 +8,15 @@ spring:
       database: odin
       port: 27017
 
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+#  servlet:
+#    multipart:
+#      max-file-size: 30MB
+#      max-request-size: 30MB
+
 spark:
   name: "ODIN_spark"
   bindAddress: "localhost"

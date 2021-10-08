@@ -1,27 +1,31 @@
 package edu.upc.essi.dtim.ODINBackend.services.impl;
 
 import edu.upc.essi.dtim.ODINBackend.config.DataSourceTypes;
+import edu.upc.essi.dtim.ODINBackend.config.Namespaces;
 import edu.upc.essi.dtim.ODINBackend.config.vocabulary.SourceGraph;
-import edu.upc.essi.dtim.ODINBackend.models.DataSource;
-import edu.upc.essi.dtim.ODINBackend.models.Wrapper;
+import edu.upc.essi.dtim.ODINBackend.models.mongo.DataSource;
+import edu.upc.essi.dtim.ODINBackend.models.mongo.Wrapper;
 import edu.upc.essi.dtim.ODINBackend.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.ODINBackend.repository.WrapperRepository;
 import edu.upc.essi.dtim.ODINBackend.services.filestorage.StorageProperties;
 import edu.upc.essi.dtim.ODINBackend.services.filestorage.StorageService;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.GraphOperations;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.parsers.OWLToWebVOWL;
-import edu.upc.essi.dtim.nuupdi.bootstraping.CSVBootstrap;
-import edu.upc.essi.dtim.nuupdi.bootstraping.JSONBootstrap;
+import edu.upc.essi.dtim.nextiadi.bootstraping.CSVBootstrap;
+import edu.upc.essi.dtim.nextiadi.bootstraping.JSONBootstrap;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -36,29 +40,19 @@ public class DataSourceService {
     @Autowired
     private WrapperRepository wrapperRepository;
     @Autowired
+    private WrapperService wService;
+
+    @Autowired
     private LAVMappingService lavMappingService;
     @Autowired
     private StorageService storageService;
 
-    public void delete(String id) {
-        Optional<DataSource> optionalDataSource = repository.findById(id);
 
-        //First Step: Find wrappers with _dataSourceId == id and delete them
-        Iterable<Wrapper> wrapperIterable = wrapperRepository.findAllByDataSourcesId(id);
-        for (Wrapper w: wrapperIterable) {
-            graphOperations.removeGraph(w.getIri());
-            if (!(w.getLavMappingId().equals("") || w.getLavMappingId() == null)) {
-                lavMappingService.removeLavMappingFromMongo(w.getLavMappingId());
-            }
-            wrapperRepository.deleteById(w.getId());
-        }
-
-        //Second Step: Delete the data source with _id = id
-        optionalDataSource.ifPresent(dataSource ->
-                graphOperations.removeGraph(dataSource.getIri())
-        );
-        repository.deleteById(id);
-    }
+//    public DataSource createIntegrated(String name, String) {
+//
+//
+//
+//    }
 
     public DataSource create(DataSource dataSource, Boolean bootstrappingType, MultipartFile file) throws IOException {
         String path = storageService.store(file);
@@ -66,6 +60,7 @@ public class DataSourceService {
         DataSource _dataSource = new DataSource(dataSource.getName(), dataSource.getType());
         _dataSource.setPath(path);
         _dataSource.setType(getDataSourcetype(file.getOriginalFilename()));
+
         if(  Boolean.TRUE.equals(bootstrappingType)) {
             _dataSource = bootstrap_schema(_dataSource);
         } else {
@@ -78,6 +73,31 @@ public class DataSourceService {
         return _dataSource;
 
     }
+
+
+
+    public void delete(String id) {
+        Optional<DataSource> optionalDataSource = repository.findById(id);
+
+        //First Step: Find wrappers with _dataSourceId == id and delete them
+        Iterable<Wrapper> wrapperIterable = wrapperRepository.findAllByDataSourcesId(id);
+        for (Wrapper w: wrapperIterable) {
+            graphOperations.removeGraph(w.getIri());
+            if (!(w.getLavMappingId().equals("") || w.getLavMappingId() == null)) {
+                lavMappingService.removeLavMappingFromMongo(w.getLavMappingId());
+            }
+            wrapperRepository.deleteById(w.getId());
+
+        }
+
+        //Second Step: Delete the data source with _id = id
+        optionalDataSource.ifPresent(dataSource ->
+                graphOperations.removeGraph(dataSource.getIri())
+        );
+        repository.deleteById(id);
+    }
+
+
 
     public void verifyDir(String path){
         File theDir = new File(path);
@@ -128,8 +148,30 @@ public class DataSourceService {
         String vowlJson = vowl.convertSchema(bootsrapM);
         dataSource.setGraphicalGraph(vowlJson);
 
-        graphOperations.addModel(dataSource.getIri(), bootsrapM);
+//        graphOperations.addModel(dataSource.getIri(), bootsrapM);
+        Wrapper w = wService.createWrapperBootstrapped(bootsrapM, dataSource.getName(), dataSource.getId());
 
+        graphOperations.addTriple(dataSource.getIri(),
+                dataSource.getIri(),
+                RDF.getURI() + "type",
+                SourceGraph.DATA_SOURCE.val());
+
+        graphOperations.addTriple(dataSource.getIri(),
+                dataSource.getIri(),
+                Namespaces.S.val()+"hasWrapper",
+                w.getId());
+
+        graphOperations.addTriple(dataSource.getIri(),
+                dataSource.getIri(),
+                RDFS.label.getURI(),
+                dataSource.getName());
+
+        List<Wrapper> ls = dataSource.getWrappers();
+        if(ls == null){
+            ls = new ArrayList<>();
+        }
+        ls.add(w);
+        dataSource.setWrappers(ls);
 
         return dataSource;
     }

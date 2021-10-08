@@ -289,9 +289,9 @@ module.exports = function (graph) {
 					// Create the matching object and set the properties
 					var property = new Prototype(graph);
 
-          console.log("P label is " +element.label)
-          console.log("DOM: "+element.baseIri)
-          console.log(element.iri)
+          // console.log("P label is " +element.label)
+          // console.log("DOM: "+element.baseIri)
+          // console.log(element.iri)
 
 
 

@@ -41,9 +41,10 @@
             round
             flat
             color="grey"
-            :to="'/omq/' + props.row.id"
+            :to="'/omq/' + props.row.id +'/'+props.row.id"
             icon="edit"
           ></q-btn>
+<!--          {{props.row.wrappers[0].iri}}-->
         </q-td>
       </template>
 
@@ -89,7 +90,7 @@ export default defineComponent({
         required: true,
         label: "NamedGraph",
         align: "center",
-        field: "namedGraph",
+        field: "iri",
         sortable: true,
       },
       // {
@@ -235,9 +236,10 @@ export default defineComponent({
     },
 
     retrieveData() {
-      odinApi.get("/globalGraph").then((response) => {
+      odinApi.get("/dataSource").then((response) => {
         if (response.status == 200) {
           this.rows = response.data;
+          console.log(response.data)
         }
       });
     },

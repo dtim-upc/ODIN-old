@@ -1,7 +1,7 @@
 package edu.upc.essi.dtim.ODINBackend.services.omq.wrapper_implementations;
 
 import edu.upc.essi.dtim.ODINBackend.config.DataSourceTypes;
-import edu.upc.essi.dtim.ODINBackend.models.DataSource;
+import edu.upc.essi.dtim.ODINBackend.models.mongo.DataSource;
 import edu.upc.essi.dtim.ODINBackend.services.omq.WrapperI;
 import lombok.Getter;
 import lombok.Setter;

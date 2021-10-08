@@ -3,15 +3,16 @@ package edu.upc.essi.dtim.ODINBackend.services.impl;
 import edu.upc.essi.dtim.ODINBackend.config.DataSourceTypes;
 import edu.upc.essi.dtim.ODINBackend.config.Namespaces;
 import edu.upc.essi.dtim.ODINBackend.config.SourceGraph;
-import edu.upc.essi.dtim.ODINBackend.models.Attribute;
-import edu.upc.essi.dtim.ODINBackend.models.DataSource;
-import edu.upc.essi.dtim.ODINBackend.models.Wrapper;
+import edu.upc.essi.dtim.ODINBackend.models.mongo.helpers.Attribute;
+import edu.upc.essi.dtim.ODINBackend.models.mongo.DataSource;
+import edu.upc.essi.dtim.ODINBackend.models.mongo.Wrapper;
 import edu.upc.essi.dtim.ODINBackend.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.ODINBackend.repository.LavMappingRepository;
 import edu.upc.essi.dtim.ODINBackend.repository.WrapperRepository;
 import edu.upc.essi.dtim.ODINBackend.services.omq.WrapperI;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.GraphOperations;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.vocabulary.RDF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +24,8 @@ import java.util.stream.Collectors;
 
 @Component
 public class WrapperService {
+
+
     @Autowired
     private GraphOperations graphOperations;
     @Autowired
@@ -73,6 +76,24 @@ public class WrapperService {
         }
         return null;
     }
+
+    public Wrapper createWrapperBootstrapped(Model bootstrap, String dsName, String dsID) {
+
+        // TODO: probably wrapper name should be given by user or generated incrementally for x wrappers (future)
+        String wIRI = createWrapperIri(dsName +"Wrapper");
+
+        graphOperations.addModel(wIRI, bootstrap);
+        graphOperations.addTriple(wIRI,wIRI, RDF.type.getURI(), SourceGraph.WRAPPER.val());
+
+        Wrapper w = new Wrapper();
+        w.setName(dsName+"Wrapper");
+        w.setIri(wIRI);
+        w.setDataSourcesId(dsID);
+
+        return wrapperRepository.save(w);
+    }
+
+
     private String createWrapperIri(String name) {
         return SourceGraph.WRAPPER.val() + '/' + name;
     }

@@ -65,10 +65,9 @@ export default defineComponent({
 
     const step = ref(1)
     if(props.setStep > 0 && selectedDS.value.length == 2){
-      console.log(props.setStep)
-      console.log(parseInt(props.setStep))
-      console.log(step.value)
+      console.log("hola")
       step.value = parseInt(props.setStep)
+      integratedName.value = selectedDS.value[0].name + "_"+ selectedDS.value[1].name
     }
     const disableStepBtn = () =>{
       switch (step.value){
@@ -118,7 +117,9 @@ export default defineComponent({
             alignments: alignments.value
           }
 
-          console.log(alignments.value)
+          console.log("data sent")
+          console.log(data)
+          // console.log(alignments.value)
 
           odinApi.post("/integration", data).then((response) => {
             if (response.status == 201 || response.status) {

@@ -9,13 +9,14 @@ const routes = [
       { path: 'globalGraph/view/:id', component: () => import('pages/manualBootstrapping/GlobalGraphView.vue') },
       { path: 'globalGraph/edit_global_graph/:id', component: () => import('pages/Test_webvowl.vue') },
       { path: 'omq', component: () => import('pages/OMQ.vue') },
-      { path: 'omq/:id', component: () => import('pages/OMQWebvowl.vue') },
+      { path: 'omq/:id/:idW', component: () => import('pages/OMQWebvowl.vue') },
       { path: 'dataSources', component: () => import('pages/manualBootstrapping/DataSources.vue') },
       { path: 'dataSources/view/:id', component: () => import('pages/manualBootstrapping/DataSourcesView.vue') },
       { path: 'dataSources/webvowl/:id', name:'webvowl', props:true, component: () => import('pages/webvowl/DatasourceWebVowl.vue') },
 
       { path: 'integration', name:'integration',props: route => ({setStep: parseInt(route.params.setStep)}), component: () => import('pages/Integration.vue') },
       { path: 'pruebas', component: () => import('pages/Pruebas.vue') },
+      { path: 'pruebasE', component: () => import('pages/example/PruebaExperimentos.vue') },
 
       { path: 'wrappers', component: () => import('pages/manualBootstrapping/Wrappers.vue') },
       { path: 'wrappers/view/:id', component: () => import('pages/manualBootstrapping/WrappersView.vue') },

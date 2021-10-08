@@ -109,7 +109,7 @@ export default defineComponent({
       {name: "id", label: "Id", align: "center", field: "id", sortable: true,},
       {name: "Name", label: "Name", align: "center", field: "name", sortable: true,},
       {name: "Type", label: "Type", align: "center", field: "type", sortable: true,},
-      {name: "#Wrappers", label: "#Wrappers", align: "center", field: "wrappers", sortable: true,},
+      // {name: "#Wrappers", label: "#Wrappers", align: "center", field: "wrappers", sortable: true,},
       {name: "View Metadata", label: "View Metadata", align: "center", field: "View Metadata", sortable: false,},
       { name: "View_Source_Graph", label: "View Source Graph",align: "center", field: "View Source Graph",
         sortable: false,},

@@ -1,7 +1,7 @@
 package edu.upc.essi.dtim.ODINBackend.models.rest;
 
-import edu.upc.essi.dtim.ODINBackend.models.DataSource;
-import edu.upc.essi.dtim.nuupdi.utils.Alignment;
+import edu.upc.essi.dtim.ODINBackend.models.mongo.DataSource;
+import edu.upc.essi.dtim.nextiadi.models.Alignment;
 import lombok.Getter;
 import lombok.Setter;
 

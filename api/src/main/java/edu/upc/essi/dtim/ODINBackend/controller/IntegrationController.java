@@ -1,16 +1,15 @@
 package edu.upc.essi.dtim.ODINBackend.controller;
 
-import edu.upc.essi.dtim.Nuupdi;
+import edu.upc.essi.dtim.NextiaDI;
 import edu.upc.essi.dtim.ODINBackend.config.DataSourceTypes;
-import edu.upc.essi.dtim.ODINBackend.models.DataSource;
+import edu.upc.essi.dtim.ODINBackend.models.mongo.DataSource;
 import edu.upc.essi.dtim.ODINBackend.models.rest.IntegrationData;
 import edu.upc.essi.dtim.ODINBackend.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.GraphOperations;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.parsers.OWLToWebVOWL;
-import edu.upc.essi.dtim.nuupdi.config.Namespaces;
-import edu.upc.essi.dtim.nuupdi.jena.Graph;
+import edu.upc.essi.dtim.nextiadi.config.Namespaces;
+import edu.upc.essi.dtim.nextiadi.jena.Graph;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.Lang;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,19 +34,19 @@ public class IntegrationController {
 
     @PostMapping
     public ResponseEntity<DataSource> integrate(@RequestBody IntegrationData iData) {
+        System.out.println("INTEGRATING..");
+        NextiaDI n = new NextiaDI();
 
-        Nuupdi n = new Nuupdi();
-
-        Model graphA = graphOperations.getGraph(iData.getDsA().getIri());
-        Model graphB = graphOperations.getGraph(iData.getDsB().getIri());
+        Model graphA = graphOperations.getGraph(iData.getDsA().getWrappers().get(0).getIri());
+        Model graphB = graphOperations.getGraph(iData.getDsB().getWrappers().get(0).getIri());
 
         String integratedIRI = Namespaces.G.val() + iData.getIntegratedName();
 
         Model integratedModel = n.Integrate(graphA, graphB, iData.getAlignments());
 
-        Graph g = new Graph();
-        g.setModel(integratedModel);
-        g.write("/Users/javierflores/Documents/UPC_projects/new/newODIN/api/uploads/int/"+iData.getIntegratedName()+".ttl", Lang.TURTLE);
+        /*Graph g = new Graph();
+        g.setModel(integratedModel);*/
+//        g.write("/Users/javierflores/Documents/UPC_projects/new/newODIN/api/uploads/int/"+iData.getIntegratedName()+".ttl", Lang.TURTLE);
 
 
         DataSource integratedDatasource = new DataSource();
@@ -69,7 +68,7 @@ public class IntegrationController {
         String vowlJson2 = vowl2.convertSchema(n.getMinimalGraph());
 
         integratedDatasource.setGraphicalMinimalIntegration(vowlJson2);
-
+        integratedDatasource.setGraphicalGraph(vowlJson2);
 
 
 

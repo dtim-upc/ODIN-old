@@ -13,6 +13,9 @@
 
         <q-space/>
 
+        <q-btn class="q-mr-xs" flat round @click="deleteData()"
+               icon="delete"/>
+
         <q-btn class="q-mr-xs" flat round @click="$q.dark.toggle()"
                :icon="$q.dark.isActive ? 'nights_stay' : 'wb_sunny'"/>
 
@@ -84,16 +87,16 @@
           <!--            </q-item-section>-->
           <!--          </q-item>-->
 
-          <q-item clickable v-ripple to="/globalGraph" active-class="bg-active">
-            <q-item-section avatar>
-              <!--              o_hub-->
-              <q-icon name="o_hub"/>
-            </q-item-section>
+<!--          <q-item clickable v-ripple to="/globalGraph" active-class="bg-active">-->
+<!--            <q-item-section avatar>-->
+<!--              &lt;!&ndash;              o_hub&ndash;&gt;-->
+<!--              <q-icon name="o_hub"/>-->
+<!--            </q-item-section>-->
 
-            <q-item-section>
-              Global graph
-            </q-item-section>
-          </q-item>
+<!--            <q-item-section>-->
+<!--              Global graph-->
+<!--            </q-item-section>-->
+<!--          </q-item>-->
 
 <!--          <q-separator/>-->
 
@@ -119,16 +122,16 @@
             </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="/lavmappings" active-class="bg-active">
-            <q-item-section avatar>
-              <!--          link   google-circles-extended mdi-vector-circle  egg_alt-->
-              <q-icon name="mdi-google-circles-extended "/>
-            </q-item-section>
+<!--          <q-item clickable v-ripple to="/lavmappings" active-class="bg-active">-->
+<!--            <q-item-section avatar>-->
+<!--              &lt;!&ndash;          link   google-circles-extended mdi-vector-circle  egg_alt&ndash;&gt;-->
+<!--              <q-icon name="mdi-google-circles-extended "/>-->
+<!--            </q-item-section>-->
 
-            <q-item-section>
-              LAV Mapping
-            </q-item-section>
-          </q-item>
+<!--            <q-item-section>-->
+<!--              LAV Mapping-->
+<!--            </q-item-section>-->
+<!--          </q-item>-->
 
           <q-item clickable v-ripple to="/omq" active-class="bg-active">
             <q-item-section avatar>
@@ -152,11 +155,18 @@
 
 <script>
 import {ref} from "vue";
+import {odinApi} from "boot/axios";
 
 export default {
   setup() {
     // const leftDrawerOpen = ref(false);
     const miniState = ref(false)
+    const deleteData = () => {
+
+      odinApi.delete("/admin/all")
+      window.location.reload()
+
+    }
 
     return {
       // leftDrawerOpen,
@@ -164,7 +174,8 @@ export default {
       //   leftDrawerOpen.value = !leftDrawerOpen.value;
       // },
       drawer: ref(false),
-      miniState
+      miniState,
+      deleteData
     };
   },
 };

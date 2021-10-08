@@ -1,6 +1,6 @@
 package edu.upc.essi.dtim.ODINBackend.models.impl;
 
-import edu.upc.essi.dtim.nuupdi.utils.Alignment;
+import edu.upc.essi.dtim.nextiadi.models.Alignment;
 import lombok.Getter;
 import lombok.Setter;
 

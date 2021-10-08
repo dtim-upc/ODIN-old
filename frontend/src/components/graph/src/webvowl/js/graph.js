@@ -1689,12 +1689,14 @@ module.exports = function (graphContainerSelector) {
     graph.getSelectedFeatures = function(){
         var selectedFeatures = [];
         var selectionGraph = options.selectionGraph();
+        console.log("selected features")
         if(selectionGraph){
             selectionGraph.all().forEach(function (node)  {
                 if (node.iriType() == Global.FEATURE.iri) {
                     //MDM_TODO: change iriType for namespace and here use .name
                     selectedFeatures.push(node.iri())
                 }
+                console.log(node.iriType())
             });
         }
         return selectedFeatures;
@@ -1721,38 +1723,55 @@ module.exports = function (graphContainerSelector) {
 
     graph.prepareSelectionObject =function() {
         var selectionGraph = options.selectionGraph();
+
+        var classes = [];
+        var properties = [];
+
         var data = [];
         var nodesId = [];
         if(selectionGraph){
             selectionGraph.all().forEach(function (node)  {
+
                 var n  = new Object();
-                n.id = node.id();
+                // n.id = node.id();
                 n.iri = node.iri();
                 n.name = node.iri();
                 n.namespace = node.iriType();
                 data.push(n);
                 nodesId.push(node.id());
+
+              if(!node.iri().includes("http://www.w3.org/2001/XMLSchema#")){
+                classes.push(node.iri())
+              }
+
             });
             labelGroupElements.each(function (label) {
+              console.log("***")
+              console.log(label.property().iri())
                 var domain = label.link().domain().id();
                 var range =label.link().range().id();
                 if(nodesId.includes(domain) && nodesId.includes(range)){
                     var n  = new Object();
-                    n.source =data[nodesId.indexOf(domain)] ;
-                    n.target =data[nodesId.indexOf(range)]  ;
-                    if(label.property().iriType() === Global.HAS_RELATION.iri){
-                        n.name = label.property().iri(); //uri for has_relation is given by user
-                        n.iri =label.property().iri();
-                    }else{
-                        n.name = label.property().iriType();
-                        n.iri =label.property().iriType();
-                    }
-                    data.push(n);
+                    n.domain =data[nodesId.indexOf(domain)].iri;
+                    n.range =data[nodesId.indexOf(range)].iri  ;
+                    n.iri =  label.property().iri()
+                    // if(label.property().iriType() === Global.HAS_RELATION.iri){
+                    //     n.name = label.property().iri(); //uri for has_relation is given by user
+                    //     n.iri =label.property().iri();
+                    // }else{
+                    //     n.name = label.property().iriType();
+                    //     n.iri =label.property().iriType();
+                    // }
+                    properties.push(n);
                 }
 
             });
         }
-        return data;
+
+      var selected  = new Object();
+        selected.classes = classes;
+        selected.properties = properties;
+        return selected;
     }
 
     /** --------------------------------------------------------- **/

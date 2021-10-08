@@ -1,7 +1,7 @@
 package edu.upc.essi.dtim.ODINBackend.controller.manualBootstraping;
 
-import edu.upc.essi.dtim.ODINBackend.models.DataSource;
-import edu.upc.essi.dtim.ODINBackend.models.Wrapper;
+import edu.upc.essi.dtim.ODINBackend.models.mongo.DataSource;
+import edu.upc.essi.dtim.ODINBackend.models.mongo.Wrapper;
 import edu.upc.essi.dtim.ODINBackend.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.ODINBackend.repository.WrapperRepository;
 import edu.upc.essi.dtim.ODINBackend.services.impl.WrapperService;

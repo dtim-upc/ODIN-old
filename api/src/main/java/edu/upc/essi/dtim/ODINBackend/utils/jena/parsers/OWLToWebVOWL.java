@@ -6,8 +6,8 @@ import edu.upc.essi.dtim.ODINBackend.config.SourceGraph;
 import edu.upc.essi.dtim.ODINBackend.config.vocabulary.Namespaces;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.GraphOperations;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.parsers.models.*;
-import edu.upc.essi.dtim.nuupdi.config.Vocabulary;
-import edu.upc.essi.dtim.nuupdi.jena.Graph;
+import edu.upc.essi.dtim.nextiadi.config.Vocabulary;
+import edu.upc.essi.dtim.nextiadi.jena.Graph;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
@@ -179,9 +179,15 @@ public class OWLToWebVOWL {
         propertiesTypes.add(SourceGraph.HAS_WRAPPER.val() );
         propertiesTypes.add(SourceGraph.HAS_ATTRIBUTE.val() );
 
+        List<String> excluded = new ArrayList<>();
+        excluded.add("http://www.essi.upc.edu/dtim/ontology/Global/IntegrationOProperty");
+        excluded.add("http://www.essi.upc.edu/dtim/ontology/Global/IntegrationDProperty");
+        excluded.add("http://www.essi.upc.edu/dtim/ontology/Global/IntegrationClass");
+
+
 //        "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"
         List<Subject> classesInfo = listS.stream()
-                .filter(s -> !propertiesTypes.contains(s.getType()) ).collect(Collectors.toList());
+                .filter(s -> !propertiesTypes.contains(s.getType()) && !excluded.contains(s.getIri()) ).collect(Collectors.toList());
         List<Subject> propertiesInfo = listS.stream()
                 .filter(s -> propertiesTypes.contains(s.getType()) && !s.getType().equals(RDFS.subPropertyOf.getURI()) ).collect(Collectors.toList());
         List<Subject> subProperties = listS.stream()

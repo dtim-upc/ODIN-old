@@ -1,7 +1,6 @@
 package edu.upc.essi.dtim.ODINBackend.controller.manualBootstraping;
 
-import edu.upc.essi.dtim.ODINBackend.controller.AdminController;
-import edu.upc.essi.dtim.ODINBackend.models.DataSource;
+import edu.upc.essi.dtim.ODINBackend.models.mongo.DataSource;
 import edu.upc.essi.dtim.ODINBackend.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.ODINBackend.repository.WrapperRepository;
 import edu.upc.essi.dtim.ODINBackend.services.filestorage.StorageService;
@@ -53,6 +52,7 @@ public class DataSourcesController {
             LOGGER.info(LOG_MSG, "createDataSources", input, returnval);
             return new ResponseEntity<>(_dataSource, HttpStatus.CREATED);
         } catch (Exception e) {
+            LOGGER.error(e.toString());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
