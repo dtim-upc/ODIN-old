@@ -1768,9 +1768,11 @@ module.exports = function (graphContainerSelector) {
             });
         }
 
+        console.log(graph.options().loadingModule().currentGlobalGraph())
       var selected  = new Object();
         selected.classes = classes;
         selected.properties = properties;
+        selected.graphIRI = graph.options().loadingModule().currentGlobalGraph().iri;
         return selected;
     }
 
