@@ -2,14 +2,8 @@ package edu.upc.essi.dtim.ODINBackend.controller;
 
 import edu.upc.essi.dtim.ODINBackend.models.rest.QueryDataSelection;
 import edu.upc.essi.dtim.ODINBackend.repository.DataSourcesRepository;
-import edu.upc.essi.dtim.ODINBackend.repository.GlobalGraphRespository;
-import edu.upc.essi.dtim.ODINBackend.services.impl.GlobalGraphService;
-import edu.upc.essi.dtim.ODINBackend.services.impl.LAVMappingService;
 import edu.upc.essi.dtim.ODINBackend.services.impl.OMQService;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.GraphOperations;
-import net.minidev.json.JSONArray;
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.sql.DataSource;
 
 
 @RestController

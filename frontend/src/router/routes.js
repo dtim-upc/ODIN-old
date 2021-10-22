@@ -18,6 +18,8 @@ const routes = [
       { path: 'pruebas', component: () => import('pages/Pruebas.vue') },
       { path: 'pruebasE', component: () => import('pages/example/PruebaExperimentos.vue') },
 
+      { path: 'viewTripleStore', component: () => import('pages/ViewTripleStore.vue') },
+
       { path: 'wrappers', component: () => import('pages/manualBootstrapping/Wrappers.vue') },
       { path: 'wrappers/view/:id', component: () => import('pages/manualBootstrapping/WrappersView.vue') },
       { path: 'lavmappings', component: () => import('pages/manualBootstrapping/LAVMappings.vue') },

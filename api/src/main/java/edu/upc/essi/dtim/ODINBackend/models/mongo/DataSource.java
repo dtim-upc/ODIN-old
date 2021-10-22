@@ -40,10 +40,16 @@ public class DataSource {
 
     private List<Alignment> unusedA;
 
-
-
     @NotBlank
     private DataSourceTypes type;
+
+
+    public String getWrapperIRI_or_IntegratedIRI(){
+        if( type.equals(DataSourceTypes.INTEGRATED)){
+            return iri;
+        }
+        return wrappers.get(0).getIri();
+    }
 
     public DataSource(String name, DataSourceTypes type) {
         this.name = name;

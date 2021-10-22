@@ -130,13 +130,19 @@ public class GraphOperations {
     public void deleteAllGraphs(){
 
         try {
-            Iterator<String> graphNames = ds.listNames();
-            List<String> graphs = new ArrayList<>();
-            while (graphNames.hasNext()) {
-                graphs.add(graphNames.next());
 
-            }
-            graphs.forEach(this::removeGraph);
+            Txn.executeWrite(ds, ()-> {
+                Iterator<String> graphNames = ds.listNames();
+                List<String> graphs = new ArrayList<>();
+                while (graphNames.hasNext()) {
+                    graphs.add(graphNames.next());
+
+                }
+                graphs.forEach(iri -> ds.removeNamedModel(iri));
+            }) ;
+
+
+
 //        removeGraph(graph);
         } catch (Exception e) {
             e.printStackTrace();

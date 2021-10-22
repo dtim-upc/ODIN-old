@@ -13,8 +13,8 @@
 
         <q-space/>
 
-        <q-btn class="q-mr-xs" flat round @click="deleteData()"
-               icon="delete"/>
+<!--        <q-btn class="q-mr-xs" flat round @click="deleteData()"-->
+<!--               icon="delete"/>-->
 
         <q-btn class="q-mr-xs" flat round @click="$q.dark.toggle()"
                :icon="$q.dark.isActive ? 'nights_stay' : 'wb_sunny'"/>
@@ -92,6 +92,17 @@
 <!--              &lt;!&ndash;              o_hub&ndash;&gt;-->
 <!--              <q-icon name="o_hub"/>-->
 <!--            </q-item-section>-->
+
+
+                    <q-item clickable v-ripple to="/viewTripleStore" active-class="bg-active">
+                      <q-item-section avatar>
+                        <!--              o_hub-->
+                        <q-icon name="o_hub"/>
+                      </q-item-section>
+                      <q-item-section>
+                                     View triple store
+                                    </q-item-section>
+                    </q-item>
 
 <!--            <q-item-section>-->
 <!--              Global graph-->

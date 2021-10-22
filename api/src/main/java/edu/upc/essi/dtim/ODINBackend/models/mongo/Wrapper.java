@@ -1,6 +1,6 @@
 package edu.upc.essi.dtim.ODINBackend.models.mongo;
 
-import edu.upc.essi.dtim.ODINBackend.config.SourceGraph;
+import edu.upc.essi.dtim.ODINBackend.config.vocabulary.SourceGraph;
 import edu.upc.essi.dtim.ODINBackend.models.mongo.helpers.Attribute;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

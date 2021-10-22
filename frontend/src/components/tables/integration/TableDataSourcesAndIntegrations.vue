@@ -167,6 +167,8 @@ export default defineComponent({
       } else if (rows.length === 1) {
 
         const row = rows[0]
+        console.log("selected is ")
+        console.log(row)
         if (added) {
           store.dispatch('updateSelectedDatasourcesI', row)
         } else {

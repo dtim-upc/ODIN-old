@@ -1,6 +1,7 @@
 package edu.upc.essi.dtim.ODINBackend.controller;
 
 import edu.upc.essi.dtim.ODINBackend.repository.DataSourcesRepository;
+import edu.upc.essi.dtim.ODINBackend.repository.WrapperRepository;
 import edu.upc.essi.dtim.ODINBackend.services.filestorage.StorageService;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.GraphOperations;
 import org.slf4j.Logger;
@@ -25,13 +26,7 @@ public class AdminController {
     private DataSourcesRepository dsRepo;
 
     @Autowired
-    private DataSourcesRepository globalRepo;
-
-    @Autowired
-    private DataSourcesRepository lavRepo;
-
-    @Autowired
-    private DataSourcesRepository wrapperRepo;
+    private WrapperRepository wrapperRepo;
 
     @Autowired
     private GraphOperations graphO;
@@ -45,8 +40,6 @@ public class AdminController {
         graphO.deleteAllGraphs();
         // delete mongo
         dsRepo.deleteAll();
-        globalRepo.deleteAll();
-        lavRepo.deleteAll();
         wrapperRepo.deleteAll();
         // delete files
         storageService.deleteAll();

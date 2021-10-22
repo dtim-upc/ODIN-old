@@ -1,7 +1,7 @@
 package edu.upc.essi.dtim.ODINBackend.services.impl;
 
 import edu.upc.essi.dtim.ODINBackend.config.DataSourceTypes;
-import edu.upc.essi.dtim.ODINBackend.config.Namespaces;
+import edu.upc.essi.dtim.ODINBackend.config.vocabulary.Namespaces;
 import edu.upc.essi.dtim.ODINBackend.config.vocabulary.SourceGraph;
 import edu.upc.essi.dtim.ODINBackend.models.mongo.DataSource;
 import edu.upc.essi.dtim.ODINBackend.models.mongo.Wrapper;
@@ -12,7 +12,7 @@ import edu.upc.essi.dtim.ODINBackend.services.filestorage.StorageService;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.GraphOperations;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.parsers.OWLToWebVOWL;
 import edu.upc.essi.dtim.nextiadi.bootstraping.CSVBootstrap;
-import edu.upc.essi.dtim.nextiadi.bootstraping.JSONBootstrap;
+import edu.upc.essi.dtim.nextiadi.bootstraping.JSONBootstrap_new;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -43,16 +43,9 @@ public class DataSourceService {
     private WrapperService wService;
 
     @Autowired
-    private LAVMappingService lavMappingService;
-    @Autowired
     private StorageService storageService;
 
 
-//    public DataSource createIntegrated(String name, String) {
-//
-//
-//
-//    }
 
     public DataSource create(DataSource dataSource, Boolean bootstrappingType, MultipartFile file) throws IOException {
         String path = storageService.store(file);
@@ -83,9 +76,9 @@ public class DataSourceService {
         Iterable<Wrapper> wrapperIterable = wrapperRepository.findAllByDataSourcesId(id);
         for (Wrapper w: wrapperIterable) {
             graphOperations.removeGraph(w.getIri());
-            if (!(w.getLavMappingId().equals("") || w.getLavMappingId() == null)) {
-                lavMappingService.removeLavMappingFromMongo(w.getLavMappingId());
-            }
+//            if (!(w.getLavMappingId().equals("") || w.getLavMappingId() == null)) {
+//                lavMappingService.removeLavMappingFromMongo(w.getLavMappingId());
+//            }
             wrapperRepository.deleteById(w.getId());
 
         }
@@ -133,7 +126,7 @@ public class DataSourceService {
 
                 break;
             case "json":
-                JSONBootstrap jsonBootstrap =  new JSONBootstrap();
+                JSONBootstrap_new jsonBootstrap =  new JSONBootstrap_new();
                 bootsrapM = jsonBootstrap.bootstrapSchema(dataSource.getIri(),  dataSource.getPath());
 
                 break;

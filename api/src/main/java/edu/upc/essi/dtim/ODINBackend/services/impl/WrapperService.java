@@ -1,13 +1,12 @@
 package edu.upc.essi.dtim.ODINBackend.services.impl;
 
 import edu.upc.essi.dtim.ODINBackend.config.DataSourceTypes;
-import edu.upc.essi.dtim.ODINBackend.config.Namespaces;
-import edu.upc.essi.dtim.ODINBackend.config.SourceGraph;
+import edu.upc.essi.dtim.ODINBackend.config.vocabulary.Namespaces;
+import edu.upc.essi.dtim.ODINBackend.config.vocabulary.SourceGraph;
 import edu.upc.essi.dtim.ODINBackend.models.mongo.helpers.Attribute;
 import edu.upc.essi.dtim.ODINBackend.models.mongo.DataSource;
 import edu.upc.essi.dtim.ODINBackend.models.mongo.Wrapper;
 import edu.upc.essi.dtim.ODINBackend.repository.DataSourcesRepository;
-import edu.upc.essi.dtim.ODINBackend.repository.LavMappingRepository;
 import edu.upc.essi.dtim.ODINBackend.repository.WrapperRepository;
 import edu.upc.essi.dtim.ODINBackend.services.omq.WrapperI;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.GraphOperations;
@@ -32,9 +31,6 @@ public class WrapperService {
     private DataSourcesRepository dataSourcesRepository;
     @Autowired
     private WrapperRepository wrapperRepository;
-
-    @Autowired
-    private LavMappingRepository lavMappingRepository;
 
     private Map<DataSourceTypes, WrapperI> wrappers;
 
@@ -63,12 +59,12 @@ public class WrapperService {
         if (optionalDataSources.isPresent()) {
             DataSource ds = optionalDataSources.get();
             String wIRI = createWrapperIri(wname);
-            graphOperations.addTriple(ds.getIri(), wIRI, Namespaces.rdf.val() + "type", SourceGraph.WRAPPER.val());
+            graphOperations.addTriple(ds.getIri(), wIRI, RDF.getURI() + "type", SourceGraph.WRAPPER.val());
             graphOperations.addTriple(ds.getIri(), ds.getIri(), SourceGraph.HAS_WRAPPER.val(), wIRI);
             for (Attribute attribute: attrNames) {
                 String attName = attribute.getName();
                 String attIRI = ds.getIri() + '/' + attName;
-                graphOperations.addTriple(ds.getIri(), attIRI, Namespaces.rdf.val() + "type", SourceGraph.ATTRIBUTE.val());
+                graphOperations.addTriple(ds.getIri(), attIRI, RDF.getURI() + "type", SourceGraph.ATTRIBUTE.val());
                 graphOperations.addTriple(ds.getIri(), wIRI, SourceGraph.HAS_ATTRIBUTE.val(), attIRI);
             }
 
@@ -119,7 +115,7 @@ public class WrapperService {
             //Delete from Jena
             graphOperations.removeGraph(w.getIri());
             //Delete all lavMappings with lavMappingId
-            lavMappingRepository.deleteById(w.getLavMappingId());
+//            lavMappingRepository.deleteById(w.getLavMappingId());
         }
         //Delete from Mongo
         wrapperRepository.deleteById(id);

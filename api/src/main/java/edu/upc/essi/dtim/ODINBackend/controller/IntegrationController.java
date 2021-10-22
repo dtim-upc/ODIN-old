@@ -2,12 +2,12 @@ package edu.upc.essi.dtim.ODINBackend.controller;
 
 import edu.upc.essi.dtim.NextiaDI;
 import edu.upc.essi.dtim.ODINBackend.config.DataSourceTypes;
+import edu.upc.essi.dtim.ODINBackend.config.vocabulary.Namespaces;
 import edu.upc.essi.dtim.ODINBackend.models.mongo.DataSource;
 import edu.upc.essi.dtim.ODINBackend.models.rest.IntegrationData;
 import edu.upc.essi.dtim.ODINBackend.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.GraphOperations;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.parsers.OWLToWebVOWL;
-import edu.upc.essi.dtim.nextiadi.config.Namespaces;
 import edu.upc.essi.dtim.nextiadi.jena.Graph;
 import org.apache.jena.rdf.model.Model;
 import org.slf4j.Logger;
@@ -37,10 +37,13 @@ public class IntegrationController {
         System.out.println("INTEGRATING..");
         NextiaDI n = new NextiaDI();
 
-        Model graphA = graphOperations.getGraph(iData.getDsA().getWrappers().get(0).getIri());
-        Model graphB = graphOperations.getGraph(iData.getDsB().getWrappers().get(0).getIri());
+        // For now, we assume a dataset only has one wrapper. In future, we need to address more wrappers.
+        String wrapperA = iData.getDsA().getWrapperIRI_or_IntegratedIRI();
+        String wrapperB = iData.getDsB().getWrapperIRI_or_IntegratedIRI();
+        Model graphA = graphOperations.getGraph(wrapperA);
+        Model graphB = graphOperations.getGraph(wrapperB);
 
-        String integratedIRI = Namespaces.G.val() + iData.getIntegratedName();
+        String integratedIRI = Namespaces.I.val() + iData.getIntegratedName();
 
         Model integratedModel = n.Integrate(graphA, graphB, iData.getAlignments());
 
@@ -74,6 +77,9 @@ public class IntegrationController {
 
 
         graphOperations.addModel(integratedIRI, integratedModel);
+        // triples to indicate the wrappers of the datasources being integrated
+        graphOperations.addTriple(integratedIRI, integratedIRI, Namespaces.G.val()+"integrationOf", wrapperA  );
+        graphOperations.addTriple(integratedIRI, integratedIRI, Namespaces.G.val()+"integrationOf", wrapperB  );
         repository.insert(integratedDatasource);
 
         return new ResponseEntity<>(integratedDatasource, HttpStatus.OK);

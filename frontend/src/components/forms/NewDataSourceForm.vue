@@ -105,7 +105,7 @@ export default defineComponent({
             notify.positive(`Data Source ${newDataSources.value.name} successfully created`)
             onReset()
             form.value.resetValidation()
-            response.data.wrappers = 0;
+            // response.data.wrappers = 0;
             // console.log(response.data)
 
 
