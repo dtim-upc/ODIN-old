@@ -1735,19 +1735,24 @@ module.exports = function (graphContainerSelector) {
                 var n  = new Object();
                 // n.id = node.id();
                 n.iri = node.iri();
-                n.name = node.iri();
-                n.namespace = node.iriType();
+                // n.name = node.iri();
+                // n.namespace = node.iriType();
+
+                n.id = node.id();
+                n.isIntegrated =  node.type() == Integration.IntegrationClass.iri ? true : false;
+                // n.flag = true;
+
                 data.push(n);
+
                 nodesId.push(node.id());
 
               if(!node.iri().includes("http://www.w3.org/2001/XMLSchema#")){
-                classes.push(node.iri())
+                classes.push(n)
               }
 
             });
+            var integrationProperties = [ Integration.IntegrationDProperty.iri, Integration.IntegrationOProperty.iri ]
             labelGroupElements.each(function (label) {
-              console.log("***")
-              console.log(label.property().iri())
                 var domain = label.link().domain().id();
                 var range =label.link().range().id();
                 if(nodesId.includes(domain) && nodesId.includes(range)){
@@ -1755,6 +1760,7 @@ module.exports = function (graphContainerSelector) {
                     n.domain =data[nodesId.indexOf(domain)].iri;
                     n.range =data[nodesId.indexOf(range)].iri  ;
                     n.iri =  label.property().iri()
+                    n.isIntegrated = integrationProperties.includes(label.property().type())   ? true : false;
                     // if(label.property().iriType() === Global.HAS_RELATION.iri){
                     //     n.name = label.property().iri(); //uri for has_relation is given by user
                     //     n.iri =label.property().iri();

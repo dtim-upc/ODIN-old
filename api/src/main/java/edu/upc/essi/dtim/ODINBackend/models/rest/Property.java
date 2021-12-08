@@ -9,6 +9,7 @@ public class Property {
     String domain;
     String range;
     String iri;
+    Boolean isIntegrated;
 
 
     public boolean isDataTypeProperty(){
