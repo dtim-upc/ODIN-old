@@ -122,16 +122,16 @@
             </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="/wrappers" active-class="bg-active">
-            <q-item-section avatar>
-              <!--              settings_input_svideo-->
-              <q-icon name="mdi-google-circles-communities"/>
-            </q-item-section>
+<!--          <q-item clickable v-ripple to="/wrappers" active-class="bg-active">-->
+<!--            <q-item-section avatar>-->
+<!--              &lt;!&ndash;              settings_input_svideo&ndash;&gt;-->
+<!--              <q-icon name="mdi-google-circles-communities"/>-->
+<!--            </q-item-section>-->
 
-            <q-item-section>
-              Wrappers
-            </q-item-section>
-          </q-item>
+<!--            <q-item-section>-->
+<!--              Wrappers-->
+<!--            </q-item-section>-->
+<!--          </q-item>-->
 
 <!--          <q-item clickable v-ripple to="/lavmappings" active-class="bg-active">-->
 <!--            <q-item-section avatar>-->
