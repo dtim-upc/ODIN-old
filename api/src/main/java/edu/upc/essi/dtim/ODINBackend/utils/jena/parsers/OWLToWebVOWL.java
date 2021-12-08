@@ -183,7 +183,7 @@ public class OWLToWebVOWL {
         excluded.add("http://www.essi.upc.edu/dtim/ontology/Global/IntegrationOProperty");
         excluded.add("http://www.essi.upc.edu/dtim/ontology/Global/IntegrationDProperty");
         excluded.add("http://www.essi.upc.edu/dtim/ontology/Global/IntegrationClass");
-
+        excluded.add("ttp://www.essi.upc.edu/DTIM/DataSource");
 
 //        "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"
         List<Subject> classesInfo = listS.stream()

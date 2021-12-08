@@ -2,6 +2,11 @@ package edu.upc.essi.dtim.ODINBackend.config.vocabulary;
 
 public enum Namespaces {
 
+    DTIM("http://www.essi.upc.edu/DTIM"),
+    DataSource("http://www.essi.upc.edu/DTIM/DataSource"),
+    Integration("http://www.essi.upc.edu/DTIM/Integration"),
+    NextiaDI("http://www.essi.upc.edu/DTIM/NextiaDI/"),
+
     S("http://www.essi.upc.edu/dtim/BDIOntology/Source/"),
     G("http://www.essi.upc.edu/dtim/BDIOntology/Global/"),
     I("http://www.essi.upc.edu/dtim/BDIOntology/Integrated/"),

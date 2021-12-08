@@ -67,6 +67,7 @@
             <!--                  <div>-->
             <div class="col-3">
               <q-input outlined v-model="integratedLabel" prefix="Integrated label: " dense/>
+              <q-checkbox v-model="identifier" label="Make it identifier" color="teal" />
             </div>
             <div class="col-3">
               <q-btn outline color="primary" label="Add alignment" @click="addAlignment" :disable="disableAdd"/>
@@ -103,6 +104,7 @@ export default defineComponent({
       alertAlignmentType: ref(false),
       fullscreen: ref(false),
       disableAdd: ref(true),
+      identifier: ref(false),
       // toggle (e) {
       //   console.log(e)
       //   const target = e.target.parentNode.parentNode.parentNode.parentNode
@@ -157,7 +159,7 @@ export default defineComponent({
     addAlignment() {
 
       this.$emit("add-alignment", {
-        row: {iriA: this.selectedA_iri, iriB: this.selectedB_iri, l: this.integratedLabel, type: this.selectedA_type}
+        row: {iriA: this.selectedA_iri, iriB: this.selectedB_iri, l: this.integratedLabel, type: this.selectedA_type, identifier:this.identifier}
       })
       this.resetLabelsA()
       this.resetLabelsB()

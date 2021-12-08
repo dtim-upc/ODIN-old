@@ -2,6 +2,7 @@ package edu.upc.essi.dtim.ODINBackend.controller;
 
 import edu.upc.essi.dtim.ODINBackend.models.rest.QueryDataSelection;
 import edu.upc.essi.dtim.ODINBackend.repository.DataSourcesRepository;
+import edu.upc.essi.dtim.ODINBackend.services.impl.IntegrationService;
 import edu.upc.essi.dtim.ODINBackend.services.impl.OMQService;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.GraphOperations;
 import org.slf4j.Logger;
@@ -29,11 +30,16 @@ public class OMQController {
     @Autowired
     private OMQService service;
 
+    @Autowired
+    private IntegrationService Iservice;
+
 
 
     @PostMapping(value="fromGraphicalToSPARQL")
     public ResponseEntity<String> POST_omq_fromGraphicalToSPARQL(@RequestBody QueryDataSelection body) {
         LOGGER.info("[POST /OMQ/fromGraphicalToSPARQL/]");
+
+        Iservice.retrieveSubGraphs(body.getGraphIRI());
 
         service.hello();
         return new ResponseEntity<>("bye", HttpStatus.OK );

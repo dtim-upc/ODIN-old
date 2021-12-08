@@ -238,8 +238,8 @@ export default defineComponent({
     retrieveData() {
       odinApi.get("/dataSource").then((response) => {
         if (response.status == 200) {
-          this.rows = response.data;
-          console.log(response.data)
+          this.rows = response.data.filter( e => e.type == "INTEGRATED" );
+          console.log(response.data.filter( e => e.type == "INTEGRATED" ))
         }
       });
     },

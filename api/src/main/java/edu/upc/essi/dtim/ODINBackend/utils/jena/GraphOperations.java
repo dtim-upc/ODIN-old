@@ -1,14 +1,19 @@
 package edu.upc.essi.dtim.ODINBackend.utils.jena;
 
 import edu.upc.essi.dtim.ODINBackend.config.db.JenaConnection;
+import edu.upc.essi.dtim.ODINBackend.config.vocabulary.DataSourceGraph;
+import edu.upc.essi.dtim.ODINBackend.config.vocabulary.Namespaces;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.query.SelectQuery;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.apache.jena.rdf.model.impl.ResourceImpl;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.system.Txn;
 import org.apache.jena.update.UpdateAction;
+import org.apache.jena.vocabulary.RDFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +21,9 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.util.*;
 
 @Component
 public class GraphOperations {
@@ -97,6 +102,7 @@ public class GraphOperations {
         });
     }
 
+
     public void addTripleLiteral(String namedGraph, String s, String p, String o) {
         Txn.executeWrite(ds, ()-> {
             Model graph = ds.getNamedModel(namedGraph);
@@ -112,6 +118,45 @@ public class GraphOperations {
     public void deleteTriplesWithObject(String graphIRI, String objectIRI){
         runAnUpdateQuery("DELETE WHERE { GRAPH <" + graphIRI + ">" +
                 " {?s ?p <"+objectIRI+"> } }");
+    }
+
+
+
+
+    public void write(String file, Model model) {
+
+        Map<String, String> prefixes = new HashMap<>();
+        prefixes.put("sourceSchema", DataSourceGraph.SCHEMA.val() + "/");
+        prefixes.put("datasource", Namespaces.DataSource.val()+"/");
+        prefixes.put("nextiaDI", Namespaces.NextiaDI.val() );
+        prefixes.put("integration", Namespaces.Integration.val()+"/" );
+
+        Model copyM = model;
+        model.setNsPrefixes(prefixes);
+//
+        try {
+            RDFDataMgr.write(new FileOutputStream(file), copyM, Lang.TURTLE);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void write(String file, Model model, String id) {
+
+        Map<String, String> prefixes = new HashMap<>();
+        prefixes.put("sourceSchema", DataSourceGraph.SCHEMA.val() + "/"+id+"/");
+        prefixes.put("datasource", Namespaces.DataSource.val()+"/");
+        prefixes.put("nextiaDI", Namespaces.NextiaDI.val() );
+        prefixes.put("integration", Namespaces.Integration.val()+"/" );
+
+        Model copyM = model;
+        model.setNsPrefixes(prefixes);
+//
+        try {
+            RDFDataMgr.write(new FileOutputStream(file), copyM, Lang.TURTLE);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public void deleteTriples(String graphIRI,String subjectIRI, String predicateIRI, String objectIRI) {
@@ -158,7 +203,12 @@ public class GraphOperations {
 
         ResultSet resultSet = Txn.calculateRead(ds, ()-> {
             try(QueryExecution qExec = QueryExecutionFactory.create(query, ds)) {
+//                qExec.getContext().set(Symbols.unionDefaultGraph, true);
+
                 return ResultSetFactory.copyResults(qExec.execSelect()) ;
+            } catch ( Exception e) {
+                e.printStackTrace();
+                return null;
             }
         }) ;
         return resultSet;
@@ -181,5 +231,28 @@ public class GraphOperations {
         });
 
     }
+
+
+    public Model getIntegratedResourcesOfSource(String id, String uri){
+
+        String q = "PREFIX rdfs: <"+ RDFS.getURI()+">" +
+                "CONSTRUCT {" +
+                " ?sourceR ?dr ?integrated. " +
+                " ?integrated ?p ?o." +
+                "} WHERE { " +
+                "VALUES ?dr { rdfs:subPropertyOf rdfs:subClassOf  }" +
+                " ?sourceR ?dr ?integrated. " +
+                " ?integrated ?p ?o." +
+                "FILTER ( CONTAINS( STR(?sourceR), '"+id+"' )  )" +
+                "} ";
+
+        Query query = QueryFactory.create(q);
+        QueryExecution qexec = QueryExecutionFactory.create(query, getGraph(uri) );
+        Model results = qexec.execConstruct();
+        return results;
+
+
+    }
+
 
 }

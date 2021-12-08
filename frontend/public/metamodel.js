@@ -8,7 +8,7 @@ const odinApi = "http://localhost:8082/odin"
 const Namespaces = {
     S: "http://www.essi.upc.edu/~snadal/BDIOntology/Source/",
     G: "http://www.essi.upc.edu/~snadal/BDIOntology/Global/",
-  I: "http://www.essi.upc.edu/dtim/ontology/Global/",
+    I: "http://www.essi.upc.edu/DTIM/NextiaDI/",
     owl: "http://www.w3.org/2002/07/owl#",
     RDF:"http://www.w3.org/1999/02/22-rdf-syntax-ns#",
     RDFS:"http://www.w3.org/2000/01/rdf-schema#",

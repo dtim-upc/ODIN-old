@@ -33,6 +33,13 @@
       </q-td>
     </template>
 
+    <template v-slot:body-cell-identifier="props">
+      <q-td :props="props">
+        hola{{props.row.identifier}}
+        <q-checkbox v-model="props.row.identifier" color="teal" />
+      </q-td>
+    </template>
+
     <template v-slot:no-data="{ icon, message, filter }">
       <div class="full-width row flex-center text-accent q-gutter-sm">
 <!--        <q-icon size="2em" name="sentiment_dissatisfied"/>-->
@@ -75,6 +82,7 @@ export default defineComponent({
       {name: "uriB", required: true, label: "Name B", align: "center", field: "iriB", sortable: true,},
       {name: "label", required: true, label: "Integrated name", align: "center", field: "l", sortable: true,},
       {name: "type", required: true, label: "Type", align: "center", field: "type", sortable: true,},
+      {name: "identifier", required: true, label: "Identifier", align: "center", field: "identifier", sortable: true,},
       {name: "actions", label: "actions", align: "center", field: "actions", sortable: false,},
     ];
     // const rows = [];

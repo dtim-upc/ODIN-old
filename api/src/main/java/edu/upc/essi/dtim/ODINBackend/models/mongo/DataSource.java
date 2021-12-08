@@ -1,6 +1,8 @@
 package edu.upc.essi.dtim.ODINBackend.models.mongo;
 
 import edu.upc.essi.dtim.ODINBackend.config.DataSourceTypes;
+import edu.upc.essi.dtim.ODINBackend.config.vocabulary.DataSourceGraph;
+import edu.upc.essi.dtim.ODINBackend.config.vocabulary.Namespaces;
 import edu.upc.essi.dtim.ODINBackend.config.vocabulary.SourceGraph;
 import edu.upc.essi.dtim.nextiadi.models.Alignment;
 import lombok.Getter;
@@ -12,6 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotBlank;
 import java.util.List;
+import java.util.UUID;
 
 @Getter @Setter
 @NoArgsConstructor
@@ -44,22 +47,45 @@ public class DataSource {
     private DataSourceTypes type;
 
 
-    public String getWrapperIRI_or_IntegratedIRI(){
-        if( type.equals(DataSourceTypes.INTEGRATED)){
-            return iri;
-        }
-        return wrappers.get(0).getIri();
-    }
+//    public String getWrapperIRI_or_IntegratedIRI(){
+//        if( type.equals(DataSourceTypes.INTEGRATED)){
+//            return iri;
+//        }
+////        return wrappers.get(0).getIri();
+//        return iri;
+//    }
 
     public DataSource(String name, DataSourceTypes type) {
         this.name = name;
         this.type = type;
         this.graphicalGraph = "";
-        this.iri = createDataSourceIri(name);
+        this.id = UUID.randomUUID().toString().replace("-", "");
+        this.iri = createDataSourceIri();
     }
 
-    private String createDataSourceIri(String name) {
-        return SourceGraph.DATA_SOURCE.val() + '/' + name;
+    private String createDataSourceIri() {
+
+        if(type.equals(DataSourceTypes.INTEGRATED)){
+            return Namespaces.Integration.val() +'/'+id;
+        }
+
+        return Namespaces.DataSource.val() + '/' + id;
+    }
+
+//    public String getF() {
+//
+//        if(type.equals(DataSourceTypes.CSV)){
+//            return DataSourceGraph.CSV.val();
+//        } else if ( type.equals(DataSourceTypes.JSON)  ) {
+//            return DataSourceGraph.JSON.val();
+//        } else {
+//            return "";
+//        }
+//    }
+
+    public String getSchemaIRI() {
+        return DataSourceGraph.SCHEMA.val() +'/'+ id +'/'+ name ;
+//        return DataSourceGraph.SCHEMA.val() +'/'+ name ;
     }
 
     @Override

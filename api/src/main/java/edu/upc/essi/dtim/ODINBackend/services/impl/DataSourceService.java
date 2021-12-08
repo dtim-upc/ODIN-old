@@ -1,6 +1,7 @@
 package edu.upc.essi.dtim.ODINBackend.services.impl;
 
 import edu.upc.essi.dtim.ODINBackend.config.DataSourceTypes;
+import edu.upc.essi.dtim.ODINBackend.config.vocabulary.DataSourceGraph;
 import edu.upc.essi.dtim.ODINBackend.config.vocabulary.Namespaces;
 import edu.upc.essi.dtim.ODINBackend.config.vocabulary.SourceGraph;
 import edu.upc.essi.dtim.ODINBackend.models.mongo.DataSource;
@@ -57,6 +58,7 @@ public class DataSourceService {
         if(  Boolean.TRUE.equals(bootstrappingType)) {
             _dataSource = bootstrap_schema(_dataSource);
         } else {
+//            TODO: Delete this code since ODIN v2 should bootstrap automatically all sources and then allow users to make views for privacy purposes (wrappers)
             graphOperations.addTriple(_dataSource.getIri(),
                     _dataSource.getIri(),
                     RDF.getURI() + "type",
@@ -114,20 +116,20 @@ public class DataSourceService {
 
     public DataSource bootstrap_schema(DataSource dataSource) throws IOException {
 
-        String filename = FilenameUtils.getName(dataSource.getPath());
-        String dir = properties.getLocation()+"/bootstrapping/";
-        verifyDir(dir);
+//        String filename = FilenameUtils.getName(dataSource.getPath());
+//        String dir = properties.getLocation()+"/bootstrapping/";
+//        verifyDir(dir);
         Model bootsrapM = ModelFactory.createDefaultModel();
         switch (FilenameUtils.getExtension(dataSource.getPath())){
             case "csv":
 
                 CSVBootstrap bootstrap = new CSVBootstrap();
-                bootsrapM = bootstrap.bootstrapSchema(dataSource.getIri(),  dataSource.getPath() );
+                bootsrapM = bootstrap.bootstrapSchema(dataSource.getSchemaIRI(),  dataSource.getPath() );
 
                 break;
             case "json":
                 JSONBootstrap_new jsonBootstrap =  new JSONBootstrap_new();
-                bootsrapM = jsonBootstrap.bootstrapSchema(dataSource.getIri(),  dataSource.getPath());
+                bootsrapM = jsonBootstrap.bootstrapSchema(dataSource.getSchemaIRI(),  dataSource.getPath());
 
                 break;
             default:
@@ -142,28 +144,55 @@ public class DataSourceService {
         dataSource.setGraphicalGraph(vowlJson);
 
 //        graphOperations.addModel(dataSource.getIri(), bootsrapM);
-        Wrapper w = wService.createWrapperBootstrapped(bootsrapM, dataSource.getName(), dataSource.getId());
+//        Wrapper w = wService.createWrapperBootstrapped(bootsrapM, dataSource.getName(), dataSource.getId());
 
+
+        graphOperations.addModel(dataSource.getIri(), bootsrapM);
         graphOperations.addTriple(dataSource.getIri(),
                 dataSource.getIri(),
                 RDF.getURI() + "type",
-                SourceGraph.DATA_SOURCE.val());
+                Namespaces.DataSource.val());
 
-        graphOperations.addTriple(dataSource.getIri(),
-                dataSource.getIri(),
-                Namespaces.S.val()+"hasWrapper",
-                w.getId());
+//        graphOperations.addTriple(dataSource.getIri(),
+//                dataSource.getIri(),
+//                Namespaces.S.val()+"hasWrapper",
+//                w.getId());
 
-        graphOperations.addTriple(dataSource.getIri(),
+        graphOperations.addTripleLiteral(dataSource.getIri(),
                 dataSource.getIri(),
                 RDFS.label.getURI(),
                 dataSource.getName());
+
+        graphOperations.addTripleLiteral(dataSource.getIri(),
+                dataSource.getIri(),
+                DataSourceGraph.HAS_PATH.val(),
+                dataSource.getPath());
+
+        graphOperations.addTripleLiteral(dataSource.getIri(),
+                dataSource.getIri(),
+                DataSourceGraph.HAS_FORMAT.val(),
+                dataSource.getType().toString());
+
+        graphOperations.addTripleLiteral(dataSource.getIri(),
+                dataSource.getIri(),
+                DataSourceGraph.HAS_ID.val(),
+                dataSource.getId() );
+
+        if(dataSource.getType().equals(DataSourceTypes.CSV)){
+            graphOperations.addTripleLiteral(dataSource.getIri(),
+                    dataSource.getIri(),
+                    DataSourceGraph.HAS_SEPARATOR.val(),
+                    ",");
+        }
+
+//        String f = "/Users/javierflores/Documents/UPC_projects/new/newODIN/api/src/test/resources/case01/Sergi/"+dataSource.getName()+"_sourceGraph.ttl";
+//        graphOperations.write(f, graphOperations.getGraph(dataSource.getIri()), dataSource.getId());
 
         List<Wrapper> ls = dataSource.getWrappers();
         if(ls == null){
             ls = new ArrayList<>();
         }
-        ls.add(w);
+//        ls.add(w);
         dataSource.setWrappers(ls);
 
         return dataSource;
