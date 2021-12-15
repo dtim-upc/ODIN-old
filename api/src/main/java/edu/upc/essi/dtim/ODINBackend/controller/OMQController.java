@@ -1,10 +1,13 @@
 package edu.upc.essi.dtim.ODINBackend.controller;
 
+import edu.upc.essi.dtim.ODINBackend.models.query.ODINQuery;
 import edu.upc.essi.dtim.ODINBackend.models.rest.QueryDataSelection;
 import edu.upc.essi.dtim.ODINBackend.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.ODINBackend.services.impl.IntegrationService;
 import edu.upc.essi.dtim.ODINBackend.services.impl.OMQService;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.GraphOperations;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.jena.rdf.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -39,7 +45,16 @@ public class OMQController {
     public ResponseEntity<String> POST_omq_fromGraphicalToSPARQL(@RequestBody QueryDataSelection body) {
         LOGGER.info("[POST /OMQ/fromGraphicalToSPARQL/]");
 
-        Iservice.retrieveSubGraphs(body.getGraphIRI());
+        ODINQuery constructs = Iservice.retrieveConstructs(body);
+
+
+//        Map<String, List<Pair<String, String>>> sourceAtts = Iservice.getSourceAtts(body.getGraphIRI());
+
+        System.out.println("***");
+
+//        sourceAtts.forEach(
+//                (k,v) -> v.forEach(att -> System.out.println(att.getLeft() +" --- "+ att.getRight())  )
+//        );
 
         service.hello();
         return new ResponseEntity<>("bye", HttpStatus.OK );

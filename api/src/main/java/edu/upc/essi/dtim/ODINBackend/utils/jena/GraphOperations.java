@@ -4,6 +4,9 @@ import edu.upc.essi.dtim.ODINBackend.config.db.JenaConnection;
 import edu.upc.essi.dtim.ODINBackend.config.vocabulary.DataSourceGraph;
 import edu.upc.essi.dtim.ODINBackend.config.vocabulary.Namespaces;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.query.SelectQuery;
+import edu.upc.essi.dtim.nextiadi.config.DataSourceVocabulary;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -13,6 +16,7 @@ import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.system.Txn;
 import org.apache.jena.update.UpdateAction;
+import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,14 +147,14 @@ public class GraphOperations {
 
     public void write(String file, Model model, String id) {
 
-        Map<String, String> prefixes = new HashMap<>();
-        prefixes.put("sourceSchema", DataSourceGraph.SCHEMA.val() + "/"+id+"/");
-        prefixes.put("datasource", Namespaces.DataSource.val()+"/");
-        prefixes.put("nextiaDI", Namespaces.NextiaDI.val() );
-        prefixes.put("integration", Namespaces.Integration.val()+"/" );
+//        Map<String, String> prefixes = new HashMap<>();
+//        prefixes.put("sourceSchema", DataSourceGraph.SCHEMA.val() + "/"+id+"/");
+//        prefixes.put("datasource", Namespaces.DataSource.val()+"/");
+//        prefixes.put("nextiaDI", Namespaces.NextiaDI.val() );
+//        prefixes.put("integration", Namespaces.Integration.val()+"/" );
 
         Model copyM = model;
-        model.setNsPrefixes(prefixes);
+//        model.setNsPrefixes(prefixes);
 //
         try {
             RDFDataMgr.write(new FileOutputStream(file), copyM, Lang.TURTLE);
@@ -214,9 +218,31 @@ public class GraphOperations {
         return resultSet;
     }
 
+    public ResultSet runAQuery(Query query, Model m) {
+
+//        ResultSet resultSet = Txn.calculateRead(m, ()-> {
+            try(QueryExecution qExec = QueryExecutionFactory.create(query, m)) {
+//                qExec.getContext().set(Symbols.unionDefaultGraph, true);
+
+                return ResultSetFactory.copyResults(qExec.execSelect()) ;
+            } catch ( Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+//        }) ;
+//        return resultSet;
+    }
+
+
+
     public ResultSet runAQuery(String query) {
 
         return runAQuery(QueryFactory.create(query));
+    }
+
+    public ResultSet runAQuery(String query, Model m) {
+
+        return runAQuery(QueryFactory.create(query),  m);
     }
 
     public  void runAnUpdateQuery(String sparqlQuery) {
@@ -232,13 +258,103 @@ public class GraphOperations {
 
     }
 
+    public  void runAnUpdateQuery(String sparqlQuery, Model m) {
+
+        Txn.executeWrite(ds, ()->{
+
+            try {
+                UpdateAction.parseExecute(sparqlQuery, m);
+            } catch (Exception e) {
+                LOGGER.error("Error occurred while Updating a quiery");
+            }
+        });
+
+    }
+
+
+    public List<Pair<String,String>> getSourceAtts(String uri){
+
+        List<Pair<String,String>> sourceAttributes = Lists.newArrayList();
+
+        String query = "SELECT ?subject ?alias WHERE { GRAPH <"+uri+"> { ?subject <"+ DataSourceVocabulary.ALIAS.val() +"> ?alias. } }";
+        ResultSet res =  runAQuery(query);
+        while(res.hasNext()){
+            QuerySolution solution = res.nextSolution();
+            String s = solution.getResource("subject").getURI();
+            String alias = solution.getLiteral("alias").getString();
+
+            sourceAttributes.add( Pair.of(s, alias)  );
+        }
+        return sourceAttributes;
+    }
+
+
+
+    public Model simplify(Model m){
+
+        String q = "DELETE { ?s <"+RDFS.label.getURI()+"> ?label} WHERE { " +
+                "?s <"+RDFS.label.getURI()+"> ?label." +
+                "?s <"+DataSourceVocabulary.ALIAS.val()+"> ?alias" +
+                "}";
+
+        String q2 = "DELETE WHERE { " +
+                "?s <"+ DataSourceGraph.GRAPHICAL.val()+"> ?graphical" +
+                "}";
+
+        runAnUpdateQuery(q, m);
+        return m;
+
+    }
+
+//    public void identifiers(ModList<String> identifiers){
+//
+//
+//
+//        StringJoiner b = new StringJoiner(" ");
+//        resources.forEach( x -> b.add("<"+x+">"));
+//        String vals =  "VALUES ?val {  "+b.toString()+" }";
+//
+//        m.add()
+//
+//
+////
+////        String q = "INSERT { ?integrated <"+RDFS.subClassOf.getURI()+"> <"+Namespaces.SCHEMA.val()+"identifier>  } WHERE { " +
+////                "VALUES ?dr { rdfs:subPropertyOf rdfs:subClassOf  }" +
+////                "?s <"+RDFS.subClassOf.getURI()+">  <"+Namespaces.SCHEMA.val()+"identifier>." +
+////                "?s ?dr ?integrated" +
+////                "FILTER( CONTAINS( STR(?integrated ), '"+DataSourceVocabulary.Schema.val()+"'  )  )" +
+////                "}";
+////
+////        runAnUpdateQuery(q, m);
+////        return m;
+//
+//    }
+
+    public Model getSubGraph( List<String> resources, String uri, List<String> identifiers){
+
+        StringJoiner b = new StringJoiner(" ");
+        resources.forEach( x -> b.add("<"+x+">"));
+        String vals =  "VALUES ?val {  "+b.toString()+" }";
+
+        String q = "CONSTRUCT { ?val ?p ?o   } WHERE {  "+vals+"" +
+                " ?val ?p ?o  } ";
+
+        Query query = QueryFactory.create(q);
+        QueryExecution qexec = QueryExecutionFactory.create(query, getGraph(uri) );
+        Model results = qexec.execConstruct();
+
+        identifiers.forEach(i -> results.add(new ResourceImpl(i), RDFS.subClassOf, new ResourceImpl(Namespaces.SCHEMA.val()+"identifier")) );
+
+        return  results;
+
+    }
 
     public Model getIntegratedResourcesOfSource(String id, String uri){
-
+        // ?integrated can be values
         String q = "PREFIX rdfs: <"+ RDFS.getURI()+">" +
                 "CONSTRUCT {" +
-                " ?sourceR ?dr ?integrated. " +
-                " ?integrated ?p ?o." +
+                " ?sourceR <"+ OWL.sameAs.getURI()+"> ?integrated. " +
+//                " ?integrated ?p ?o." +
                 "} WHERE { " +
                 "VALUES ?dr { rdfs:subPropertyOf rdfs:subClassOf  }" +
                 " ?sourceR ?dr ?integrated. " +
@@ -250,8 +366,6 @@ public class GraphOperations {
         QueryExecution qexec = QueryExecutionFactory.create(query, getGraph(uri) );
         Model results = qexec.execConstruct();
         return results;
-
-
     }
 
 

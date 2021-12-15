@@ -96,12 +96,18 @@ public class IntegrationController {
 
 
         graphOperations.addModel(integratedDatasource.getIri(), simplifyI);
+        graphOperations.addModel(integratedDatasource.getMinimalIRI(), minimal);
+
         graphOperations.addTriple(integratedDatasource.getIri(), integratedDatasource.getIri(), RDF.type.getURI(), Namespaces.Integration.val());
         graphOperations.addTripleLiteral(integratedDatasource.getIri(), integratedDatasource.getIri(), RDFS.label.getURI(), integratedDatasource.getName());
         graphOperations.addTripleLiteral(integratedDatasource.getIri(), integratedDatasource.getIri(), DataSourceGraph.HAS_ID.val(), integratedDatasource.getId());
 
         graphOperations.addTriple(integratedDatasource.getIri(), integratedDatasource.getIri(), DataSourceGraph.INTEGRATION_OF.val(), dsA  );
         graphOperations.addTriple(integratedDatasource.getIri(), integratedDatasource.getIri(), DataSourceGraph.INTEGRATION_OF.val(), dsB  );
+
+        graphOperations.addTriple(integratedDatasource.getIri(), integratedDatasource.getIri(), DataSourceGraph.MINIMAL.val(), integratedDatasource.getMinimalIRI()  );
+
+        graphOperations.addTriple(integratedDatasource.getMinimalIRI(), integratedDatasource.getMinimalIRI(), DataSourceGraph.IS_MINIMAL_OF.val(), integratedDatasource.getIri()  );
 
 //        String f = "/Users/javierflores/Documents/UPC_projects/new/newODIN/api/src/test/resources/case01/Sergi/integrated.ttl";
 //        graphOperations.write(f, graphOperations.getGraph(integratedDatasource.getIri()));

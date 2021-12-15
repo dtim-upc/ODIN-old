@@ -4,6 +4,7 @@ import edu.upc.essi.dtim.ODINBackend.config.DataSourceTypes;
 import edu.upc.essi.dtim.ODINBackend.config.vocabulary.DataSourceGraph;
 import edu.upc.essi.dtim.ODINBackend.config.vocabulary.Namespaces;
 import edu.upc.essi.dtim.ODINBackend.config.vocabulary.SourceGraph;
+import edu.upc.essi.dtim.nextiadi.config.DataSourceVocabulary;
 import edu.upc.essi.dtim.nextiadi.models.Alignment;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -66,10 +67,10 @@ public class DataSource {
     private String createDataSourceIri() {
 
         if(type.equals(DataSourceTypes.INTEGRATED)){
-            return Namespaces.Integration.val() +'/'+id;
+            return DataSourceVocabulary.DataSource.val() +'/'+id;
         }
 
-        return Namespaces.DataSource.val() + '/' + id;
+        return DataSourceVocabulary.DataSource.val() + '/' + id;
     }
 
 //    public String getF() {
@@ -82,6 +83,11 @@ public class DataSource {
 //            return "";
 //        }
 //    }
+
+    public String getMinimalIRI(){
+        // todo: use the namespaces from nextiadi library
+        return Namespaces.NextiaDI.val() + id + "/minimal";
+    }
 
     public String getSchemaIRI() {
         return DataSourceGraph.SCHEMA.val() +'/'+ id +'/'+ name ;

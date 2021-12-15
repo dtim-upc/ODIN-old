@@ -13,7 +13,8 @@ import edu.upc.essi.dtim.ODINBackend.services.filestorage.StorageService;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.GraphOperations;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.parsers.OWLToWebVOWL;
 import edu.upc.essi.dtim.nextiadi.bootstraping.CSVBootstrap;
-import edu.upc.essi.dtim.nextiadi.bootstraping.JSONBootstrap_new;
+import edu.upc.essi.dtim.nextiadi.bootstraping.JSONBootstrap;
+import edu.upc.essi.dtim.nextiadi.config.DataSourceVocabulary;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -128,8 +129,8 @@ public class DataSourceService {
 
                 break;
             case "json":
-                JSONBootstrap_new jsonBootstrap =  new JSONBootstrap_new();
-                bootsrapM = jsonBootstrap.bootstrapSchema(dataSource.getSchemaIRI(),  dataSource.getPath());
+                JSONBootstrap jsonBootstrap =  new JSONBootstrap();
+                bootsrapM = jsonBootstrap.bootstrapSchema(dataSource.getName(), dataSource.getId(), dataSource.getPath());
 
                 break;
             default:
@@ -143,47 +144,44 @@ public class DataSourceService {
         String vowlJson = vowl.convertSchema(bootsrapM);
         dataSource.setGraphicalGraph(vowlJson);
 
-//        graphOperations.addModel(dataSource.getIri(), bootsrapM);
-//        Wrapper w = wService.createWrapperBootstrapped(bootsrapM, dataSource.getName(), dataSource.getId());
-
-
         graphOperations.addModel(dataSource.getIri(), bootsrapM);
-        graphOperations.addTriple(dataSource.getIri(),
-                dataSource.getIri(),
-                RDF.getURI() + "type",
-                Namespaces.DataSource.val());
 
+        graphOperations.addTripleLiteral(dataSource.getIri(),
+                dataSource.getIri(),
+                DataSourceGraph.GRAPHICAL.val(),
+                vowlJson
+                );
 //        graphOperations.addTriple(dataSource.getIri(),
 //                dataSource.getIri(),
-//                Namespaces.S.val()+"hasWrapper",
-//                w.getId());
+//                RDF.getURI() + "type",
+//                Namespaces.DataSource.val());
 
-        graphOperations.addTripleLiteral(dataSource.getIri(),
-                dataSource.getIri(),
-                RDFS.label.getURI(),
-                dataSource.getName());
+//        graphOperations.addTripleLiteral(dataSource.getIri(),
+//                dataSource.getIri(),
+//                RDFS.label.getURI(),
+//                dataSource.getName());
 
-        graphOperations.addTripleLiteral(dataSource.getIri(),
-                dataSource.getIri(),
-                DataSourceGraph.HAS_PATH.val(),
-                dataSource.getPath());
+//        graphOperations.addTripleLiteral(dataSource.getIri(),
+//                dataSource.getIri(),
+//                DataSourceGraph.HAS_PATH.val(),
+//                dataSource.getPath());
 
-        graphOperations.addTripleLiteral(dataSource.getIri(),
-                dataSource.getIri(),
-                DataSourceGraph.HAS_FORMAT.val(),
-                dataSource.getType().toString());
+//        graphOperations.addTripleLiteral(dataSource.getIri(),
+//                dataSource.getIri(),
+//                DataSourceGraph.HAS_FORMAT.val(),
+//                dataSource.getType().toString());
 
-        graphOperations.addTripleLiteral(dataSource.getIri(),
-                dataSource.getIri(),
-                DataSourceGraph.HAS_ID.val(),
-                dataSource.getId() );
+//        graphOperations.addTripleLiteral(dataSource.getIri(),
+//                dataSource.getIri(),
+//                DataSourceGraph.HAS_ID.val(),
+//                dataSource.getId() );
 
-        if(dataSource.getType().equals(DataSourceTypes.CSV)){
-            graphOperations.addTripleLiteral(dataSource.getIri(),
-                    dataSource.getIri(),
-                    DataSourceGraph.HAS_SEPARATOR.val(),
-                    ",");
-        }
+//        if(dataSource.getType().equals(DataSourceTypes.CSV)){
+//            graphOperations.addTripleLiteral(dataSource.getIri(),
+//                    dataSource.getIri(),
+//                    DataSourceGraph.HAS_SEPARATOR.val(),
+//                    ",");
+//        }
 
 //        String f = "/Users/javierflores/Documents/UPC_projects/new/newODIN/api/src/test/resources/case01/Sergi/"+dataSource.getName()+"_sourceGraph.ttl";
 //        graphOperations.write(f, graphOperations.getGraph(dataSource.getIri()), dataSource.getId());

@@ -1,5 +1,7 @@
 package edu.upc.essi.dtim.ODINBackend.config.vocabulary;
 
+import edu.upc.essi.dtim.nextiadi.config.DataSourceVocabulary;
+
 public enum DataSourceGraph {
 
     SCHEMA(Namespaces.DataSource.val()+"/Schema"),
@@ -9,7 +11,10 @@ public enum DataSourceGraph {
     HAS_FORMAT(Namespaces.DataSource.val()+"/hasFormat"),
     HAS_ID(Namespaces.DataSource.val()+"/hasID"),
 
-    INTEGRATION_OF(Namespaces.NextiaDI.val() +"integrationOf"  );
+    INTEGRATION_OF(Namespaces.NextiaDI.val() +"integrationOf"  ),
+    IS_MINIMAL_OF(Namespaces.NextiaDI.val() +"isMinimalOf"  ),
+    GRAPHICAL(DataSourceVocabulary.DataSource.val() +"/graphicalGraph"),
+    MINIMAL(Namespaces.NextiaDI.val() +"minimal"  );
 
 
     private String element;
