@@ -10,6 +10,7 @@ public class Property {
     String range;
     String iri;
     Boolean isIntegrated;
+    String type;
 
 
     public boolean isDataTypeProperty(){

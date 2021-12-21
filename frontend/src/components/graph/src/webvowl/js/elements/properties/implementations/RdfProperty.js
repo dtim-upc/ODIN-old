@@ -7,6 +7,7 @@ module.exports = (function () {
 
 		this.attributes(["rdf"])
 			.styleClass("rdfproperty")
+      .iriType("http://www.w3.org/1999/02/22-rdf-syntax-ns#Property")
 			.type("rdf:Property");
 	};
 	o.prototype = Object.create(BaseProperty.prototype);

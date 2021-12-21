@@ -8,6 +8,7 @@ public class Classes {
 
     String iri;
     Boolean isIntegrated;
+    String type;
 
 
 }

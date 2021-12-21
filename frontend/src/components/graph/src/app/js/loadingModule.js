@@ -510,8 +510,8 @@ module.exports =  function (graph) {
             var fileToRead="/graph/data/"+ontology+".json";
             if (f2r) {fileToRead=f2r;} // overwrite the newOntology Index
             // read file
-            console.log(fileToRead);
-            console.log("*****")
+            // console.log(fileToRead);
+            // console.log("*****")
             d3.xhr(fileToRead, "application/json", function (error, request) {
                 var loadingSuccessful = !error;
                 if (loadingSuccessful) {
@@ -590,7 +590,7 @@ module.exports =  function (graph) {
       var integration = getParameterByName("integration_graph");
 
 
-            console.log({globalGraphID, lavMappingID, dataSourceID});
+            // console.log({globalGraphID, lavMappingID, dataSourceID});
             if (globalGraphID !== "" && lavMappingID === "") {
               // retrieve global graph data.
                 const content = JSON.parse($.ajax({
@@ -599,7 +599,7 @@ module.exports =  function (graph) {
                     async: false
                 }).responseText);
                 currentGlobalGraph = content;
-                console.log({currentGlobalGraph});
+                // console.log({currentGlobalGraph});
             }
             if(globalGraphID !== "" && lavMappingID !== ""){
 
@@ -610,11 +610,11 @@ module.exports =  function (graph) {
                 }).responseText);
 
 
-                console.log({data});
+                // console.log({data});
 
                 if(data.globalQuery){
                     currentSubGraph = data.globalQuery;
-                    console.log({currentGlobalGraph})
+                    // console.log({currentGlobalGraph})
                 }
                 currentGlobalGraph = JSON.parse($.ajax({
                     type: "GET",
@@ -622,7 +622,7 @@ module.exports =  function (graph) {
                     async: false
                 }).responseText);
 
-                console.log(currentGlobalGraph);
+                // console.log(currentGlobalGraph);
             } else if(dataSourceID !== ""){
 
               let content = JSON.parse($.ajax({
@@ -631,17 +631,17 @@ module.exports =  function (graph) {
                   async: false
               }).responseText);
 
-              console.log("****")
-              console.log(minimal)
-              console.log(integration)
+              // console.log("****")
+              // console.log(minimal)
+              // console.log(integration)
 
 
 
               if(minimal){
-                console.log("minimal...")
+                // console.log("minimal...")
                 content.graphicalGraph = content.graphicalMinimalIntegration
               } else if(integration) {
-                console.log("integration...")
+                // console.log("integration...")
                 content.graphicalGraph = content.graphicalIntegration
               }
 

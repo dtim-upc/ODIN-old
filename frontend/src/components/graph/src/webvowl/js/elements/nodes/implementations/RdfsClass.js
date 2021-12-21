@@ -6,6 +6,7 @@ module.exports = (function () {
 		RoundNode.apply(this, arguments);
 
 		this.attributes(["rdf"])
+      .iriType("http://www.w3.org/2000/01/rdf-schema#Class")
 			.type("rdfs:Class");
 	};
 	o.prototype = Object.create(RoundNode.prototype);

@@ -1740,13 +1740,15 @@ module.exports = function (graphContainerSelector) {
 
                 n.id = node.id();
                 n.isIntegrated =  node.type() == Integration.IntegrationClass.iri ? true : false;
+                // n.type = node.type();
                 // n.flag = true;
-
+                n.type = node.iriType()
                 data.push(n);
 
                 nodesId.push(node.id());
 
               if(!node.iri().includes("http://www.w3.org/2001/XMLSchema#")){
+                // console.log("*node type: *"+node.iriType())
                 classes.push(n)
               }
 
@@ -1760,6 +1762,8 @@ module.exports = function (graphContainerSelector) {
                     n.domain =data[nodesId.indexOf(domain)].iri;
                     n.range =data[nodesId.indexOf(range)].iri  ;
                     n.iri =  label.property().iri()
+                    n.type = label.property().iriType();
+                  // console.log("*property type: *"+label.property().iriType())
                     n.isIntegrated = integrationProperties.includes(label.property().type())   ? true : false;
                     // if(label.property().iriType() === Global.HAS_RELATION.iri){
                     //     n.name = label.property().iri(); //uri for has_relation is given by user
