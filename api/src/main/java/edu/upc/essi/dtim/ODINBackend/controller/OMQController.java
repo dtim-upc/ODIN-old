@@ -1,5 +1,8 @@
 package edu.upc.essi.dtim.ODINBackend.controller;
 
+import com.clearspring.analytics.util.Lists;
+import com.google.common.collect.Sets;
+import edu.upc.essi.dtim.NextiaQR_RDFS;
 import edu.upc.essi.dtim.ODINBackend.models.query.ODINQuery;
 import edu.upc.essi.dtim.ODINBackend.models.rest.QueryDataSelection;
 import edu.upc.essi.dtim.ODINBackend.repository.DataSourcesRepository;
@@ -8,6 +11,9 @@ import edu.upc.essi.dtim.ODINBackend.services.impl.OMQService;
 import edu.upc.essi.dtim.ODINBackend.utils.jena.GraphOperations;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +23,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import scala.Tuple3;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -47,14 +59,81 @@ public class OMQController {
 
         ODINQuery constructs = Iservice.retrieveConstructs(body);
 
+        List<String> SELECT = Lists.newArrayList();
+        Set<Tuple3<String,String,String>> WHERE = Sets.newHashSet();
+        SELECT.addAll(
+                body.getProperties().stream().map(c -> c.getIri()).collect(Collectors.toList())
+        );
+        WHERE.addAll(
+                body.getClasses().stream().map(c -> new Tuple3<>(c.getIri(), RDF.type.getURI(), c.getType()))
+                .collect(Collectors.toSet())
+        );
+        WHERE.addAll(
+                body.getProperties().stream().flatMap(c -> {
+                    List<Tuple3<String,String,String>> out = Lists.newArrayList();
+                    out.add(new Tuple3<>(c.getIri(), RDFS.domain.getURI(), c.getDomain()));
+                    out.add(new Tuple3<>(c.getIri(),RDF.type.getURI(),c.getType()));
+                    return out.stream();
+                }).collect(Collectors.toSet())
+        );
 
-//        Map<String, List<Pair<String, String>>> sourceAtts = Iservice.getSourceAtts(body.getGraphIRI());
+        StringBuilder query = new StringBuilder();
+        query.append("SELECT");
+        for (int i = 0; i < SELECT.size(); ++i) {
+            query.append(" ?v"+(i+1));
+        }
+        query.append(" WHERE { VALUES (");
+        for (int i = 0; i < SELECT.size(); ++i) {
+            query.append(" ?v"+(i+1));
+        }
+        query.append(") { (");
+        SELECT.forEach(s -> query.append(" "+s));
+        query.append(" ) } ");
+        WHERE.forEach(w -> query.append(" "+w._1()+" "+w._2()+" "+w._3()+" . "));
+        query.append("}");
 
-        System.out.println("***");
+        NextiaQR_RDFS.rewriteToUnionOfConjunctiveQueries(constructs.getSourceGraphs(), constructs.getMinimal(),
+                constructs.getSubGraphs(), query.toString());
 
-//        sourceAtts.forEach(
-//                (k,v) -> v.forEach(att -> System.out.println(att.getLeft() +" --- "+ att.getRight())  )
-//        );
+        /**
+        System.out.println("-- Source Graphs --");
+        constructs.getSourceGraphs().forEach((k,v) -> {
+            System.out.println(k);
+            try {
+                java.nio.file.Path p = Files.createTempFile("source-graph",".g");
+                graphOperations.write(p.toString(),v);
+                System.out.println(p);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            System.out.println("################");
+        });
+        System.out.println("");
+
+        System.out.println("-- Minimal --");
+        try {
+            java.nio.file.Path p = Files.createTempFile("minimal-graph",".g");
+            graphOperations.write(p.toString(),constructs.getMinimal());
+            System.out.println(p);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("");
+
+        System.out.println("-- Subgraphs --");
+        constructs.getSubGraphs().forEach((k,v) -> {
+            System.out.println(k);
+            try {
+                java.nio.file.Path p = Files.createTempFile("subgraphs",".g");
+                graphOperations.write(p.toString(),v);
+                System.out.println(p);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            System.out.println("################");
+        });
+        System.out.println("");
+         **/
 
         service.hello();
         return new ResponseEntity<>("bye", HttpStatus.OK );
