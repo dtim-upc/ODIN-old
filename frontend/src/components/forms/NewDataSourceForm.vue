@@ -13,7 +13,7 @@
           <q-select v-model="DataSourceType" :options="options" label="Type" class="q-mt-none"/>
 
           <q-file ref="fileds" outlined v-model="uploadedFile" auto-expand label="Select the file you would like to import."
-                  :headers="{ 'content-type': 'multipart/form-data' }" accept="text/csv, application/json" :max-files="1"
+                  :headers="{ 'content-type': 'multipart/form-data' }" accept=".csv, application/json" :max-files="1"
                   lazy-rules :rules="[(val) => (val && val.name !== '') || 'Please upload a file' ]">
             <template v-slot:prepend>
               <q-icon name="attach_file" @click="this.$refs.fileds.pickFiles();"/>
