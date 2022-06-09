@@ -21,6 +21,7 @@
 
 
           </q-file>
+          <q-input v-model="description" filled autogrow label="Description (Optional)"/>
 
           <p>Select a bootstrapping type:</p>
           <q-option-group name="bootstrapping_type" v-model="bootstrappingType"
@@ -65,8 +66,9 @@ export default defineComponent({
     ];
     const uploadedFile  = ref(null);
     const DataSourceType = ref("Upload file");
-    const newDataSources = ref({id: "", name: "", type: ""});
+    const newDataSources = ref({id: "", name: "", type: "", description:"",tags:""});
     const bootstrappingType = ref('auto');
+    const description = ref("");
     const onReset = () => {
 
       // emit("update:prueb", 2)
@@ -76,6 +78,8 @@ export default defineComponent({
 
       newDataSources.value.name = "";
       newDataSources.value.type = "";
+      newDataSources.value.description = "";
+      newDataSources.value.tags = "";
       uploadedFile.value = null;
       bootstrappingType.value = "auto";
 
@@ -128,7 +132,7 @@ export default defineComponent({
 
 
     return {
-      DataSourceType, options, newDataSources, uploadedFile, bootstrappingType, onSubmit, onReset, form
+      DataSourceType, options, newDataSources, uploadedFile, bootstrappingType, onSubmit, onReset, form, description
     }
   },
   //

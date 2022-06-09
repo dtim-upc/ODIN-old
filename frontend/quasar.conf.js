@@ -82,6 +82,7 @@ module.exports = configure(function (ctx) {
       config: {
         notify:{ position: "bottom-right"},
         dark: false,
+        bodyClasses:true,
 
       },
       // iconSet: 'material-icons', // Quasar icon set

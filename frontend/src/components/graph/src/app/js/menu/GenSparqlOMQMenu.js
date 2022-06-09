@@ -27,9 +27,14 @@ module.exports = function (graph) {
                       contentType: "application/json; charset=utf-8",
                         data: JSON.stringify(selection)
                     }).done(function (res) {
-                      console.log("answer: ")
+                      console.log("answer sending: ")
                       console.log(res)
-                      alert("answer is: "+res)
+                    //   alert("answer sending: "+res)
+
+                      var msg = new CustomEvent('queryResult', {detail: res})
+				        window.parent.dispatchEvent(msg);  
+
+
                         // var sparql_omq = new Object();
                         // sparql_omq.sparql = res.sparql;
                         // sparql_omq.namedGraph = graph.options().loadingModule().currentGlobalGraph().namedGraph;

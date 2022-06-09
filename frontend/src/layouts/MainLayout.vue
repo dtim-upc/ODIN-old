@@ -1,17 +1,14 @@
 <template>
   <q-layout view="lHr LpR lFr">
-    <q-header class="bg-color text-black">
+    <q-header class="bg-white text-black">
       <q-toolbar>
-        <q-btn flat @click="drawer = !drawer" round dense icon="menu"/>
+        <!-- <q-btn flat @click="drawer = !drawer" round dense icon="menu"/>
 
         <q-toolbar-title>
-          <!--          <q-avatar>-->
-          <!--            <img src="~assets/logoODIN.png"/>-->
-          <!--          </q-avatar>-->
           ODIN
         </q-toolbar-title>
-
-        <q-space/>
+-->
+        <q-space/> 
 
 <!--        <q-btn class="q-mr-xs" flat round @click="deleteData()"-->
 <!--               icon="delete"/>-->
@@ -44,29 +41,37 @@
       :width="200"
       :breakpoint="500"
       bordered
-      class="bg-white"
+     
     >
       <q-scroll-area class="fit">
         <q-list padding>
 
-          <q-item style="max-width: 200px">
-            <q-item-section>
-              <q-img src="~assets/logoODIN.png" style="max-width: 180px; max-height: 35px; " fit="contain"/>
+          <q-item style="max-width: 200px; padding:10px; padding-top: 0px" >
+            <q-item-section avatar v-if="miniState" >
+              <q-icon name="img:/assets/ODIN_short.svg" size="lg"/>  
+              <!-- <q-img :src=" miniState ? '/assets/ODIN_short.svg':'/assets/ODIN.svg'" style="max-width: 180px; max-height: 35px; " fit="contain"/> -->
               <!--                <img src="~assets/logoODIN.png"/>-->
               <!--              :src=" miniState ? '/assets/logoODIN_short.png':'/assets/logoODIN.png'"-->
+            </q-item-section>
+            <q-item-section v-else>
+              <q-img src="/assets/ODIN.svg" style="max-width: 180px; max-height: 35px; " fit="contain"/>
             </q-item-section>
           </q-item>
 
           <q-separator/>
-          <q-item @click="miniState = !miniState">
+          <!-- <q-item @click="miniState = !miniState">
             <q-item-section avatar>
               <q-btn dense round unelevated :icon="miniState == true ? 'mdi-arrow-collapse-right' : 'mdi-arrow-collapse-left'" @click="miniState = !miniState"/>
+            </q-item-section>
+          </q-item> -->
+          <q-item>
+            <q-item-section avatar>
+              <q-icon :name="miniState == true ? 'mdi-arrow-collapse-right' : 'mdi-arrow-collapse-left'" @click="miniState = !miniState"/>
             </q-item-section>
             <!--            <q-item-section avatar>-->
             <!--              <q-icon name="chevron_left" />-->
             <!--            </q-item-section>-->
           </q-item>
-
           <q-item clickable v-ripple to="/" active-class="bg-active" exact>
             <q-item-section avatar>
               <q-icon name="o_cottage"/>
@@ -194,23 +199,26 @@ export default {
 
 <style>
 
-.bg-color {
-  background-color: #f4f8fb;
-}
+/* .bg-color {
+   background-color: #f4f8fb;
+  background-color: #ffffff;
+} */
 
 .bg-white {
   background-color: #ffffff;
 }
 
 .bg-active {
-  color: #8f81bd;
-  background: #f0edfd;
-
+  /* color: #8f81bd; */
+  color:#5e429e;
+  /* background: #f0edfd; */
+  background: #e7e2f3;
 }
 
 
 .body--light {
-  background-color: #f4f8fb;
+  /* background-color: #f4f8fb; */
+  background-color: #ffffff;
 }
 
 .body--dark {

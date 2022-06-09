@@ -12,7 +12,7 @@ apply plugin: 'checkstyle'
 
 group = 'edu.upc.essi.dtim'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+//sourceCompatibility = '11'
 
 configurations {
 	compileOnly {
@@ -22,6 +22,9 @@ configurations {
 
 repositories {
 	mavenCentral()
+	maven {
+		url 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+	}
 
 }
 
@@ -32,7 +35,7 @@ dependencies {
 	implementation group: 'org.apache.jena', name: 'apache-jena-libs', version: '4.1.0', ext: 'pom'
 	implementation group: 'org.apache.jena', name: 'jena-querybuilder', version: '4.1.0'
 	implementation group: 'net.minidev', name: 'json-smart', version: '2.4.7'
-	implementation (group: 'org.apache.spark', name: 'spark-sql_2.12',version: '3.1.2'){
+	implementation (group: 'org.apache.spark', name: 'spark-sql_2.12',version: '3.2.1'){
 		exclude group: 'org.codehaus.janino', module: 'janino'
 		exclude group: 'org.codehaus.janino', module: 'commons-compiler'
 	}
@@ -42,14 +45,18 @@ dependencies {
 	implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
 
 
+
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 //	implementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
 	checkstyle 'com.puppycrawl.tools:checkstyle:8.39'
 
-	implementation fileTree(dir: 'lib', include: ['*.jar'])
+	implementation 'edu.upc.essi.dtim:nextiadi:0.1.0'
+	implementation 'edu.upc.essi.dtim:nextiaqr:0.1.0-SNAPSHOT'
+//	implementation fileTree(dir: 'lib', include: ['*.jar'])
 }
 
 test {
@@ -94,4 +101,9 @@ checkstyleTest {
 
 configurations.all {
 	exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+}
+
+// for snapshot dependency test
+configurations.all {
+	resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }

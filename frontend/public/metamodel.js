@@ -101,16 +101,16 @@ const SourceGraph_JSON = {
 const Integration = {
 
   IntegrationClass:{
-    iri: Namespaces.I+"IntegrationClass",
-    name: Namespaces.I+"IntegrationClass",
-    gui_name: "IntegrationClass",
+    iri: Namespaces.I+"IntegratedClass",
+    name: Namespaces.I+"IntegratedClass",
+    gui_name: "IntegratedClass",
     color: "#dfffd6",
     isID: false
   },
   IntegrationDProperty:{
-    iri: Namespaces.I+"IntegrationDProperty",
-    name: Namespaces.I+"IntegrationDProperty",
-    gui_name: "IntegrationDProperty",
+    iri: Namespaces.I+"IntegratedDatatypeProperty",
+    name: Namespaces.I+"IntegratedDatatypeProperty",
+    gui_name: "IntegratedDatatypeProperty",
     color: "#dfffd6",
     isID: false
   },

@@ -10,8 +10,8 @@ spring:
 
   servlet:
     multipart:
-      max-file-size: 100MB
-      max-request-size: 100MB
+      max-file-size: 300MB
+      max-request-size: 300MB
 #  servlet:
 #    multipart:
 #      max-file-size: 30MB
@@ -25,6 +25,15 @@ spark:
       memory: "471859200"
   testing:
       memory: "471859200"
+
+dataStorage:
+  landingZone:
+    persistent:
+      name: "persistent"
+    temporal:
+      name: "temporal"
+    jena:
+      name: jena
 
 info:
   component: Odin is a system that supports incremental pay-as-you-go integration of data sources into dataspaces and provides user-friendly

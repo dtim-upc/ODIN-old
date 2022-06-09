@@ -12,15 +12,16 @@
         <div class="q-table__title">
           {{ title }}
         </div>
-        <q-input dense debounce="400" color="primary" v-model="search">
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
+        
 
       </template>
 
       <template v-slot:top-right="props">
+      <q-input dense debounce="400" color="primary" v-model="search">
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
         <q-btn
           flat
           round
@@ -115,7 +116,7 @@ export default defineComponent({
       // },
     ];
     const rows = [];
-    const title = "Manage POSE OMQ";
+    const title = "Manage Queries";
     const show_dialog = false;
     const show_edit_dialog = false;
     const newGlobalGraph = {
