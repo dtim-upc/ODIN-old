@@ -7,8 +7,8 @@ import edu.upc.essi.dtim.odin.models.mongo.DataSource;
 import edu.upc.essi.dtim.odin.models.mongo.Wrapper;
 import edu.upc.essi.dtim.odin.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.odin.repository.WrapperRepository;
-import edu.upc.essi.dtim.odin.services.filestorage.StorageProperties;
-import edu.upc.essi.dtim.odin.services.filestorage.StorageService;
+import edu.upc.essi.dtim.odin.storage.filestorage.StorageProperties;
+import edu.upc.essi.dtim.odin.storage.filestorage.StorageService;
 import edu.upc.essi.dtim.odin.utils.jena.GraphOperations;
 import edu.upc.essi.dtim.odin.utils.jena.parsers.OWLToWebVOWL;
 import edu.upc.essi.dtim.nextiadi.bootstraping.CSVBootstrap;
@@ -56,7 +56,7 @@ public class DataSourceService {
         if(  Boolean.TRUE.equals(bootstrappingType)) {
             _dataSource = bootstrap_schema(_dataSource);
         } else {
-//            TODO: Delete this code since ODIN v2 should bootstrap automatically all sources and then allow users to make views for privacy purposes (wrappers)
+//          TODO: Delete this code since ODIN v2 should bootstrap automatically all sources and then allow users to make views for privacy purposes (wrappers)
             graphOperations.addTriple(_dataSource.getIri(),
                     _dataSource.getIri(),
                     RDF.getURI() + "type",

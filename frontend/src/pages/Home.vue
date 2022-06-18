@@ -25,7 +25,7 @@
           <div >
             <!-- class="q-pa-md" -->
             <div class="q-gutter-xl row justify-center">
-              <q-card :flat=true class="flexg1 bg-gradient-green home-cards shadow-4" :class="{'flexb0':$q.screen.gt.sm}" >
+              <q-card :flat="true" class="flexg1 bg-gradient-green home-cards shadow-4" :class="{'flexb0':$q.screen.gt.sm}" >
                 <q-card-section class="text-center">
                   <img src="~assets/home/datasources_pattern2.svg" style="width:60%">
                   <!-- <img src="~assets/home/datasource_pattern.svg" style="width:60%"></img> -->
@@ -218,7 +218,7 @@
 <!--      </div>-->
 
       <q-dialog v-model="createDS" >
-        <NewDatasourceWrapperStepper style="max-width: calc(100vh - 48px)" @finished="createDS = false"/>
+        <NewDatasourceWrapperStepper style="max-width: calc(100vh - 48px); min-width: 60vh;" @finished="createDS = false"/>
       </q-dialog>
 
       <q-dialog v-model="startIntegration" full-width>

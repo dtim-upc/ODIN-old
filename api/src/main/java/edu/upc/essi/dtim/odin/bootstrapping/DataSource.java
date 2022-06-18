@@ -31,7 +31,7 @@ public class DataSource {
 
     //files
     private String path;
-
+    private String filename;
 
     // csv
     // private String delimiter;

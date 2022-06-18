@@ -106,16 +106,12 @@ export default defineComponent({
         .then((response) => {
           if (response.status == 201) {
 
-            notify.positive(`Data Source ${newDataSources.value.name} successfully created`)
+            notify.positive(`Data Source ${newDataSources.value.name} successfully uploaded`)
             onReset()
             form.value.resetValidation()
             // response.data.wrappers = 0;
             // console.log(response.data)
-
-
-
             let data = {ds: response.data, bootstrapping: btype }
-
 
             store.dispatch("addDatasource", response.data)
             emit("submit-sucess", data)

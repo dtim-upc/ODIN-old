@@ -1,6 +1,7 @@
 <template>
   <div class="q-pa-md">
-    <q-table :rows="rows" :columns="columns" :filter="search"
+    <!-- :filter="search" -->
+    <q-table :rows="rows" :columns="columns" 
              row-key="name" no-data-label="No result."
              no-results-label="The filter didn't uncover any results" :class="{ 'no-shadow': no_shadow }"
 >
@@ -23,6 +24,7 @@
           label="Export to csv"
           no-caps
           @click="exportTable"
+          v-if="enableExport"
         />
 
         <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
@@ -53,7 +55,8 @@ export default defineComponent({
     no_shadow: {type: Boolean, default: false},
     view: {type: String, default: "datasources"},
     columns: {type: Array},
-    rows: {type:Array}
+    rows: {type:Array},
+    enableExport: {type: Boolean, default: true}
   },
   setup(props){
     const title = "Query result";

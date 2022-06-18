@@ -2,7 +2,7 @@ package edu.upc.essi.dtim.odin.controller;
 
 import edu.upc.essi.dtim.odin.models.mongo.DataSource;
 import edu.upc.essi.dtim.odin.repository.DataSourcesRepository;
-import edu.upc.essi.dtim.odin.services.filestorage.StorageService;
+import edu.upc.essi.dtim.odin.storage.filestorage.StorageService;
 import edu.upc.essi.dtim.odin.services.impl.DataSourceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,19 +36,18 @@ public class DataSourcesController {
 
 
     @PostMapping( consumes = {"multipart/form-data"})
-    public ResponseEntity<DataSource> createDataSources(@RequestPart DataSource dataSource, @RequestPart MultipartFile file, @RequestPart Boolean bootstrappingType) {
+    public ResponseEntity<DataSource> createDataSource(@RequestPart DataSource dataSource, @RequestPart MultipartFile file, @RequestPart Boolean bootstrappingType) {
         try {
 
             DataSource _dataSource = dataSourceService.create(dataSource, bootstrappingType, file);
 
-
             String input = dataSource.toString().replaceAll("[\n\r\t]", "_");
             String returnval = _dataSource.toString().replaceAll("[\n\r\t]", "_");
 
-
-            LOGGER.info(LOG_MSG, "createDataSources", input, returnval);
+            LOGGER.info(LOG_MSG, "createDataSource", input, returnval);
             return new ResponseEntity<>(_dataSource, HttpStatus.CREATED);
         } catch (Exception e) {
+            e.printStackTrace();
             LOGGER.error(e.toString());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

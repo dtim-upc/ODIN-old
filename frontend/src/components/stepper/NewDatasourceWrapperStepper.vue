@@ -5,19 +5,18 @@
       <NewDataSourceForm ref="newDSForm" :showFormButtons="false" @submit-sucess="submitted" />
     </q-step>
 
-    <q-step :name="2" title="Preview data" caption="If bootstrapping is manual" icon="create_new_folder" :done="step > 2" disable>
-
-<!--      <NewWrapperForm/>-->
-
+    <q-step :name="2" title="Preview" icon="create_new_folder" :done="step > 2">
+      <PreviewCSV/>
+      <!-- <PreviewJSON/> -->
     </q-step>
 
-    <q-step :name="3" title="Create view" icon="assignment"  >
+    <!-- <q-step :name="3" title="Create view" icon="assignment"  >
       <NewWrapperForm ref="newWForm"  :datasource="datasource" @submit-sucess="submitted" />
-    </q-step>
+    </q-step> -->
 
     <template v-slot:navigation>
       <q-stepper-navigation>
-        <q-btn @click="clickOK" color="primary" :label="step === 3 ? 'Finish' : 'Continue'"/>
+        <q-btn @click="clickOK" color="primary" :label="step === 2 ? 'Confirm' : 'Continue'"/>
 <!--        <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Back" class="q-ml-sm"/>-->
       </q-stepper-navigation>
     </template>
@@ -33,12 +32,15 @@
 import {defineComponent, ref, onMounted} from "vue";
 import NewDataSourceForm from "components/forms/NewDataSourceForm";
 import NewWrapperForm from "components/forms/NewWrapperForm";
-
+import PreviewCSV from "./PreviewCSV.vue";
+import PreviewJSON from "./PreviewJSON.vue";
+import {odinApi} from "boot/axios";
+import notify from "components/hooks/notify";
 
 export default defineComponent({
 
   name: "NewDataSourceWrapperStepper",
-  components: {NewWrapperForm, NewDataSourceForm},
+  components: { NewWrapperForm, NewDataSourceForm, PreviewCSV, PreviewJSON, PreviewCSV },
   emits: ["finished"],
   setup (props,{emit}) {
 
@@ -61,14 +63,28 @@ export default defineComponent({
           break;
         case 2:
 
+        console.log("confirmed")
+        console.log(datasource.value)    
+        odinApi.post("/dataSource/persist", datasource.value)
+        .then((response) => {
+          if (response.status == 201) {
+            notify.positive(`Data Source ${datasource.value.name} successfully created`)
+          } else {
+            // console.log("error")
+            notify.negative("Cannot create datasource. Something went wrong in the server.")
+          }
+        }).catch( (error) => {
+        notify.negative("Something went wrong in the frontend.")
+      });
+      emit("finished")
 
           break;
-        case 3:
-          console.log(newWForm.value)
-          newWForm.value.form.submit()
-          console.log("wrapper submitter");
+        // case 3:
+        //   console.log(newWForm.value)
+        //   newWForm.value.form.submit()
+        //   console.log("wrapper submitter");
 
-          break;
+        //   break;
 
         default:
 
@@ -89,8 +105,9 @@ export default defineComponent({
 
             if(ds.bootstrapping){
 
-              emit("finished")
-
+              // emit("finished")
+              datasource.value = ds.ds
+              step.value = 2;
             } else  {
               datasource.value = ds.ds
               step.value = 3;
@@ -100,12 +117,12 @@ export default defineComponent({
         case 2:
           break;
 
-        case 3:
+        // case 3:
 
-          console.log("submitted success case 3")
-          emit("finished")
+        //   console.log("submitted success case 3")
+        //   emit("finished")
 
-          break;
+        //   break;
 
         default:
 
