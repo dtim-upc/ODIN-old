@@ -3,7 +3,7 @@ package edu.upc.essi.dtim.odin.controller;
 import edu.upc.essi.dtim.Graph;
 import edu.upc.essi.dtim.NextiaDI;
 import edu.upc.essi.dtim.nextiadi.models.Alignment;
-import edu.upc.essi.dtim.odin.bootstrapping.DataSource;
+//import edu.upc.essi.dtim.odin.bootstrapping.DataSource;
 import edu.upc.essi.dtim.odin.config.vocabulary.DataSourceGraph;
 import edu.upc.essi.dtim.odin.config.vocabulary.Namespaces;
 import edu.upc.essi.dtim.odin.models.rest.IntegrationData;
@@ -227,28 +227,28 @@ public class newIntegrationController {
 
     }
 
-    public Model retrieveGraph(String uri, DataSource data, List<Alignment> alignments){
+//    public Model retrieveGraph(String uri, DataSource data, List<Alignment> alignments){
+//
+////        if (  data.getType().equals(DataSourceTypes.INTEGRATED)  ) {
+//            // generate view of all sources
+//
+//            Model integratedGraph = graph.persistent().getGraph(uri);
+//
+//            // get all graphs
+//            String querySTR = "SELECT ?graph WHERE {  <"+uri+"> <"+DataSourceGraph.INTEGRATION_OF.val()+"> ?graph. }";
+//
+//            ResultSet results  = graph.persistent().runAQuery(querySTR);
+//
+//
+//            while(results.hasNext()) {
+//                QuerySolution solution = results.nextSolution();
+//                String gURI = solution.getResource("graph").getURI();
+//                integratedGraph = integratedGraph.union( graph.persistent().getGraph(gURI) );
+//            }
+//            return integratedGraph;
+////        }
 
-//        if (  data.getType().equals(DataSourceTypes.INTEGRATED)  ) {
-            // generate view of all sources
-
-            Model integratedGraph = graph.persistent().getGraph(uri);
-
-            // get all graphs
-            String querySTR = "SELECT ?graph WHERE {  <"+uri+"> <"+DataSourceGraph.INTEGRATION_OF.val()+"> ?graph. }";
-
-            ResultSet results  = graph.persistent().runAQuery(querySTR);
-
-
-            while(results.hasNext()) {
-                QuerySolution solution = results.nextSolution();
-                String gURI = solution.getResource("graph").getURI();
-                integratedGraph = integratedGraph.union( graph.persistent().getGraph(gURI) );
-            }
-            return integratedGraph;
-//        }
-
-    }
+//    }
 
 
 }

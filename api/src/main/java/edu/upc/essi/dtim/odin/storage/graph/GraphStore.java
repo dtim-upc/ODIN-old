@@ -6,7 +6,7 @@ import edu.upc.essi.dtim.nextiadi.config.DataSourceVocabulary;
 import edu.upc.essi.dtim.odin.config.DataSourceTypes;
 import edu.upc.essi.dtim.odin.config.vocabulary.DataSourceGraph;
 import edu.upc.essi.dtim.odin.config.vocabulary.Namespaces;
-import edu.upc.essi.dtim.odin.bootstrapping.DataSource;
+//import edu.upc.essi.dtim.odin.bootstrapping.DataSource;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -163,67 +163,67 @@ public class GraphStore extends TripleStore {
                 "PREFIX nextiaDS: <http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/> ";
 
     }
-
-    public List<DataSource> findAllDataSources(){
-
-        String query = commonPrefixes() + "SELECT * WHERE {" +
-                "?datasource rdf:type <http://www.essi.upc.edu/DTIM/NextiaDI/DataSource>; " +
-                "rdfs:label ?name; " +
-                "nextiaDS:id ?id; " +
-                "OPTIONAL { ?datasource nextiaDS:graphicalGraph ?graphicalGraph. }" +
-                "OPTIONAL { ?datasource nextiaDS:format ?format. }" +
-                "OPTIONAL { ?datasource nextiaDS:path ?path. }" +
-                "OPTIONAL { ?datasource nextiaDS:wrapper ?wrapper. }" +
-                "OPTIONAL { ?datasource nextiaDS:hasFileName ?fileName.} " +
-                "}";
-
-        ResultSet res = runAQuery(query);
-        List<DataSource> datasources = new ArrayList<>();
-        while(res.hasNext()) {
-            QuerySolution r = res.next();
-            DataSource ds = new DataSource();
-            ds.setName(r.get("name").toString());
-            ds.setType(getDataSourcetype(r.get("format").toString()));
-            if(r.get("graphicalGraph") != null)
-            ds.setGraphicalGraph( StringEscapeUtils.unescapeJava(r.get("graphicalGraph").toString()));
-            ds.setId(r.get("id").toString());
-            ds.setPath(r.get("path").toString());
-            ds.setFilename(r.get("fileName").toString());
-//            ds.setWrappers(r.get("wrapper").toString());
-            datasources.add(ds);
-        }
-        return datasources;
-
-    }
-
-    public DataSource findDSById(String id){
-
-        String query = commonPrefixes() + "SELECT * WHERE {" +
-                "?datasource rdf:type <http://www.essi.upc.edu/DTIM/NextiaDI/DataSource>; " +
-                "rdfs:label ?name; " +
-                "nextiaDS:graphicalGraph ?graphicalGraph; " +
-                "nextiaDS:id \""+id+"\". " +
-                "OPTIONAL { ?datasource nextiaDS:format ?format. }" +
-                "OPTIONAL { ?datasource nextiaDS:path ?path. }" +
-                "OPTIONAL { ?datasource nextiaDS:wrapper ?wrapper. }" +
-                "OPTIONAL { ?datasource nextiaDS:hasFileName ?fileName.} " +
-                "}";
-
-
-        ResultSet res = runAQuery(query);
-        DataSource ds =  new DataSource();
-        if(res.hasNext()){
-            QuerySolution r = res.next();
-            ds.setName(r.get("name").toString());
-            ds.setType(getDataSourcetype(r.get("format").toString()));
-            ds.setGraphicalGraph( StringEscapeUtils.unescapeJava(r.get("graphicalGraph").toString()));
-            ds.setId(id);
-            ds.setPath(r.get("path").toString());
-            ds.setFilename(r.get("fileName").toString());
-//            ds.setWrappers(r.get("wrapper").toString());
-        }
-        return ds;
-    }
+//
+//    public List<DataSource> findAllDataSources(){
+//
+//        String query = commonPrefixes() + "SELECT * WHERE {" +
+//                "?datasource rdf:type <http://www.essi.upc.edu/DTIM/NextiaDI/DataSource>; " +
+//                "rdfs:label ?name; " +
+//                "nextiaDS:id ?id; " +
+//                "OPTIONAL { ?datasource nextiaDS:graphicalGraph ?graphicalGraph. }" +
+//                "OPTIONAL { ?datasource nextiaDS:format ?format. }" +
+//                "OPTIONAL { ?datasource nextiaDS:path ?path. }" +
+//                "OPTIONAL { ?datasource nextiaDS:wrapper ?wrapper. }" +
+//                "OPTIONAL { ?datasource nextiaDS:hasFileName ?fileName.} " +
+//                "}";
+//
+//        ResultSet res = runAQuery(query);
+//        List<DataSource> datasources = new ArrayList<>();
+//        while(res.hasNext()) {
+//            QuerySolution r = res.next();
+//            DataSource ds = new DataSource();
+//            ds.setName(r.get("name").toString());
+//            ds.setType(getDataSourcetype(r.get("format").toString()));
+//            if(r.get("graphicalGraph") != null)
+//            ds.setGraphicalGraph( StringEscapeUtils.unescapeJava(r.get("graphicalGraph").toString()));
+//            ds.setId(r.get("id").toString());
+//            ds.setPath(r.get("path").toString());
+//            ds.setFilename(r.get("fileName").toString());
+////            ds.setWrappers(r.get("wrapper").toString());
+//            datasources.add(ds);
+//        }
+//        return datasources;
+//
+//    }
+//
+//    public DataSource findDSById(String id){
+//
+//        String query = commonPrefixes() + "SELECT * WHERE {" +
+//                "?datasource rdf:type <http://www.essi.upc.edu/DTIM/NextiaDI/DataSource>; " +
+//                "rdfs:label ?name; " +
+//                "nextiaDS:graphicalGraph ?graphicalGraph; " +
+//                "nextiaDS:id \""+id+"\". " +
+//                "OPTIONAL { ?datasource nextiaDS:format ?format. }" +
+//                "OPTIONAL { ?datasource nextiaDS:path ?path. }" +
+//                "OPTIONAL { ?datasource nextiaDS:wrapper ?wrapper. }" +
+//                "OPTIONAL { ?datasource nextiaDS:hasFileName ?fileName.} " +
+//                "}";
+//
+//
+//        ResultSet res = runAQuery(query);
+//        DataSource ds =  new DataSource();
+//        if(res.hasNext()){
+//            QuerySolution r = res.next();
+//            ds.setName(r.get("name").toString());
+//            ds.setType(getDataSourcetype(r.get("format").toString()));
+//            ds.setGraphicalGraph( StringEscapeUtils.unescapeJava(r.get("graphicalGraph").toString()));
+//            ds.setId(id);
+//            ds.setPath(r.get("path").toString());
+//            ds.setFilename(r.get("fileName").toString());
+////            ds.setWrappers(r.get("wrapper").toString());
+//        }
+//        return ds;
+//    }
 
 
     public DataSourceTypes getDataSourcetype(String format){
