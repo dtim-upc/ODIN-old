@@ -40,28 +40,22 @@
 </template>
 
 
-<script >
-import {defineComponent, ref, onMounted, computed} from "vue";
-import {odinApi} from "boot/axios";
-// import {ref} from 'vue'
-import {mapGetters} from "vuex";
+<script setup >
+import { ref, onMounted} from "vue";
 import { exportFile } from 'quasar'
-import notify from "components/hooks/notify";
 
-export default defineComponent({
-  name: "TableQueryResult",
-  components: {},
-  props: {
-    no_shadow: {type: Boolean, default: false},
-    view: {type: String, default: "datasources"},
-    columns: {type: Array},
-    rows: {type:Array},
-    enableExport: {type: Boolean, default: true}
-  },
-  setup(props){
-    const title = "Query result";
+  const props = defineProps({
+        no_shadow: {type: Boolean, default: false},
+        view: {type: String, default: "datasources"},
+        columns: {type: Array},
+        rows: {type:Array},
+        enableExport: {type: Boolean, default: true}
+  });
 
-    const wrapCsvValue = (val, formatFn, row) => {
+const title = "Query result";
+
+
+   const wrapCsvValue = (val, formatFn, row) => {
       let formatted = formatFn !== void 0
         ? formatFn(val, row)
         : val
@@ -80,14 +74,10 @@ export default defineComponent({
 
       return `"${formatted}"`
     }
+
     onMounted(wrapCsvValue)
 
-    return{
-      title,
-
-      wrapCsvValue,
-
-      exportTable () {
+const exportTable = () => {
         // naive encoding to csv format
         const content = [props.columns.map(col => wrapCsvValue(col.label))].concat(
           props.rows.map(row => props.columns.map(col => wrapCsvValue(
@@ -109,42 +99,6 @@ export default defineComponent({
           notify.negative("Browser denied file download.")
         }
       }
-    }
-
-  },
-  // data() {
-  
-  //   const title = "Query result";
-  //   return {
-  //     title,
-
-  //     exportTable () {
-  //       // naive encoding to csv format
-  //       const content = [columns.map(col => wrapCsvValue(col.label))].concat(
-  //         rows.map(row => columns.map(col => wrapCsvValue(
-  //           typeof col.field === 'function'
-  //             ? col.field(row)
-  //             : row[ col.field === void 0 ? col.name : col.field ],
-  //           col.format,
-  //           row
-  //         )).join(','))
-  //       ).join('\r\n')
-
-  //       const status = exportFile(
-  //         'table-export.csv',
-  //         content,
-  //         'text/csv'
-  //       )
-
-  //       if (status !== true) {
-  //         notify.negative("Browser denied file download.")
-  //       }
-  //     }
-
-
-  //   };
-  // }
-  })
 </script>
 
 <style lang="css" scoped>

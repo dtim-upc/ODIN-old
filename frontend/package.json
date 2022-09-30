@@ -1,9 +1,9 @@
 {
-  "name": "odin",
+  "name": "fronttmp",
   "version": "0.0.1",
-  "description": "Project description...",
-  "productName": "odin",
-  "author": "Javier Flores <javierfh1404@gmail.com>",
+  "description": "A Quasar Project",
+  "productName": "Quasar App",
+  "author": "haross <javierfh1404@gmail.com>",
   "private": true,
   "scripts": {
     "test": "echo \"No test specified\" && exit 0"
@@ -11,31 +11,22 @@
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "axios": "^0.21.1",
-    "core-js": "^3.6.5",
-    "d3": "3.5.6",
-    "quasar": "^2.0.0",
-    "vuex": "^4.0.1"
+    "d3": "^7.6.1",
+    "pinia": "^2.0.11",
+    "quasar": "^2.6.0",
+    "tsparticles": "^2.3.2",
+    "vue": "^3.0.0",
+    "vue-json-viewer": "^2.2.22",
+    "vue-router": "^4.0.0",
+    "vue3-particles": "^2.3.2"
   },
   "devDependencies": {
-    "@quasar/app": "^3.0.0",
-    "clean-webpack-plugin": "^4.0.0-alpha.0",
-    "html-loader": "^2.1.2",
-    "html-replace-webpack-plugin": "^2.6.0",
-    "webpack-cli": "^4.8.0"
+    "@quasar/app-vite": "^1.0.0",
+    "autoprefixer": "^10.4.2",
+    "postcss": "^8.4.14"
   },
-  "browserslist": [
-    "last 10 Chrome versions",
-    "last 10 Firefox versions",
-    "last 4 Edge versions",
-    "last 7 Safari versions",
-    "last 8 Android versions",
-    "last 8 ChromeAndroid versions",
-    "last 8 FirefoxAndroid versions",
-    "last 10 iOS versions",
-    "last 5 Opera versions"
-  ],
   "engines": {
-    "node": ">= 12.22.1",
+    "node": "^18 || ^16 || ^14.19",
     "npm": ">= 6.13.4",
     "yarn": ">= 1.21.1"
   }

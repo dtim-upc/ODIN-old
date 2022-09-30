@@ -1,6 +1,6 @@
 package edu.upc.essi.dtim.odin.controller;
 
-import edu.upc.essi.dtim.odin.models.mongo.DataSource;
+import edu.upc.essi.dtim.odin.bootstrapping.DataSource;
 import edu.upc.essi.dtim.odin.models.mongo.Wrapper;
 import edu.upc.essi.dtim.odin.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.odin.repository.WrapperRepository;

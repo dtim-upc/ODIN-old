@@ -10,7 +10,7 @@ import edu.upc.essi.dtim.odin.models.rest.QueryDataSelection;
 import edu.upc.essi.dtim.odin.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.odin.services.impl.IntegrationService;
 import edu.upc.essi.dtim.odin.services.impl.OMQService;
-import edu.upc.essi.dtim.odin.utils.jena.GraphOperations;
+//import edu.upc.essi.dtim.odin.utils.jena.GraphOperations;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.slf4j.Logger;
@@ -36,8 +36,8 @@ public class OMQController {
     private static final Logger LOGGER = LoggerFactory.getLogger(OMQController.class);
     private static final String LOG_MSG = "{} request finished with inputs: {} and return value: {}";
     private static final String EMPTY_INPUTS = "{}";
-    @Autowired
-    private GraphOperations graphOperations;
+//    @Autowired
+//    private GraphOperations graphOperations;
     @Autowired
     private DataSourcesRepository dsRepository;
     @Autowired

@@ -1,4 +1,4 @@
-package edu.upc.essi.dtim.odin.services.filestorage;
+package edu.upc.essi.dtim.odin.storage.filestorage;
 
 public class StorageFileNotFoundException extends StorageException {
 

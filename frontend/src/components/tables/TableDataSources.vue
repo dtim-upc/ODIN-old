@@ -1,445 +1,202 @@
 <template>
-  <div class="q-pa-md">
-    <q-table :rows="rows" :columns="columns" :filter="search" selection="multiple" v-model:selected="selected"
-             row-key="name" no-data-label="I didn't find anything for you. Consider creating a new data source."
-             no-results-label="The filter didn't uncover any results" :class="{ 'no-shadow': no_shadow }"
-             :visible-columns="visibleColumns">
-      <template v-slot:top-left="">
-        <div class="q-table__title">
-          {{ title }}
-          <q-btn padding="none" color="secondary" icon="add" @click="show_dialog = true"/>
-        </div>
+    <div class="q-pa-md">
+        <!-- style="min-height: 70vh;margin-top:15px" -->
+<!-- @selection="validateSelection2" -->
+        <q-table :grid="gridEnable" ref="tableRef" :rows="storeDS.datasources" :columns="columns" :filter="search" 
+            :class="{ 'no-shadow': no_shadow }"  row-key="id" 
+            no-data-label="I didn't find anything for you. Consider creating a new data source."
+            no-results-label="The filter didn't uncover any results" :visible-columns="visibleColumns" >
 
-        <new-data-source-form :show_dialog="show_dialog" @close-dialog="closeDialog"/>
-        <q-dialog v-model="show_edit_dialog" persistent>
-          <q-card style="width: 700px; max-width: 80vw">
-            <q-card-section>
-              <div class="text-h6">Edit data source</div>
-            </q-card-section>
-
-            <q-card-section>
-              <q-form @submit="onSubmitEdit" @reset="onReset" class="q-gutter-md">
-                <q-input
-                  filled
-                  v-model="newDataSources.name"
-                  label="Introduce a data source name"
-                  lazy-rules
-                  :rules="[
-                    (val) => (val && val.length > 0) || 'Please type a name',
-                  ]"
-                />
-
-                <q-select
-                  v-model="newDataSources.type"
-                  :options="options"
-                  label="Type"
-                />
-
-                <q-file
-                  outlined
-                  v-model="uploadedFile"
-                  multiple
-                  auto-expand
-                  :headers="{ 'content-type': 'multipart/form-data' }"
-                >
-                  <template v-slot:prepend>
-                    <q-icon name="attach_file"/>
-                  </template>
-                </q-file>
-
-                <div>
-                  <q-btn label="Submit" type="submit" color="primary"/>
-                  <q-btn
-                    label="Cancel"
-                    type="reset"
-                    color="primary"
-                    flat
-                    class="q-ml-sm"
-                  />
+            <template v-slot:top-left="">
+                <div class="q-table__title">
+                    {{ title }}
+                    <q-btn unelevated v-if="view === 'datasources'" padding="none" color="primary700" icon="add"
+                        @click="addDataSource = true" />
                 </div>
-              </q-form>
-            </q-card-section>
-          </q-card>
-        </q-dialog>
-        <q-dialog v-model="show_warning_dialog" persistent>
-          <q-card style="width: 700px; max-width: 80vw">
-            <q-card-section>
-              <div class="text-h4">Warning</div>
-              <div class="text-h6">Some wrappers are using this data source and will be also deleted. Proceed?</div>
-            </q-card-section>
 
-            <q-card-section>
-              <q-form
-                @submit="onWarningSubmit"
-                @reset="onReset"
-                class="q-gutter-md"
-              >
-                <div>
-                  <q-btn label="Proceed" type="submit" color="primary"/>
-                  <q-btn
-                    label="Cancel"
-                    type="reset"
-                    color="primary"
-                    flat
-                    class="q-ml-sm"
-                  />
+            </template>
+<!-- storeDS.selected.filter(v => (v.graphicalGraph || v.type == "INTEGRATED")).length != 2 -->
+            <template v-slot:top-right="props">
+                <q-btn v-if="!integrationStore.isDSEmpty" outline
+                    color="primary" label="Finish pending sources" class="q-mr-xs"
+                    :to="{ name: 'dsIntegration' }">
+                    <q-badge color="orange" floating>{{integrationStore.datasources.length}}</q-badge>    
+                </q-btn>
+
+                <q-input outlined dense debounce="400" color="primary" v-model="search">
+                    <template v-slot:append>
+                        <q-icon name="search" />
+                    </template>
+                </q-input>
+
+
+                <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+                    @click="props.toggleFullscreen">
+                    <q-tooltip :disable="$q.platform.is.mobile" v-close-popup>
+                        {{ props.inFullscreen ? "Exit Fullscreen" : "Toggle Fullscreen" }}
+                    </q-tooltip>
+                </q-btn>
+            </template>
+
+
+            <template v-slot:body-cell-status="props">
+                <q-td :props="props">
+                    <q-chip text-color="white" color="accent" v-if="props.row.graphicalGraph === ''">
+                        Missing Data Sources
+                    </q-chip>
+                    <q-chip text-color="white" color="blue" v-else> Completed</q-chip>
+                </q-td>
+            </template>
+
+            <template v-slot:body-cell-View_Source_Graph="props">
+                <q-td :props="props">
+                    <q-btn dense round flat color="grey" :to="'/dataSources/webvowl/' + props.row.id"
+                        icon="remove_red_eye" :disable="!hasSourceGraph(props)"></q-btn>
+
+                    <q-btn v-if="props.row.type == 'INTEGRATED'" dense round flat color="grey"
+                        :to="{ name: 'webvowl', params: { id: props.row.id, minimalI: true } }"
+                        icon="mdi-vector-circle-variant"></q-btn>
+
+                    <q-btn v-if="props.row.type == 'INTEGRATED'" dense round flat color="grey"
+                        :to="{ name: 'webvowl', params: { id: props.row.id, integrated: true } }"
+                        icon="mdi-shape-circle-plus"></q-btn>
+
+                    <!--          :disable="props.row.graphicalGraph"-->
+                </q-td>
+            </template>
+
+            <template v-if="view === 'datasources'" v-slot:body-cell-actions="props">
+                <q-td :props="props">
+                    <!-- <q-btn dense round flat color="grey" :to="'/dataSources/view/' + props.row.id" -->
+                        <!-- icon="remove_red_eye"></q-btn> -->
+                    <!-- <q-btn dense round flat color="grey" @click="editRow(props)" icon="edit"></q-btn> -->
+                    <q-btn dense round flat color="grey" @click="deleteRow(props)" icon="delete"></q-btn>
+                </q-td>
+            </template>
+
+            <template v-slot:no-data="{ icon, message, filter }">
+                <div class="full-width row flex-center text-accent q-gutter-sm q-pa-xl" style="flex-direction: column">
+                    <svg width="160px" height="88px" viewBox="0 0 216 120" fill="none" xmlns="http://www.w3.org/2000/svg" class="sc-jIkXHa sc-ZOtfp fXAzWm jPTZgW"><g opacity="0.84" clip-path="url(#EmptyDocuments_svg__clip0_1142_57509)"><path fill-rule="evenodd" clip-rule="evenodd" d="M189.25 19.646a7.583 7.583 0 010 15.166h-43.333a7.583 7.583 0 010 15.167h23.833a7.583 7.583 0 010 15.167h-11.022c-5.28 0-9.561 3.395-9.561 7.583 0 1.956 1.063 3.782 3.19 5.48 2.017 1.608 4.824 1.817 7.064 3.096a7.583 7.583 0 01-3.754 14.174H65.75a7.583 7.583 0 010-15.166H23.5a7.583 7.583 0 110-15.167h43.333a7.583 7.583 0 100-15.167H39.75a7.583 7.583 0 110-15.166h43.333a7.583 7.583 0 010-15.167H189.25zm0 30.333a7.583 7.583 0 110 15.166 7.583 7.583 0 010-15.166z" fill="#D9D8FF" fill-opacity="0.8"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M132.561 19.646l10.077 73.496.906 7.374a4.334 4.334 0 01-3.773 4.829l-63.44 7.789a4.333 4.333 0 01-4.83-3.772l-9.767-79.547a2.166 2.166 0 011.91-2.417l5.262-.59 63.655-7.162zM73.162 26.33l4.97-.557-4.97.557z" fill="#fff"></path><path d="M73.162 26.33l4.97-.557m54.429-6.127l10.077 73.496.906 7.374a4.334 4.334 0 01-3.773 4.829l-63.44 7.789a4.333 4.333 0 01-4.83-3.772l-9.767-79.547a2.166 2.166 0 011.91-2.417l5.262-.59 63.655-7.162z" stroke="#7B79FF" stroke-width="2.5"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M129.818 24.27l9.122 66.608.82 6.682c.264 2.153-1.246 4.11-3.373 4.371l-56.812 6.976c-2.127.261-4.066-1.272-4.33-3.425l-8.83-71.908a2.167 2.167 0 011.887-2.415l7.028-.863" fill="#F0F0FF"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M135.331 5.833H85.978a2.97 2.97 0 00-2.107.873A2.97 2.97 0 0083 8.813v82.333c0 .823.333 1.567.872 2.106a2.97 2.97 0 002.107.873h63.917a2.97 2.97 0 002.106-.873 2.97 2.97 0 00.873-2.106V23.367a2.98 2.98 0 00-.873-2.107L137.437 6.705a2.98 2.98 0 00-2.106-.872z" fill="#fff" stroke="#7B79FF" stroke-width="2.5"></path><path d="M135.811 7.082v12.564a3.25 3.25 0 003.25 3.25h8.595M94.644 78.146h28.167m-28.167-55.25h28.167-28.167zm0 13h46.584-46.584zm0 14.083h46.584-46.584zm0 14.084h46.584-46.584z" stroke="#7B79FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></g><defs><clipPath id="EmptyDocuments_svg__clip0_1142_57509"><path fill="#fff" d="M0 0h216v120H0z"></path></clipPath></defs></svg>
+                    <span style="color: rgb(102, 102, 135);font-weight: 500;font-size: 1rem;line-height: 1.25;">Data sources not found.</span>
+                    <span style="color: rgb(102, 102, 135);font-weight: 500;font-size: 1rem;line-height: 1.25;">To integrate data sources with the project, please add at least two sources.</span>
                 </div>
-              </q-form>
-            </q-card-section>
-          </q-card>
-        </q-dialog>
-      </template>
+                </template>
+        </q-table>
 
-      <template v-slot:top-right="props">
+    <!-- <q-dialog v-model="addDataSource" >
+      <StepNewDataSource style="max-width: calc(100vh - 48px)" @finished="addDataSource = false"/>
+    </q-dialog>  -->
 
-        <q-btn :disable='selected.filter(v => (v.graphicalGraph ) ).length != 2'
-               outline color="primary" label="Integrate" class="q-mr-xs"/>
-
-        <q-input outlined dense debounce="400" color="primary" v-model="search">
-          <template v-slot:append>
-            <q-icon name="search"/>
-          </template>
-        </q-input>
-
-        <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
-               @click="props.toggleFullscreen">
-          <q-tooltip :disable="$q.platform.is.mobile" v-close-popup>
-            {{ props.inFullscreen ? "Exit Fullscreen" : "Toggle Fullscreen" }}
-          </q-tooltip>
-        </q-btn>
-      </template>
+    <FormNewDataSource v-model:show="addDataSource"></FormNewDataSource>
 
 
-      <template v-slot:body-cell-status="props">
-        <q-td :props="props">
-          <q-chip
-            text-color="white"
-            color="accent"
-            v-if="props.row.graphicalGraph === ''"
-          >
-            Missing Data Sources
-          </q-chip
-          >
-          <q-chip text-color="white" color="blue" v-else> Completed</q-chip>
-        </q-td>
-      </template>
-
-      <template v-slot:body-cell-View_Source_Graph="props">
-        <q-td :props="props">
-          <q-btn dense round flat color="grey" :to="'/dataSources/webvowl/' + props.row.id" icon="remove_red_eye"
-                 :disable="!hasSourceGraph(props)"></q-btn>
-          <!--          :disable="props.row.graphicalGraph"-->
-        </q-td>
-      </template>
-
-      <template v-slot:body-cell-actions="props">
-        <q-td :props="props">
-          <q-btn dense round flat color="grey" :to="'/dataSources/view/' + props.row.id" icon="remove_red_eye"></q-btn>
-          <q-btn dense round flat color="grey" @click="editRow(props)" icon="edit"></q-btn>
-          <q-btn dense round flat color="grey" @click="deleteRow(props)" icon="delete"></q-btn>
-        </q-td>
-      </template>
-
-      <template v-slot:no-data="{ icon, message, filter }">
-        <div class="full-width row flex-center text-accent q-gutter-sm">
-          <q-icon size="2em" name="sentiment_dissatisfied"/>
-          <span> Well this is sad... {{ message }} </span>
-          <q-icon size="2em" :name="filter ? 'filter_b_and_w' : icon"/>
-        </div>
-      </template>
-    </q-table>
-  </div>
+    </div>
 </template>
 
 
-<script >
-import {defineComponent, ref, onMounted, computed} from "vue";
-import {odinApi} from "boot/axios";
-import NewDataSourceForm from "components/forms/NewDataSourceForm.vue";
-// import {ref} from 'vue'
-import {mapGetters} from "vuex";
-import {useStore} from 'vuex'
+<script setup>
+import { computed, defineComponent,onBeforeMount, onMounted, defineProps, ref } from "vue";
+import { useDataSourceStore } from 'src/stores/datasources.store.js'
+import { useIntegrationStore } from 'src/stores/integration.store.js'
+import { useQuasar } from 'quasar'
+import {useNotify} from 'src/use/useNotify.js'
+// import NewDataSourceForm from "components/forms/NewDataSourceForm.vue";
+// import NewDatasourceWrapperStepper from "components/stepper/NewDatasourceWrapperStepper";
+// import StepNewDataSource from "components/stepper/StepNewDataSource.vue";
+import FormNewDataSource from "components/forms/FormNewDataSource.vue";
+// import { odinApi } from "boot/axios";
+import api from "src/api/dataSourcesAPI.js";
 
-export default defineComponent({
-  name: "TableDataSources",
-  components: {NewDataSourceForm},
-  props: {
-    no_shadow: {type: Boolean, default: false},
-    view: {type: String, default: "datasources"}
-  },
-
-  setup() {
-
-    const store = useStore()
-
-    const datasources = computed( () => {
-      return store.state.datasource.datasources
-    } )
-
-    onMounted(() => {
-      // if(datasources.value.length == 0){
-        store.dispatch("getDatasources")
-      // }
-    })
-
-    return {datasources}
+/*
+  props
+*/
 
 
-  },
-
-  data() {
-    const columns = [
-      {name: "Name", required: true, label: "Name", align: "center", field: "name", sortable: true,},
-      {name: "Type", required: true, label: "Type", align: "center", field: "type", sortable: true,},
-      {name: "#Wrappers", label: "#Wrappers", align: "center", field: "wrappers", sortable: true,},
-      {name: "View Metadata", label: "View Metadata", align: "center", field: "View Metadata", sortable: false,},
-      {
-        name: "View_Source_Graph", label: "View Source Graph", align: "center",
-        field: "View Source Graph", sortable: false,
-      },
-      {name: "actions", label: "actions", align: "center", field: "actions", sortable: false,},
-    ];
-    const rows = [];
-    const options = [
-      "Avro",
-      "JSONFile",
-      "MongoDB",
-      "Neo4j",
-      "Parquet",
-      "RESTAPI",
-      "SQLDatabase",
-    ];
-    const title = "Data Sources";
-    // const show_dialog = false;
-    const show_edit_dialog = false;
-    // const uploadedFile = new File([], "");
-    const show_warning_dialog = false;
-    const todeleteid = "";
-    const rowIndex = 0;
-    const newDataSources = {
-      id: "",
-      name: "",
-      type: ""
-    };
-    const selected = ref([])
-    return {
-      columns,
-      visibleColumns: ref(['Name', 'Type', '#Wrappers', 'View Metadata', 'View_Source_Graph', 'actions']),
-      rows,
-      selected,
-      options,
-      title,
-      show_dialog: ref(false),
-      newDataSources,
-      // uploadedFile,
-      search: "",
-      show_edit_dialog,
-      show_warning_dialog,
-      todeleteid,
-      rowIndex,
-    };
-  },
-  mounted() {
-    this.setView()
-    this.retrieveData();
-  },
-  methods: {
-
-    setView() {
-      switch (this.view) {
-        case "integrationTask":
-          this.visibleColumns = ['Name', 'Type'];
-          break;
-        case "integration":
-          this.visibleColumns = ['Name', 'Type', '#Wrappers', 'View Metadata', 'View_Source_Graph', 'actions'];
-          break;
-        default:
-          this.visibleColumns = ['Name', 'Type', '#Wrappers', 'View Metadata', 'View_Source_Graph', 'actions'];
-          break;
-      }
-    },
-
-    hasSourceGraph(props) {
-
-      if (props) {
-        if (props.graphicalGraph) {
-          return true;
-        } else if (props.row.graphicalGraph) {
-          return true;
-        }
-      }
-
-
-      return false;
-    },
-    closeDialog(props) {
-      console.log("closed")
-      console.log(props)
-      this.show_dialog = !this.show_dialog
-      if (props.data) {
-        this.rows.push(props.data);
-      }
-    },
-
-    editRow(props) {
-      this.show_edit_dialog = true;
-      const row = props.row;
-      this.newDataSources.id = row.id;
-      this.newDataSources.name = row.name;
-      this.newDataSources.type = row.type;
-    },
-    deleteRow(props) {
-      if (props.row.wrappers > 0) {
-        this.show_warning_dialog = true;
-        this.todeleteid = props.row.id;
-        this.rowIndex = props.rowIndex;
-      } else {
-        odinApi.delete(`/dataSource/${props.row.id}`).then((response) => {
-          if (response.status == 204) {
-            this.$q.notify({
-              color: "positive",
-              textColor: "white",
-              icon: "check_circle",
-              message: "Successfully deleted",
-            });
-
-            this.rows.splice(props.rowIndex, 1);
-          } else {
-            // 500
-            this.$q.notify({
-              message: "Something went wrong in the server.",
-              color: "negative",
-              icon: "cancel",
-              textColor: "white",
-            });
-          }
-        });
-      }
-    },
-    // onSubmit() {
-    //   odinApi
-    //     .post("/dataSource", this.newDataSources)
-    //     .then((response) => {
-    //       if (response.status == 201) {
-    //         this.$q.notify({
-    //           color: "positive",
-    //           textColor: "white",
-    //           icon: "check_circle",
-    //           message: `Data Source ${this.newDataSources.name} sucessfully created`,
-    //         });
-    //         response.data.wrappers = 0;
-    //         this.rows.push(response.data);
-    //         this.show_dialog = false;
-    //       } else {
-    //         this.$q.notify({
-    //           message: "Something went wrong in the server.",
-    //           color: "negative",
-    //           icon: "cancel",
-    //           textColor: "white",
-    //         });
-    //       }
-    //     })
-    //     .then(() => {
-    //       var data = new FormData();
-    //       data.append("file", this.uploadedFile[0]);
-    //       odinApi
-    //         .post("/dataSource/uploadFile", data, {
-    //           headers: {
-    //             "Content-Type": "multipart/form-data",
-    //           },
-    //         })
-    //         .then((response) => console.log(response));
-    //     });
-    // },
-    onSubmitEdit() {
-      this.show_edit_dialog = false;
-      odinApi
-        .put(`/dataSource/${this.newDataSources.id}`, this.newDataSources)
-        .then((response) => {
-          if (response.status == 204) {
-            this.rows.map((e) => {
-              if (e.id === this.newDataSources.id) {
-                e.id = this.newDataSources.id;
-                e.name = this.newDataSources.name;
-                e.type = this.newDataSources.type;
-              }
-              return e;
-            });
-            this.$q.notify({
-              color: "positive",
-              textColor: "white",
-              icon: "check_circle",
-              message: `Data Source ${this.newDataSources.name} sucessfully edited`,
-            });
-            this.show_dialog = false;
-          } else {
-            this.$q.notify({
-              message: "Something went wrong in the server.",
-              color: "negative",
-              icon: "cancel",
-              textColor: "white",
-            });
-          }
-        });
-    },
-    onWarningSubmit() {
-      console.log(this.todeleteid);
-      odinApi.delete(`/dataSource/${this.todeleteid}`).then((response) => {
-        if (response.status == 204) {
-          this.$q.notify({
-            color: "positive",
-            textColor: "white",
-            icon: "check_circle",
-            message: "Successfully deleted",
-          });
-
-          this.rows.splice(this.rowIndex, 1);
-          this.show_warning_dialog = false;
-        } else {
-          // 500
-          this.$q.notify({
-            message: "Something went wrong in the server.",
-            color: "negative",
-            icon: "cancel",
-            textColor: "white",
-          });
-        }
-      });
-    },
-
-    onReset() {
-      this.newDataSources.name = "";
-      this.newDataSources.type = "";
-      this.show_dialog = false;
-      this.show_edit_dialog = false;
-      this.show_warning_dialog = false;
-    },
-
-    retrieveData() {
-      odinApi
-        .get("/dataSource")
-        .then((response) => {
-          if (response.status == 200) {
-            this.rows = response.data;
-            console.log(response)
-          }
-        })
-        .then(() => {
-          odinApi.get("/wrapper").then((wrappers_res) => {
-            const arrayOfWrappers = wrappers_res.data;
-            // Calculates the number of wrappers per DataSource
-            this.rows.map((r) => {
-              let size = 0;
-              for (const w of arrayOfWrappers)
-                if (w.dataSourcesId === r.id) ++size;
-              r.wrappers = size;
-              return r;
-            });
-          });
-        });
-    },
-  },
+const props = defineProps({
+    no_shadow: { type: Boolean, default: false },
+    view: { type: String, default: "datasources" },
 });
+
+const gridEnable = ref(false)
+
+/*
+  store
+*/
+
+ const notify = useNotify()
+const storeDS = useDataSourceStore();
+const integrationStore = useIntegrationStore();
+
+
+onBeforeMount( () => {
+    storeDS.setProject()
+    integrationStore.init()
+})
+
+
+// select, name, tag, size, type -> owner, members -> delete, view local schema
+const columns = [
+    { name: "id", label: "Id", align: "center", field: "id", sortable: true, },
+    { name: "Name", label: "Name", align: "center", field: "name", sortable: true, },
+    { name: "Type", label: "Type", align: "center", field: "type", sortable: true, },
+    // {name: "#Wrappers", label: "#Wrappers", align: "center", field: "wrappers", sortable: true,},
+    { name: "View Metadata", label: "View Metadata", align: "center", field: "View Metadata", sortable: false, },
+    {
+        name: "View_Source_Graph", label: "View Source Graph", align: "center", field: "View Source Graph",
+        sortable: false,
+    },
+    { name: "actions", label: "actions", align: "center", field: "actions", sortable: false, },
+];
+
+const views = {
+    "integration": ['Name', 'Type'],
+    "datasources": ['Name', 'Type', '#Wrappers', 'View Metadata', 'View_Source_Graph', 'actions']
+}
+
+
+
+const title = "Data Sources";
+const search = ref("")
+const visibleColumns = views[props.view]
+
+const addDataSource = ref(false)
+
+
+const hasSourceGraph = (props) => {
+
+    if (props) {
+        if (props.graphicalGraph) {
+            return true;
+        } else if (props.row.graphicalGraph) {
+            return true;
+        }
+    }
+
+
+    return false;
+}
+
+
+    const deleteRow = (props2) => {
+        storeDS.deleteDataSource(props2.row)
+        // odinApi.delete(`/dataSource/${props2.row.id}`)
+
+        // api.deleteDS(props2.row.id)
+        // .then((response) => {
+        //   if (response.status == 204) {
+        //     notify.positive("Successfully deleted")
+        //     storeDS.deleteDataSource(props2.row)
+        //     // store.dispatch('deleteDatasource', props2.row)
+        //   } else {
+        //     // 500
+        //     notify.negative("Something went wrong in the server.")
+        //   }
+        // });
+      
+    }
+
+
+
 </script>
 
 <style lang="css" scoped>

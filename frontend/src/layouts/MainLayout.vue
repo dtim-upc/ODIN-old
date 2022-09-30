@@ -1,163 +1,126 @@
 <template>
   <q-layout view="lHr LpR lFr">
-    <q-header class="bg-white text-black">
-      <q-toolbar>
-        <!-- <q-btn flat @click="drawer = !drawer" round dense icon="menu"/>
-
-        <q-toolbar-title>
-          ODIN
-        </q-toolbar-title>
--->
-        <q-space/> 
-
-<!--        <q-btn class="q-mr-xs" flat round @click="deleteData()"-->
-<!--               icon="delete"/>-->
-
-        <q-btn class="q-mr-xs" flat round @click="$q.dark.toggle()"
-               :icon="$q.dark.isActive ? 'nights_stay' : 'wb_sunny'"/>
-
-        <div class="q-gutter-sm row items-center no-wrap">
-          <q-btn round dense flat color="black" :icon="$q.fullscreen.isActive ? 'fullscreen_exit' : 'fullscreen'"
-                 @click="$q.fullscreen.toggle()" v-if="$q.screen.gt.sm">
-          </q-btn>
-          <q-btn round flat>
-            <q-avatar size="26px">
-              <img src="https://cdn.quasar.dev/img/boy-avatar.png"/>
-            </q-avatar>
-          </q-btn>
-        </div>
-      </q-toolbar>
-    </q-header>
-
-    <!--    <q-drawer v-model="leftDrawerOpen" side="left" bordered>-->
-    <!--      &lt;!&ndash; drawer content &ndash;&gt;-->
-    <!--    </q-drawer>-->
-    <q-drawer
-      v-model="drawer"
-      show-if-above
-
-      :mini="!drawer || miniState"
-
-      :width="200"
-      :breakpoint="500"
-      bordered
-     
-    >
+<!-- v-model="drawer" -->
+    <q-drawer  show-if-above :mini="miniState" :width="200" :breakpoint="500" bordered >
       <q-scroll-area class="fit">
         <q-list padding>
 
-          <q-item style="max-width: 200px; padding:10px; padding-top: 0px" >
+          <q-item style="max-width: 200px; padding-top: 0px" >
             <q-item-section avatar v-if="miniState" >
-              <q-icon name="img:/assets/ODIN_short.svg" size="lg"/>  
-              <!-- <q-img :src=" miniState ? '/assets/ODIN_short.svg':'/assets/ODIN.svg'" style="max-width: 180px; max-height: 35px; " fit="contain"/> -->
-              <!--                <img src="~assets/logoODIN.png"/>-->
-              <!--              :src=" miniState ? '/assets/logoODIN_short.png':'/assets/logoODIN.png'"-->
+          
+              <ODIN_short class="logoODIN" style="width:38px"></ODIN_short>
+              <!-- <q-icon name="img:/assets/ODIN_short.svg" size="lg" color="primary"/>   -->
             </q-item-section>
             <q-item-section v-else>
-              <q-img src="/assets/ODIN.svg" style="max-width: 180px; max-height: 35px; " fit="contain"/>
+              <q-img src="~assets/ODIN.svg" style="max-width: 180px; max-height: 35px; " fit="contain"/>
             </q-item-section>
           </q-item>
 
           <q-separator/>
-          <!-- <q-item @click="miniState = !miniState">
-            <q-item-section avatar>
-              <q-btn dense round unelevated :icon="miniState == true ? 'mdi-arrow-collapse-right' : 'mdi-arrow-collapse-left'" @click="miniState = !miniState"/>
-            </q-item-section>
-          </q-item> -->
           <q-item>
             <q-item-section avatar>
               <q-icon :name="miniState == true ? 'mdi-arrow-collapse-right' : 'mdi-arrow-collapse-left'" @click="miniState = !miniState"/>
             </q-item-section>
-            <!--            <q-item-section avatar>-->
-            <!--              <q-icon name="chevron_left" />-->
-            <!--            </q-item-section>-->
           </q-item>
-          <q-item clickable v-ripple to="/" active-class="bg-active" exact>
+          <q-item exact manual-focus>
             <q-item-section avatar>
-              <q-icon name="o_cottage"/>
-            </q-item-section>
-
-            <q-item-section>
-              Home
+              <!-- <q-icon name="o_cottage"/> -->
+              <q-btn  flat padding="xs" icon="o_cottage" :to="{name: 'home'}" :color="$route.name === 'home' ? 'primary600': 'neutral500' " :class="{ activebg: $route.name === 'home' }">
+                          <q-tooltip anchor="center right" self="center left" :offset="[10, 10]" transition-show="fade" transition-hide="fade">
+                            Home
+                          </q-tooltip>
+                        </q-btn> 
             </q-item-section>
           </q-item>
-
-          <!--          <q-item active clickable v-ripple>-->
-          <!--            <q-item-section avatar>-->
-          <!--              <q-icon name="star" />-->
-          <!--            </q-item-section>-->
-
-          <!--            <q-item-section>-->
-          <!--              Pending-->
-          <!--            </q-item-section>-->
-          <!--          </q-item>-->
-
-<!--          <q-item clickable v-ripple to="/globalGraph" active-class="bg-active">-->
-<!--            <q-item-section avatar>-->
-<!--              &lt;!&ndash;              o_hub&ndash;&gt;-->
-<!--              <q-icon name="o_hub"/>-->
-<!--            </q-item-section>-->
-
-
-                    <q-item clickable v-ripple to="/viewTripleStore" active-class="bg-active">
+                    <!-- <q-item manual-focus>
                       <q-item-section avatar>
-                        <!--              o_hub-->
-                        <q-icon name="o_hub"/>
+                 
+                        <q-btn  flat padding="xs" icon="o_hub" to="/viewTripleStore" :color="$route.name === 'viewTripleStore' ? 'primary600': 'neutral500' " :class="{ activebg: $route.name === 'viewTripleStore' }">
+                          <q-tooltip anchor="center right" self="center left" :offset="[10, 10]" transition-show="fade" transition-hide="fade">
+                            View triple store
+                          </q-tooltip>
+                        </q-btn> 
                       </q-item-section>
-                      <q-item-section>
-                                     View triple store
-                                    </q-item-section>
-                    </q-item>
+  
+                    </q-item> -->
 
-<!--            <q-item-section>-->
-<!--              Global graph-->
-<!--            </q-item-section>-->
-<!--          </q-item>-->
+          <!-- <q-item manual-focus>
+            <q-item-section avatar>
+              <q-btn flat padding="xs" icon="o_bubble_chart" to="/dataSources" :color="$route.name === 'dataSources' ? 'primary600': 'neutral500' " :class="{ activebg: $route.name === 'dataSources' }">
+                <q-tooltip anchor="center right" self="center left" :offset="[10, 10]" transition-show="fade" transition-hide="fade">
+                  Data sources
+                </q-tooltip>
+              </q-btn> 
+            </q-item-section>
+          
+          </q-item> -->
 
-<!--          <q-separator/>-->
 
-          <q-item clickable v-ripple to="/dataSources" active-class="bg-active">
+          <q-item manual-focus>
             <q-item-section avatar>
               <!--      o_file_copy o_spoke   o_category  workspaces   category spoke-->
-              <q-icon name="o_bubble_chart "/>
+              <!-- <q-icon size="sm" name="o_bubble_chart "/> -->
+              <q-btn flat padding="xs" icon="o_hub" :to="{name: 'schema'}" :color="$route.name === 'schema' ? 'primary600': 'neutral500' " :class="{ activebg: $route.name === 'schema' }">
+                <q-tooltip anchor="center right" self="center left" :offset="[10, 10]" transition-show="fade" transition-hide="fade">
+                  Schema
+                </q-tooltip>
+              </q-btn> 
             </q-item-section>
-
-            <q-item-section>
-              Data sources
-            </q-item-section>
+          
           </q-item>
 
-<!--          <q-item clickable v-ripple to="/wrappers" active-class="bg-active">-->
-<!--            <q-item-section avatar>-->
-<!--              &lt;!&ndash;              settings_input_svideo&ndash;&gt;-->
-<!--              <q-icon name="mdi-google-circles-communities"/>-->
-<!--            </q-item-section>-->
 
-<!--            <q-item-section>-->
-<!--              Wrappers-->
-<!--            </q-item-section>-->
-<!--          </q-item>-->
-
-<!--          <q-item clickable v-ripple to="/lavmappings" active-class="bg-active">-->
-<!--            <q-item-section avatar>-->
-<!--              &lt;!&ndash;          link   google-circles-extended mdi-vector-circle  egg_alt&ndash;&gt;-->
-<!--              <q-icon name="mdi-google-circles-extended "/>-->
-<!--            </q-item-section>-->
-
-<!--            <q-item-section>-->
-<!--              LAV Mapping-->
-<!--            </q-item-section>-->
-<!--          </q-item>-->
-
-          <q-item clickable v-ripple to="/omq" active-class="bg-active">
+          <q-item manual-focus>
             <q-item-section avatar>
-              <q-icon name="mdi-selection-search"/>
+              <!--      o_file_copy o_spoke   o_category  workspaces   category spoke-->
+              <!-- <q-icon size="sm" name="o_bubble_chart "/> -->
+              <q-btn flat padding="xs" icon="o_layers" :to="{name:'datasources'}" :color=" ['datasources', 'dsIntegration'].includes($route.name) ? 'primary600': 'neutral500' " :class="{ activebg:  ['datasources', 'dsIntegration'].includes($route.name) }">
+                <q-tooltip anchor="center right" self="center left" :offset="[10, 10]" transition-show="fade" transition-hide="fade">
+                  Data sources
+                </q-tooltip>
+              </q-btn> 
             </q-item-section>
+          
+          </q-item>
 
-            <q-item-section>
-              Query
+
+          <q-item manual-focus>
+            <q-item-section avatar>
+              <!-- <q-icon name="mdi-selection-search"/> -->
+              <q-btn flat padding="xs" icon="mdi-selection-search" to="/omq" :color="$route.name === 'omq' ? 'primary600': 'neutral500' " :class="{ activebg: $route.name === 'omq' }">
+                <q-tooltip anchor="center right" self="center left" :offset="[10, 10]" transition-show="fade" transition-hide="fade">
+                  Query
+                </q-tooltip>
+              </q-btn> 
             </q-item-section>
           </q-item>
+
+          <div class="fixed-bottom">
+            
+          <q-item manual-focus>
+            <q-item-section avatar>
+                <q-btn class="q-mr-xs" flat round @click="authStore.setDark()" :icon="$q.dark.isActive ? 'nights_stay' : 'wb_sunny'"/>
+            </q-item-section>
+          </q-item>
+
+          <q-item manual-focus>
+            <q-item-section avatar>
+                <q-btn round dense flat :icon="$q.fullscreen.isActive ? 'fullscreen_exit' : 'fullscreen'" @click="$q.fullscreen.toggle()" v-if="$q.screen.gt.sm"/>
+            </q-item-section>
+          </q-item>
+
+
+          <q-item manual-focus>
+            <q-item-section avatar>
+                <q-btn round flat>
+                  <q-avatar size="26px">
+                    <img src="https://cdn.quasar.dev/img/boy-avatar.png"/>
+                  </q-avatar>
+                </q-btn>
+            </q-item-section>
+          </q-item>
+
+          </div>
 
         </q-list>
       </q-scroll-area>
@@ -169,40 +132,55 @@
   </q-layout>
 </template>
 
-<script>
+<script setup>
 import {ref} from "vue";
-import {odinApi} from "boot/axios";
+import ODIN_short from "components/icons/ODIN_short.vue";
 
-export default {
-  setup() {
-    // const leftDrawerOpen = ref(false);
-    const miniState = ref(false)
-    const deleteData = () => {
+import { useAuthStore } from 'stores/auth.store.js'
+// import {outlinedHub as hubi}  from "@quasar/extras/material-icons-outlined"
 
-      odinApi.delete("/admin/all")
-      window.location.reload()
+const miniState = ref(true)
 
-    }
 
-    return {
-      // leftDrawerOpen,
-      // toggleLeftDrawer() {
-      //   leftDrawerOpen.value = !leftDrawerOpen.value;
-      // },
-      drawer: ref(false),
-      miniState,
-      deleteData
-    };
-  },
-};
+const authStore = useAuthStore()
+
+
 </script>
 
-<style>
+<style lang="scss">
+
+.q-drawer--left.q-drawer--bordered {
+  border-right: 1px solid rgb(234, 234, 239);
+}
+
+
+.body--light {
+  .activebg{
+    background-color: $primary100;
+  }
+}
+
+.body--dark {
+ 
+  .activebg{
+    background-color: $neutral100d;
+  }
+ 
+}
+
+/* a.router-link-exact-active{
+  background-color: #f0f0ff;
+} */
+
+
+
 
 /* .bg-color {
    background-color: #f4f8fb;
   background-color: #ffffff;
 } */
+
+
 
 .bg-white {
   background-color: #ffffff;
@@ -210,20 +188,16 @@ export default {
 
 .bg-active {
   /* color: #8f81bd; */
-  color:#5e429e;
+  /* color:#5e429e; */
   /* background: #f0edfd; */
+  /* background: #e7e2f3; */
+}
+
+/* .bg-active .q-btn {
   background: #e7e2f3;
-}
+} */
 
 
-.body--light {
-  /* background-color: #f4f8fb; */
-  background-color: #ffffff;
-}
-
-.body--dark {
-  background-color: black;
-}
 
 /*@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro");*/
 /*body {*/

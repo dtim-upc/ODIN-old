@@ -31,7 +31,13 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
-//	implementation 'org.springframework.boot:spring-boot-starter-security'
+//	Auth dependencies
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+	implementation 'com.auth0:java-jwt:4.0.0'
+//	implementation 'org.springframework.security.oauth:spring-security-oauth2'
+//	implementation 'org.springframework.security:spring-security-jwt'
+
 	implementation group: 'org.apache.jena', name: 'apache-jena-libs', version: '4.1.0', ext: 'pom'
 	implementation group: 'org.apache.jena', name: 'jena-querybuilder', version: '4.1.0'
 	implementation group: 'net.minidev', name: 'json-smart', version: '2.4.7'
@@ -54,8 +60,9 @@ dependencies {
 //	implementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo'
 	checkstyle 'com.puppycrawl.tools:checkstyle:8.39'
 
-	implementation 'edu.upc.essi.dtim:nextiadi:0.1.0'
+	implementation 'edu.upc.essi.dtim:nextiadi:0.1.0-SNAPSHOT'
 	implementation 'edu.upc.essi.dtim:nextiaqr:0.1.0-SNAPSHOT'
+	implementation 'edu.upc.essi.dtim:nextiacore:0.0.1-SNAPSHOT'
 //	implementation fileTree(dir: 'lib', include: ['*.jar'])
 }
 

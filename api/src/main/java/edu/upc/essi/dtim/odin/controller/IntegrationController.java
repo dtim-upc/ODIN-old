@@ -4,10 +4,11 @@ import edu.upc.essi.dtim.NextiaDI;
 import edu.upc.essi.dtim.odin.config.DataSourceTypes;
 import edu.upc.essi.dtim.odin.config.vocabulary.DataSourceGraph;
 import edu.upc.essi.dtim.odin.config.vocabulary.Namespaces;
-import edu.upc.essi.dtim.odin.models.mongo.DataSource;
+import edu.upc.essi.dtim.odin.bootstrapping.DataSource;
 import edu.upc.essi.dtim.odin.models.rest.IntegrationData;
 import edu.upc.essi.dtim.odin.repository.DataSourcesRepository;
-import edu.upc.essi.dtim.odin.utils.jena.GraphOperations;
+//import edu.upc.essi.dtim.odin.utils.jena.GraphOperations;
+import edu.upc.essi.dtim.odin.storage.JenaConnection;
 import edu.upc.essi.dtim.odin.utils.jena.parsers.OWLToWebVOWL;
 import edu.upc.essi.dtim.nextiadi.models.Alignment;
 import org.apache.jena.query.QuerySolution;
@@ -35,8 +36,10 @@ public class IntegrationController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IntegrationController.class);
 
+//    @Autowired
+//    private GraphOperations graphOperations;
     @Autowired
-    private GraphOperations graphOperations;
+    JenaConnection graph;
 
     @Autowired
     private DataSourcesRepository repository;
@@ -51,8 +54,6 @@ public class IntegrationController {
 
         Model graphA = retrieveGraph(dsA, iData.getDsA(), iData.getAlignments());
         Model graphB = retrieveGraph(dsB, iData.getDsB(), iData.getAlignments());
-
-
 
         Model integratedModel = n.Integrate(graphA, graphB, iData.getAlignments());
 
@@ -80,6 +81,7 @@ public class IntegrationController {
         Model minimal = n.getMinimalGraph();
 //        String f2 = "/Users/javierflores/Documents/UPC_projects/new/newODIN/api/src/test/resources/case01/Sergi/minimal.ttl";
 //        graphOperations.write(f2, minimal);
+
         String vowlJson2 = vowl2.convertSchema(minimal);
 
 
@@ -91,19 +93,19 @@ public class IntegrationController {
         integratedDatasource.setGraphicalGraph(vowlJson2);
 
 
-        graphOperations.addModel(integratedDatasource.getIri(), simplifyI);
-        graphOperations.addModel(integratedDatasource.getMinimalIRI(), minimal);
+        graph.persistent().addModel(integratedDatasource.getIri(), simplifyI);
+        graph.persistent().addModel(integratedDatasource.getMinimalIRI(), minimal);
 
-        graphOperations.addTriple(integratedDatasource.getIri(), integratedDatasource.getIri(), RDF.type.getURI(), Namespaces.Integration.val());
-        graphOperations.addTripleLiteral(integratedDatasource.getIri(), integratedDatasource.getIri(), RDFS.label.getURI(), integratedDatasource.getName());
-        graphOperations.addTripleLiteral(integratedDatasource.getIri(), integratedDatasource.getIri(), DataSourceGraph.HAS_ID.val(), integratedDatasource.getId());
+        graph.persistent().addTriple(integratedDatasource.getIri(), integratedDatasource.getIri(), RDF.type.getURI(), Namespaces.Integration.val());
+        graph.persistent().addTripleLiteral(integratedDatasource.getIri(), integratedDatasource.getIri(), RDFS.label.getURI(), integratedDatasource.getName());
+        graph.persistent().addTripleLiteral(integratedDatasource.getIri(), integratedDatasource.getIri(), DataSourceGraph.HAS_ID.val(), integratedDatasource.getId());
 
-        graphOperations.addTriple(integratedDatasource.getIri(), integratedDatasource.getIri(), DataSourceGraph.INTEGRATION_OF.val(), dsA  );
-        graphOperations.addTriple(integratedDatasource.getIri(), integratedDatasource.getIri(), DataSourceGraph.INTEGRATION_OF.val(), dsB  );
+        graph.persistent().addTriple(integratedDatasource.getIri(), integratedDatasource.getIri(), DataSourceGraph.INTEGRATION_OF.val(), dsA  );
+        graph.persistent().addTriple(integratedDatasource.getIri(), integratedDatasource.getIri(), DataSourceGraph.INTEGRATION_OF.val(), dsB  );
 
-        graphOperations.addTriple(integratedDatasource.getIri(), integratedDatasource.getIri(), DataSourceGraph.MINIMAL.val(), integratedDatasource.getMinimalIRI()  );
+        graph.persistent().addTriple(integratedDatasource.getIri(), integratedDatasource.getIri(), DataSourceGraph.MINIMAL.val(), integratedDatasource.getMinimalIRI()  );
 
-        graphOperations.addTriple(integratedDatasource.getMinimalIRI(), integratedDatasource.getMinimalIRI(), DataSourceGraph.IS_MINIMAL_OF.val(), integratedDatasource.getIri()  );
+        graph.persistent().addTriple(integratedDatasource.getMinimalIRI(), integratedDatasource.getMinimalIRI(), DataSourceGraph.IS_MINIMAL_OF.val(), integratedDatasource.getIri()  );
 
 //        String f = "/Users/javierflores/Documents/UPC_projects/new/newODIN/api/src/test/resources/case01/Sergi/integrated.ttl";
 //        graphOperations.write(f, graphOperations.getGraph(integratedDatasource.getIri()));
@@ -122,18 +124,18 @@ public class IntegrationController {
         if (  data.getType().equals(DataSourceTypes.INTEGRATED)  ) {
             // generate view of all sources
 
-            Model integratedGraph = graphOperations.getGraph(uri);
+            Model integratedGraph = graph.persistent().getGraph(uri);
 
             // get all graphs
             String querySTR = "SELECT ?graph WHERE {  <"+uri+"> <"+DataSourceGraph.INTEGRATION_OF.val()+"> ?graph. }";
 
-            ResultSet results  = graphOperations.runAQuery(querySTR);
+            ResultSet results  = graph.persistent().runAQuery(querySTR);
 
 
             while(results.hasNext()) {
                 QuerySolution solution = results.nextSolution();
                 String gURI = solution.getResource("graph").getURI();
-                integratedGraph = integratedGraph.union( graphOperations.getGraph(gURI) );
+                integratedGraph = integratedGraph.union( graph.persistent().getGraph(gURI) );
 
             }
             return integratedGraph;
@@ -143,7 +145,7 @@ public class IntegrationController {
 //            List<Alignment> aligId= alignments.stream().filter(x -> x.getIdentifier()  ).collect(Collectors.toList());;
             List<Alignment> aligId= alignments.stream().filter(x -> x.getType().contains("datatype")  ).collect(Collectors.toList());;
 
-            Model sourceG = graphOperations.getGraph(uri);
+            Model sourceG = graph.persistent().getGraph(uri);
 
             for ( Alignment a : aligId) {
 
@@ -151,13 +153,13 @@ public class IntegrationController {
                 Resource rB = sourceG.createResource(a.getIriB());
 
                 if (sourceG.containsResource(rA) ) {
-                    graphOperations.addTriple(uri, rA.getURI(), RDFS.subClassOf.getURI(),Namespaces.SCHEMA.val()+"identifier");
+                    graph.persistent().addTriple(uri, rA.getURI(), RDFS.subClassOf.getURI(),Namespaces.SCHEMA.val()+"identifier");
                 } else {
-                    graphOperations.addTriple(uri, rB.getURI(), RDFS.subClassOf.getURI(),Namespaces.SCHEMA.val()+"identifier");
+                    graph.persistent().addTriple(uri, rB.getURI(), RDFS.subClassOf.getURI(),Namespaces.SCHEMA.val()+"identifier");
                 }
             }
 
-            sourceG = graphOperations.getGraph(uri);
+            sourceG = graph.persistent().getGraph(uri);
 //            String f = "/Users/javierflores/Documents/UPC_projects/new/newODIN/api/src/test/resources/case01/Sergi/"+data.getName()+"_sourceGraph_identifier.ttl";
 //            graphOperations.write(f, sourceG, data.getId() );
 

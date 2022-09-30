@@ -1,30 +1,28 @@
-package edu.upc.essi.dtim.odin.services.impl;
+package edu.upc.essi.dtim.odin.bootstrapping;
 
+import edu.upc.essi.dtim.Graph;
 import edu.upc.essi.dtim.odin.config.DataSourceTypes;
 import edu.upc.essi.dtim.odin.config.vocabulary.DataSourceGraph;
-import edu.upc.essi.dtim.odin.config.vocabulary.SourceGraph;
-import edu.upc.essi.dtim.odin.models.mongo.DataSource;
 import edu.upc.essi.dtim.odin.models.mongo.Wrapper;
 import edu.upc.essi.dtim.odin.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.odin.repository.WrapperRepository;
+import edu.upc.essi.dtim.odin.services.impl.WrapperService;
+import edu.upc.essi.dtim.odin.storage.JenaConnection;
 import edu.upc.essi.dtim.odin.storage.filestorage.StorageProperties;
 import edu.upc.essi.dtim.odin.storage.filestorage.StorageService;
-import edu.upc.essi.dtim.odin.utils.jena.GraphOperations;
+//import edu.upc.essi.dtim.odin.utils.jena.GraphOperations;
 import edu.upc.essi.dtim.odin.utils.jena.parsers.OWLToWebVOWL;
 import edu.upc.essi.dtim.nextiadi.bootstraping.CSVBootstrap;
 import edu.upc.essi.dtim.nextiadi.bootstraping.JSONBootstrap;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.vocabulary.RDF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -32,8 +30,12 @@ public class DataSourceService {
 
     @Autowired
     StorageProperties properties;
+//    @Autowired
+//    private GraphOperations graphOperations;
+
     @Autowired
-    private GraphOperations graphOperations;
+    private JenaConnection graph;
+
     @Autowired
     private DataSourcesRepository repository;
     @Autowired
@@ -45,26 +47,46 @@ public class DataSourceService {
     private StorageService storageService;
 
 
+    public DataSource persist(DataSource ds){
+        String newPath = storageService.storePersistent(ds.getFilename());
+        Graph g = graph.temporal().getGraph(ds.getIri());
+        graph.persistent().addModel(ds.getIri(), g);
+        graph.persistent().updateLiteral(ds.getIri(), ds.getIri(), DataSourceGraph.HAS_PATH.val(), ds.getPath(), newPath  );
+        graph.temporal().deleteGraph(ds.getIri());
+        graph.persistent().getGraph(ds.getIri()).write("/Users/javierflores/Documents/upc/projects/newODIN/api/jena2/prueba2.ttl");
+
+        return ds;
+    }
 
     public DataSource create(DataSource dataSource, Boolean bootstrappingType, MultipartFile file) throws IOException {
-        String path = storageService.store(file);
+        // save to temporal landing
+        String filename = storageService.storeTemporal(file);
+        String path = storageService.getTemporalDir() + "/" +filename;
 
         DataSource _dataSource = new DataSource(dataSource.getName(), dataSource.getType());
         _dataSource.setPath(path);
+        _dataSource.setFilename(filename);
         _dataSource.setType(getDataSourcetype(file.getOriginalFilename()));
 
-        if(  Boolean.TRUE.equals(bootstrappingType)) {
-            _dataSource = bootstrap_schema(_dataSource);
-        } else {
+//        if(  Boolean.TRUE.equals(bootstrappingType)) {
+            // Note that _dataSource object is updated by reference
+        Model bootsrapM = bootstrap_schema(_dataSource);
+        graph.temporal().addModel(_dataSource.getIri(), bootsrapM);
+        graph.temporal().addTripleLiteral(_dataSource.getIri(), _dataSource.getIri(), DataSourceGraph.GRAPHICAL.val(), _dataSource.getGraphicalGraph());
+        graph.temporal().addTripleLiteral(_dataSource.getIri(), _dataSource.getIri(), DataSourceGraph.HAS_FILENAME.val(), filename);
+        graph.temporal().getGraph(_dataSource.getIri()).write("/Users/javierflores/Documents/upc/projects/newODIN/api/jena2/prueba.ttl");
+
+//        }
+//        else {
 //          TODO: Delete this code since ODIN v2 should bootstrap automatically all sources and then allow users to make views for privacy purposes (wrappers)
-            graphOperations.addTriple(_dataSource.getIri(),
-                    _dataSource.getIri(),
-                    RDF.getURI() + "type",
-                    SourceGraph.DATA_SOURCE.val());
-        }
+//            graphOperations.addTriple(_dataSource.getIri(),
+//                    _dataSource.getIri(),
+//                    RDF.getURI() + "type",
+//                    SourceGraph.DATA_SOURCE.val());
+//        }
+        // Getting rid of mongo
         repository.save(_dataSource);
         return _dataSource;
-
     }
 
 
@@ -75,7 +97,7 @@ public class DataSourceService {
         //First Step: Find wrappers with _dataSourceId == id and delete them
         Iterable<Wrapper> wrapperIterable = wrapperRepository.findAllByDataSourcesId(id);
         for (Wrapper w: wrapperIterable) {
-            graphOperations.removeGraph(w.getIri());
+            graph.persistent().deleteGraph(w.getIri());
 //            if (!(w.getLavMappingId().equals("") || w.getLavMappingId() == null)) {
 //                lavMappingService.removeLavMappingFromMongo(w.getLavMappingId());
 //            }
@@ -85,7 +107,7 @@ public class DataSourceService {
 
         //Second Step: Delete the data source with _id = id
         optionalDataSource.ifPresent(dataSource ->
-                graphOperations.removeGraph(dataSource.getIri())
+                graph.persistent().deleteGraph(dataSource.getIri())
         );
         repository.deleteById(id);
     }
@@ -109,10 +131,9 @@ public class DataSourceService {
             default:
                 return null;
         }
-
     }
 
-    public DataSource bootstrap_schema(DataSource dataSource) throws IOException {
+    public Model bootstrap_schema(DataSource dataSource) throws IOException {
 
 //        String filename = FilenameUtils.getName(dataSource.getPath());
 //        String dir = properties.getLocation()+"/bootstrapping/";
@@ -120,15 +141,12 @@ public class DataSourceService {
         Model bootsrapM = ModelFactory.createDefaultModel();
         switch (FilenameUtils.getExtension(dataSource.getPath())){
             case "csv":
-
                 CSVBootstrap bootstrap = new CSVBootstrap();
-                bootsrapM = bootstrap.bootstrapSchema(dataSource.getSchemaIRI(),  dataSource.getPath() );
-
+                bootsrapM = bootstrap.bootstrapSchema(dataSource.getId(),dataSource.getName(),dataSource.getSchemaIRI(),  dataSource.getPath() );
                 break;
             case "json":
                 JSONBootstrap jsonBootstrap =  new JSONBootstrap();
                 bootsrapM = jsonBootstrap.bootstrapSchema(dataSource.getName(), dataSource.getId(), dataSource.getPath());
-
                 break;
             default:
                 break;
@@ -141,13 +159,16 @@ public class DataSourceService {
         String vowlJson = vowl.convertSchema(bootsrapM);
         dataSource.setGraphicalGraph(vowlJson);
 
-        graphOperations.addModel(dataSource.getIri(), bootsrapM);
+        //        graph.temporal().getGraph(dataSource.getIri()).write("/Users/javierflores/Documents/upc/projects/newODIN/api/jena2/prueba.ttl");
 
-        graphOperations.addTripleLiteral(dataSource.getIri(),
-                dataSource.getIri(),
-                DataSourceGraph.GRAPHICAL.val(),
-                vowlJson
-                );
+
+//        graphOperations.addModel(dataSource.getIri(), bootsrapM);
+//
+//        graphOperations.addTripleLiteral(dataSource.getIri(),
+//                dataSource.getIri(),
+//                DataSourceGraph.GRAPHICAL.val(),
+//                vowlJson
+//                );
 //        graphOperations.addTriple(dataSource.getIri(),
 //                dataSource.getIri(),
 //                RDF.getURI() + "type",
@@ -183,14 +204,14 @@ public class DataSourceService {
 //        String f = "/Users/javierflores/Documents/UPC_projects/new/newODIN/api/src/test/resources/case01/Sergi/"+dataSource.getName()+"_sourceGraph.ttl";
 //        graphOperations.write(f, graphOperations.getGraph(dataSource.getIri()), dataSource.getId());
 
-        List<Wrapper> ls = dataSource.getWrappers();
-        if(ls == null){
-            ls = new ArrayList<>();
-        }
-//        ls.add(w);
-        dataSource.setWrappers(ls);
+//        List<Wrapper> ls = dataSource.getWrappers();
+//        if(ls == null){
+//            ls = new ArrayList<>();
+//        }
+////        ls.add(w);
+//        dataSource.setWrappers(ls);
 
-        return dataSource;
+        return bootsrapM;
     }
 
 }

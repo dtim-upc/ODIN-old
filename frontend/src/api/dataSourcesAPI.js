@@ -1,0 +1,44 @@
+import {odinApi} from 'boot/axios';
+
+// export function dataSourcesAPI(data) {
+
+//     const createDSTemp = data =>  odinApi.post('/dataSource', data, {headers: {'Content-Type': 'multipart/form-data'},})
+
+
+//     return {
+//         createDSTemp,
+//     }
+
+
+// }
+
+// var dataSourcesAPI = {
+//     createDSTemp( data) {  odinApi.post('/dataSource', data, {headers: {'Content-Type': 'multipart/form-data'},}) }
+// }
+
+
+// export default dataSourcesAPI
+
+// export function createDSTemp(data) {
+
+//     return odinApi.post('/dataSource', data, {headers: {'Content-Type': 'multipart/form-data'},})
+
+// }
+
+
+export default {
+
+    // Persistent
+    getAll (projectID, token) { return odinApi.get('/project/'+projectID+'/datasources', {headers: { Authorization: `Bearer ${token}` }}   ) },
+    createDSPersistent (projectID, datasource, token) { return odinApi.post('/project/'+projectID+'/datasources/persist', datasource,  {headers: { Authorization: `Bearer ${token}` }})},
+    deleteDS(projectID,id, token) {return odinApi.delete('/project/'+projectID+'/datasources/'+ id, {headers: { Authorization: `Bearer ${token}` }} )},
+
+
+    getAllTemporal (projectID, token) { return odinApi.get('/project/'+projectID+'/temp/ds', {headers: { Authorization: `Bearer ${token}` }}   ) },
+    deleteTemporal(projectID, id, token) {return odinApi.delete('/project/'+ projectID + '/temp/ds/'+id, {headers: { Authorization: `Bearer ${token}` }} )},
+    createDSTemp( projectID, token, data) { return odinApi.post('/project/'+projectID+'/temp/ds', data, {headers: {'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` }  }) },
+    
+    
+
+
+}

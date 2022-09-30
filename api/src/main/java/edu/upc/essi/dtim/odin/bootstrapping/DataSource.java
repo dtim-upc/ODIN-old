@@ -1,10 +1,11 @@
-package edu.upc.essi.dtim.odin.models.mongo;
+package edu.upc.essi.dtim.odin.bootstrapping;
 
 import edu.upc.essi.dtim.odin.config.DataSourceTypes;
 import edu.upc.essi.dtim.odin.config.vocabulary.DataSourceGraph;
 import edu.upc.essi.dtim.odin.config.vocabulary.Namespaces;
 import edu.upc.essi.dtim.nextiadi.config.DataSourceVocabulary;
 import edu.upc.essi.dtim.nextiadi.models.Alignment;
+import edu.upc.essi.dtim.odin.models.mongo.Wrapper;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,17 +18,18 @@ import java.util.List;
 import java.util.UUID;
 
 @Getter @Setter
-@NoArgsConstructor
 @Document("DataSources")
 public class DataSource {
+
+
     @Id
-    private String id;
-    private String name;
-    private String iri;
+    private String id; //yes
+    private String name; //yes
+    private String iri; //yes
     private String graphicalGraph;
 
-    @DBRef
-    private List<Wrapper> wrappers;
+//    @DBRef
+//    private List<Wrapper> wrappers;
 
     //files
     private String path;
@@ -55,6 +57,11 @@ public class DataSource {
 //        return iri;
 //    }
 
+    public DataSource(){
+        this.id = UUID.randomUUID().toString().replace("-", "");
+        this.iri = createDataSourceIri();
+    }
+
     public DataSource(String name, DataSourceTypes type) {
         this.name = name;
         this.type = type;
@@ -65,14 +72,23 @@ public class DataSource {
 
     private String createDataSourceIri() {
 
-        if(type.equals(DataSourceTypes.INTEGRATED)){
-            return DataSourceVocabulary.DataSource.val() +'/'+id;
+        if(type != null) {
+            if(type.equals(DataSourceTypes.INTEGRATED)){
+                return DataSourceVocabulary.DataSource.val() +'/'+id;
+            }
+            return DataSourceVocabulary.DataSource.val() + '/' + id;
         }
+
 
         return DataSourceVocabulary.DataSource.val() + '/' + id;
     }
 
-//    public String getF() {
+    public void setId(String id) {
+        this.id = id;
+        this.iri = createDataSourceIri();
+    }
+
+    //    public String getF() {
 //
 //        if(type.equals(DataSourceTypes.CSV)){
 //            return DataSourceGraph.CSV.val();

@@ -1,26 +1,24 @@
 package edu.upc.essi.dtim.odin.services.impl;
 
+import edu.upc.essi.dtim.Graph;
 import edu.upc.essi.dtim.odin.config.DataSourceTypes;
 import edu.upc.essi.dtim.odin.config.vocabulary.DataSourceGraph;
 import edu.upc.essi.dtim.odin.config.vocabulary.Namespaces;
 import edu.upc.essi.dtim.odin.models.query.ODINQuery;
 import edu.upc.essi.dtim.odin.models.rest.QueryDataSelection;
-import edu.upc.essi.dtim.odin.services.filestorage.StorageProperties;
-import edu.upc.essi.dtim.odin.utils.jena.GraphOperations;
+import edu.upc.essi.dtim.odin.storage.JenaConnection;
+import edu.upc.essi.dtim.odin.storage.filestorage.StorageProperties;
+//import edu.upc.essi.dtim.odin.utils.jena.GraphOperations;
 import edu.upc.essi.dtim.nextiadi.config.DataSourceVocabulary;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.impl.ResourceImpl;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDFS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,20 +28,22 @@ public class IntegrationService {
 
     @Autowired
     StorageProperties properties;
+//    @Autowired
+//    private GraphOperations graphOperations;
     @Autowired
-    private GraphOperations graphOperations;
+    JenaConnection graph;
 
     public Map<String, List<Pair<String,String>>> getSourceAtts(String integratedURI) {
 
         Map<String, List<Pair<String,String>>> sourceGraphs = new HashMap<>();
         String querySTR = "SELECT ?sourceGraph WHERE { GRAPH <"+integratedURI+"> { <"+integratedURI+"> <"+DataSourceGraph.INTEGRATION_OF.val()+"> ?sourceGraph. }  }";
-        ResultSet results  = graphOperations.runAQuery(querySTR);
+        ResultSet results  = graph.persistent().runAQuery(querySTR);
 
 
         while(results.hasNext()) {
             QuerySolution solution = results.nextSolution();
             String sourceURI = solution.getResource("sourceGraph").getURI();
-            List<Pair<String, String>> sourceA = graphOperations.getSourceAtts(sourceURI);
+            List<Pair<String, String>> sourceA = graph.persistent().getSourceAtts(sourceURI);
             sourceGraphs.put(sourceURI, sourceA);
         }
         return sourceGraphs;
@@ -117,7 +117,7 @@ public class IntegrationService {
                     " <"+uri+"> <"+DataSourceGraph.MINIMAL.val()+"> ?minimal. }" +
                     "}}";
 
-            ResultSet results  = graphOperations.runAQuery(querySTR);
+            ResultSet results  = graph.persistent().runAQuery(querySTR);
             String minimalU = "";
             while(results.hasNext()) {
                 QuerySolution solution = results.nextSolution();
@@ -126,10 +126,10 @@ public class IntegrationService {
                 String sourceID = solution.getLiteral("id").getString();
                 String label = solution.getLiteral("label").getString();
 
-                Model source = graphOperations.getGraph(sourceURI);
+                Model source = graph.persistent().getGraph(sourceURI);
                 // sameAs of integrated
-                Model integratedResources = graphOperations.getIntegratedResourcesOfSource(sourceID, uri);
-                Model sourceG = graphOperations.simplify(source.union(integratedResources) );
+                Model integratedResources = graph.persistent().getIntegratedResourcesOfSource(sourceID, uri);
+                Model sourceG = graph.persistent().simplify(source.union(integratedResources) );
 
 //                try {
 //                    RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/uploads/prueba.ttl"), sourceG, Lang.TURTLE);
@@ -137,14 +137,14 @@ public class IntegrationService {
 //                    e.printStackTrace();
 //                }
                 // sameAs of normal properties
-                Model propertiesSameAs = graphOperations.getPropertiesSameAs(sourceG);
+                Model propertiesSameAs = graph.persistent().getPropertiesSameAs(sourceG);
                 sourceG = sourceG.union(propertiesSameAs);
 
                 List<String> identifiersL = getIdentifiers(sourceG);
                 ids = Stream.concat(ids.stream(), identifiersL.stream())
                         .collect(Collectors.toList());
 
-                Model subG = graphOperations.getSubGraph(getIAndSourceURIs(sourceID, idata), minimalURI, identifiersL);
+                Model subG = graph.persistent().getSubGraph(getIAndSourceURIs(sourceID, idata), minimalURI, identifiersL);
                 minimalU = minimalURI;
 
                 sourceGraphs.put(sourceURI, sourceG);
@@ -159,7 +159,7 @@ public class IntegrationService {
             odin.setSourceGraphs(sourceGraphs);
             odin.setSubGraphs(subGraphs);
 
-        Model minimal = graphOperations.getGraph(minimalU);
+        Model minimal = graph.persistent().getGraph(minimalU);
         ids.forEach(i -> minimal.add(new ResourceImpl(i), RDFS.subClassOf, new ResourceImpl(Namespaces.SCHEMA.val()+"identifier")) );
             odin.setMinimal(minimal);
 
@@ -171,12 +171,14 @@ public class IntegrationService {
 
     }
 
-
+    public List<String> getIdentifiers( Graph model){
+        return getIdentifiers(model);
+    }
 
     public List<String> getIdentifiers( Model model){
         List<String> lista  = new ArrayList<>();
         String q = "SELECT ?s WHERE {  ?s <"+RDFS.subClassOf.getURI()+"> <"+ Namespaces.SCHEMA.val()+"identifier>. ?s <"+ OWL.sameAs.getURI()+"> ?o  }";
-        ResultSet results  = graphOperations.runAQuery(q, model);
+        ResultSet results  = graph.persistent().runAQuery(q, model);
         while(results.hasNext()) {
             QuerySolution solution = results.nextSolution();
             String identifierR = solution.getResource("s").getURI();
@@ -207,18 +209,18 @@ public class IntegrationService {
 
         if (  type.equals(DataSourceTypes.INTEGRATED)  ) {
             // generate view of all sources
-            Model integratedGraph = graphOperations.getGraph(uri);
+            Model integratedGraph = graph.persistent().getGraph(uri);
             // get all graphs
             String querySTR = "SELECT ?graph WHERE {  <"+uri+"> <"+DataSourceGraph.INTEGRATION_OF.val()+"> ?graph. }";
-            ResultSet results  = graphOperations.runAQuery(querySTR);
+            ResultSet results  = graph.persistent().runAQuery(querySTR);
             while(results.hasNext()) {
                 QuerySolution solution = results.nextSolution();
                 String gURI = solution.getResource("graph").getURI();
-                integratedGraph = integratedGraph.union( graphOperations.getGraph(gURI) );
+                integratedGraph = integratedGraph.union( graph.persistent().getGraph(gURI) );
             }
             return integratedGraph;
         } else {
-            return  graphOperations.getGraph(uri);
+            return  graph.persistent().getGraph(uri);
         }
 
     }

@@ -1,14 +1,16 @@
-package edu.upc.essi.dtim.odin.services.filestorage;
+package edu.upc.essi.dtim.odin.storage.filestorage;
 
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -18,7 +20,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 
-@Service
+@Service()
 public class FileSystemStorageService implements StorageService {
 
     private final Path persistentDir;
@@ -26,21 +28,30 @@ public class FileSystemStorageService implements StorageService {
 
     @Autowired
     public FileSystemStorageService(StorageProperties properties) {
-        this.persistentDir = Paths.get(properties.getPersistentDir());
-        this.temporalDir = Paths.get(properties.getTemporalDir());
+        this.persistentDir = Paths.get(properties.getPersistentDSDir());
+        this.temporalDir = Paths.get(properties.getTemporalDSDir());
     }
 
     @Override
-    public String store(MultipartFile file) {
+    public String storePersistent(String filename){
+        File f = new File( temporalDir.resolve(filename).toString() );
+        Path destPath = persistentDir.resolve(filename);
+        f.renameTo(new File( destPath.toString() ));
+        return destPath.toString();
+    }
+
+    @Override
+    public String storeTemporal(MultipartFile file) {
 
         try {
             if (file.isEmpty()) {
                 throw new StorageException("Failed to store empty file.");
             }
-            Path destinationFile = this.persistentDir.resolve(
-                    Paths.get(RandomStringUtils.randomAlphanumeric(16) +"_"+ file.getOriginalFilename()))
+            String filename = RandomStringUtils.randomAlphanumeric(16) +"_"+ file.getOriginalFilename();
+            Path destinationFile = this.temporalDir.resolve(
+                    Paths.get(filename))
                     .normalize().toAbsolutePath();
-            if (!destinationFile.getParent().equals(this.persistentDir.toAbsolutePath())) {
+            if (!destinationFile.getParent().equals(this.temporalDir.toAbsolutePath())) {
                 // This is a security check
                 throw new StorageException(
                         "Cannot store file outside current directory.");
@@ -49,7 +60,7 @@ public class FileSystemStorageService implements StorageService {
                 Files.copy(inputStream, destinationFile,
                         StandardCopyOption.REPLACE_EXISTING);
             }
-            return destinationFile.toString();
+            return filename;
         } catch (IOException e) {
             throw new StorageException("Failed to store file.", e);
         }
@@ -101,7 +112,10 @@ public class FileSystemStorageService implements StorageService {
             // If you require it to make the entire directory path including parents,
             // use directory.mkdirs(); here instead.
         }
-
+        FileSystemUtils.deleteRecursively(temporalDir.toFile());
+        if (! temporalDir.toFile().exists()){
+            temporalDir.toFile().mkdir();
+        }
     }
 
     @Override
@@ -113,8 +127,19 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
+    public String getPersistentDir() {
+        return persistentDir.toString();
+    }
+
+    @Override
+    public String getTemporalDir() {
+        return temporalDir.toString();
+    }
+
+    @Override
     public void init() {
         try {
+            System.out.println("init directory");
             Files.createDirectories(persistentDir);
             Files.createDirectories(temporalDir);
         }

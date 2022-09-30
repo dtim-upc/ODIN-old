@@ -1,4 +1,4 @@
-package edu.upc.essi.dtim.odin.services.filestorage;
+package edu.upc.essi.dtim.odin.storage.filestorage;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -15,11 +15,27 @@ public class StorageProperties {
     private String persistent_name;
     @Value("${dataStorage.landingZone.temporal.name}")
     private String temporal_name;
+    @Value("${dataStorage.landingZone.jena.name}")
+    private String name;
+    @Value("${dataStorage.landingZone.datasources.name}")
+    private String dsfolder;
 
 //    I don't think we need this:
 //    public String getLocation() {
 //        return location;
 //    }
+
+    public  String getJena(){
+        return name;
+    }
+
+    public String getPersistentDSDir(){
+        return location + "/" + persistent_name + "/" + dsfolder;
+    }
+
+    public String getTemporalDSDir(){
+        return location + "/" + temporal_name + "/" + dsfolder;
+    }
 
     public String getPersistentDir(){
         return location + "/" + persistent_name;

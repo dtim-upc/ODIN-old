@@ -4,7 +4,8 @@ package edu.upc.essi.dtim.odin.utils.jena.parsers;
 import com.google.gson.Gson;
 import edu.upc.essi.dtim.odin.config.vocabulary.Namespaces;
 import edu.upc.essi.dtim.odin.config.vocabulary.SourceGraph;
-import edu.upc.essi.dtim.odin.utils.jena.GraphOperations;
+//import edu.upc.essi.dtim.odin.utils.jena.GraphOperations;
+import edu.upc.essi.dtim.odin.storage.JenaConnection;
 import edu.upc.essi.dtim.odin.utils.jena.parsers.models.*;
 import edu.upc.essi.dtim.nextiadi.config.Vocabulary;
 import edu.upc.essi.dtim.nextiadi.jena.Graph;
@@ -26,8 +27,10 @@ import java.util.stream.Collectors;
 
 public class OWLToWebVOWL {
 
+//    @Autowired
+//    GraphOperations graphO;
     @Autowired
-    GraphOperations graphO;
+    JenaConnection graph;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OWLToWebVOWL.class);
 

@@ -1,4 +1,4 @@
-package edu.upc.essi.dtim.odin.services.filestorage;
+package edu.upc.essi.dtim.odin.storage.filestorage;
 
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,7 +11,9 @@ public interface StorageService {
 
     void init();
 
-    String store(MultipartFile file);
+    String storePersistent(String filename);
+
+    String storeTemporal(MultipartFile file);
 
     Stream<Path> loadAll();
 
@@ -22,5 +24,9 @@ public interface StorageService {
     void deleteAll();
 
     void delete(String path) throws IOException;
+
+    String getPersistentDir();
+
+    String getTemporalDir();
 
 }

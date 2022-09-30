@@ -14,4 +14,4 @@ dataStorage:
 logging:
   level:
     org.springframework.web: INFO
-    edu.upc.essi.dtim.metadatastorage: DEBUG
+    edu.upc.essi.dtim: DEBUG

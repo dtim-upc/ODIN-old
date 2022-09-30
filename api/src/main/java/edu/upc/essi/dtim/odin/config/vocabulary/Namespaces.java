@@ -3,7 +3,11 @@ package edu.upc.essi.dtim.odin.config.vocabulary;
 public enum Namespaces {
 
     DTIM("http://www.essi.upc.edu/DTIM"),
-    DataSource("http://www.essi.upc.edu/DTIM/DataSource"),
+    DataSource("http://www.essi.upc.edu/DTIM/NextiaDI/DataSource"),
+    Project("http://www.essi.upc.edu/DTIM/NextiaDI/Project"),
+    GlobalSchema("http://www.essi.upc.edu/DTIM/NextiaDI/GlobalSchema"),
+    SchemaIntegration("http://www.essi.upc.edu/DTIM/NextiaDI/GlobalSchemaComplete"),
+    User("http://www.essi.upc.edu/DTIM/NextiaDI/USER"),
     Integration("http://www.essi.upc.edu/DTIM/Integration"),
     NextiaDI("http://www.essi.upc.edu/DTIM/NextiaDI/"),
 

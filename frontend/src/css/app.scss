@@ -1,0 +1,71 @@
+// app global css in SCSS form
+.body--light {
+    /* background-color: #f4f8fb; */
+    /* background-color: #ffffff; */
+    background-color: $neutral100;
+  }
+  
+// .body--dark {
+//     background-color: $neutral100d;
+// }
+  
+.q-btn--rectangle{
+    border-radius: 4px;
+}
+ .leftdrawerside > div > aside{
+     left: unset;
+ }
+.q-item--dark {
+
+color: $neutral400;
+}
+
+
+.bg-primary700{
+
+    background: $primary700;
+
+}
+
+
+.body--light {
+
+    .text-primary600{
+        color: $primary600;
+    }
+    
+    .text-neutral500{
+        color: $neutral500;
+    }
+    
+
+}
+  
+.body--dark {
+
+    .logoODIN{fill:$primary700d;}
+    .dark_title{
+        color:#fff;
+    }
+
+    .q-stepper__tab--active, .q-stepper__tab--done{
+        color: $primary700d
+    }
+    .text-primary {
+        color: $primary700d !important;
+    }
+
+    .text-primary600{
+        color: $primary700d;
+    }
+    
+
+    .text-neutral500{
+        color: $neutral400;
+    }
+    /* ... */
+
+    // aside.q-dark {
+    //     background: $neutral0d;
+    // }
+}

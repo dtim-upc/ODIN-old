@@ -1,9 +1,8 @@
-package edu.upc.essi.dtim.odin.controller;
+package edu.upc.essi.dtim.odin.bootstrapping;
 
-import edu.upc.essi.dtim.odin.models.mongo.DataSource;
 import edu.upc.essi.dtim.odin.repository.DataSourcesRepository;
+import edu.upc.essi.dtim.odin.storage.JenaConnection;
 import edu.upc.essi.dtim.odin.storage.filestorage.StorageService;
-import edu.upc.essi.dtim.odin.services.impl.DataSourceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +18,16 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/dataSource")
-public class DataSourcesController {
+public class DataSourceController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DataSourcesController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataSourceController.class);
     private static final String LOG_MSG = "{} request finished with inputs: {} and return value: {}";
     private static final String EMPTY_INPUTS = "{}";
 
     @Autowired
     private DataSourcesRepository repository;
+    @Autowired
+    private JenaConnection graph;
 
     @Autowired
     private StorageService storageService;
@@ -34,11 +35,23 @@ public class DataSourcesController {
     @Autowired
     private DataSourceService dataSourceService;
 
+    @PostMapping("persist")
+    public ResponseEntity<DataSource> persistDataSource(@RequestBody DataSource dataSource) {
+        try {
+            System.out.println(dataSource.toString());
+
+            System.out.println("persist data source");
+            dataSourceService.persist(dataSource);
+            return new ResponseEntity<>(dataSource, HttpStatus.CREATED);
+        } catch (Exception e) {
+            LOGGER.error("something went wrong persistent", e);
+            return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @PostMapping( consumes = {"multipart/form-data"})
     public ResponseEntity<DataSource> createDataSource(@RequestPart DataSource dataSource, @RequestPart MultipartFile file, @RequestPart Boolean bootstrappingType) {
         try {
-
             DataSource _dataSource = dataSourceService.create(dataSource, bootstrappingType, file);
 
             String input = dataSource.toString().replaceAll("[\n\r\t]", "_");
@@ -47,8 +60,7 @@ public class DataSourcesController {
             LOGGER.info(LOG_MSG, "createDataSource", input, returnval);
             return new ResponseEntity<>(_dataSource, HttpStatus.CREATED);
         } catch (Exception e) {
-            e.printStackTrace();
-            LOGGER.error(e.toString());
+            LOGGER.error(e.toString(), e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -56,12 +68,12 @@ public class DataSourcesController {
 
     @GetMapping
     public ResponseEntity<List<DataSource>> getAllDataSources() {
-
+        System.out.println("getAllDataSources....");
         try {
             List<DataSource> dataSources = new ArrayList<>();
 
             repository.findAll().forEach(dataSources::add);
-
+//            dataSources = graph.persistent().findAllDataSources();
             if (dataSources.isEmpty()) {
                 ResponseEntity response = new ResponseEntity<>(HttpStatus.NO_CONTENT);
                 LOGGER.info(LOG_MSG, "getAllDataSources", "", response);
@@ -70,11 +82,12 @@ public class DataSourcesController {
             LOGGER.info(LOG_MSG, "getAllDataSources", EMPTY_INPUTS, "" );
             return new ResponseEntity<>(dataSources, HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     @GetMapping("/{id}")
-    public ResponseEntity<DataSource> getAllDataSources(@PathVariable("id") String id) {
+    public ResponseEntity<DataSource> getDataSourceByID(@PathVariable("id") String id) {
 
         try {
             Optional<DataSource> optionalDataSources = repository.findById(id);
@@ -82,9 +95,35 @@ public class DataSourcesController {
                 LOGGER.info(LOG_MSG, "getDataSources", id, "" );
                 return new ResponseEntity<>(optionalDataSources.get(), HttpStatus.OK);
             }
+//            kkk
+            DataSource ds = graph.persistent().findDSById(id);
+            if( !ds.getName().equals("")) {
+                LOGGER.info(LOG_MSG, "getDataSources", id, "" );
+                return new ResponseEntity<>(ds, HttpStatus.OK);
+            }
             LOGGER.info(LOG_MSG, "getDataSources", id, "" );
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
+            LOGGER.error("something went wrong", e);
+            return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @GetMapping("/temporal/{id}")
+    public ResponseEntity<DataSource> getTemporalDataSourceByID(@PathVariable("id") String id) {
+
+        try {
+            DataSource ds = graph.temporal().findDSById(id);
+
+            if( ds.getName() != null) {
+                LOGGER.info(LOG_MSG, "getDataSources", id, "" );
+                return new ResponseEntity<>(ds, HttpStatus.OK);
+            }
+            LOGGER.info(LOG_MSG, "getDataSources", id, "" );
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            LOGGER.error("something went wrong", e);
             return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -119,14 +158,14 @@ public class DataSourcesController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping
-    public ResponseEntity<HttpStatus> deleteDataSources() {
-        try {
-            repository.deleteAll();
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    @DeleteMapping
+//    public ResponseEntity<HttpStatus> deleteDataSources() {
+//        try {
+//            repository.deleteAll();
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
 }

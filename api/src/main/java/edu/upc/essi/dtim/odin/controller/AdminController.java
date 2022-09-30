@@ -2,8 +2,9 @@ package edu.upc.essi.dtim.odin.controller;
 
 import edu.upc.essi.dtim.odin.repository.DataSourcesRepository;
 import edu.upc.essi.dtim.odin.repository.WrapperRepository;
-import edu.upc.essi.dtim.odin.services.filestorage.StorageService;
-import edu.upc.essi.dtim.odin.utils.jena.GraphOperations;
+import edu.upc.essi.dtim.odin.storage.JenaConnection;
+import edu.upc.essi.dtim.odin.storage.filestorage.StorageService;
+//import edu.upc.essi.dtim.odin.utils.jena.GraphOperations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,10 @@ public class AdminController {
     @Autowired
     private WrapperRepository wrapperRepo;
 
+//    @Autowired
+//    private GraphOperations graphO;
     @Autowired
-    private GraphOperations graphO;
+    private JenaConnection graph;
 
 
     @DeleteMapping("/all")
@@ -37,7 +40,9 @@ public class AdminController {
 
         LOGGER.info("DELETING ALL...");
         // delete jena
-        graphO.deleteAllGraphs();
+        graph.persistent().deleteAllGraphs();
+        // TODO: find a better way to delete temporal. Maybe after 20 days and so on.
+        graph.temporal().deleteAllGraphs();
         // delete mongo
         dsRepo.deleteAll();
         wrapperRepo.deleteAll();

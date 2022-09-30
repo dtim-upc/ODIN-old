@@ -32,12 +32,26 @@ dataStorage:
       name: "persistent"
     temporal:
       name: "temporal"
+    datasources:
+      name: ds
     jena:
       name: jena
+  namedGraphs:
+    users: "http://www.essi.upc.edu/DTIM/NextiaDI/Users"
+    projects: ""
 
 info:
   component: Odin is a system that supports incremental pay-as-you-go integration of data sources into dataspaces and provides user-friendly
     querying mechanisms on top of them
+
+app:
+  security:
+    jwt:
+      keystore-location: "keys/keystore.jks"
+      keystore-password: "password"
+      key-alias: "jwtsigning"
+      private-key-passphrase: "password"
+
 server:
   servlet:
     context-path: /odin
