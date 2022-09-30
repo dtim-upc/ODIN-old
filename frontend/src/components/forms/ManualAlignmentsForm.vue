@@ -109,13 +109,15 @@ const props = defineProps({
 
 const integrationStore = useIntegrationStore()
 
-onMounted(() => {
-  integrationStore.setProject()
-})
+// onMounted(() => {
+//   integrationStore.setProject()
+// })
 
 const alignment = reactive({
 
     type : '', //both resource must be same type
+    trueType: '',
+    shortType: '',
     integratedLabel : '',
     resourceA : {
         name:'',
@@ -175,6 +177,8 @@ const resetRA = () => {
 
   if( alignment.resourceB.iri == '' ) {
     alignment.type=''
+    alignment.trueType= '',
+    alignment.shortType= '',
     alignment.integratedLabel = ''
   }
  }
@@ -187,6 +191,8 @@ const resetRB = () => {
 
   if( alignment.resourceA.iri == '' ) {
     alignment.type=''
+    alignment.trueType= '',
+    alignment.shortType= '',
      alignment.integratedLabel = ''
   }
  }
@@ -219,6 +225,9 @@ const setAlignmentA = (resource) => {
       alignment.integratedLabel = alignment.resourceA.label + "_" + alignment.resourceB.label
     }
     alignment.type = resource.type
+    alignment.shortType = resource.shortType
+    alignment.trueType = resource.trueType
+
 
   } else {
 
@@ -245,6 +254,8 @@ const setAlignmentB = (resource) => {
       alignment.integratedLabel = alignment.resourceA.label + "_" + alignment.resourceB.label
     }
     alignment.type = resource.type
+    alignment.shortType = resource.shortType
+    alignment.trueType = resource.trueType
 
   } else {
     // show some error. we can only select same type

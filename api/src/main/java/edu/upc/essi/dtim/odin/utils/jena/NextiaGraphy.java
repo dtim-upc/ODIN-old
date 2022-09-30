@@ -30,7 +30,7 @@ import static edu.upc.essi.dtim.odin.config.vocabulary.Namespaces.SchemaIntegrat
 
 public class NextiaGraphy {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OWLToWebVOWL.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NextiaGraphy.class);
 
 //    @Autowired
 //    JenaConnection graph;
@@ -101,7 +101,7 @@ public class NextiaGraphy {
                     nodes.add(property);
             } else{
                     // do nothing. Probably statement not useful for graphical graph
-                    LOGGER.debug("NOT USEFUL: "+ statement.getSubject() +","+statement.getPredicate()+", "+statement.getObject() );
+//                    LOGGER.debug("NOT USEFUL: "+ statement.getSubject() +","+statement.getPredicate()+", "+statement.getObject() );
                 }
             }
             n.computeType();
@@ -125,9 +125,13 @@ public class NextiaGraphy {
 
 
         System.out.println(nodes.size());
-        List<Nodes> nodesReady = nodes.stream().filter( s -> !excluded.contains(s.getIriType()) ).filter( s -> !s.getIri().contains(GlobalSchema.val()) && !s.getIri().contains(SchemaIntegration.val()) ).collect(Collectors.toList());
+        List<Nodes> nodesReady = nodes.stream().filter( s -> !excluded.contains(s.getIriType()) )
+                .filter( s -> !s.getIri().contains(GlobalSchema.val()) && !s.getIri().contains(SchemaIntegration.val())
+                        && !s.getIri().contains(RDFS.subPropertyOf.toString()) && !s.getRange().equals("http://schema.org/identifier") )
+                .collect(Collectors.toList());
 //        List<Nodes> nodesProperties = nodes.stream().filter(n -> !n.getType().equals("class")).collect(Collectors.toList());
-        List<Nodes> nodesProperties = nodes.stream().filter(n -> !excludedForProperties.contains(n.getType())).collect(Collectors.toList());
+        List<Nodes> nodesProperties = nodes.stream()
+                .filter(n -> !excludedForProperties.contains(n.getType()) && !n.getIri().contains(RDFS.subPropertyOf.toString())  ).collect(Collectors.toList());
 
         List<Links> links = new ArrayList<>();
 
@@ -160,7 +164,13 @@ public class NextiaGraphy {
                 l.setTarget(nodesId.get(n.getRange()));
             }
             l.setLabel(n.getLabel());
-            links.add(l);
+            if( (l.getSource() == null || l.getTarget() == null  ) && !n.getRange().equals("http://schema.org/identifier") ){
+
+                System.out.println("ERROR......");
+            }
+            // TODO: support to see subproperty of....it implies to connect to properties visually
+            if(!n.getRange().equals("http://schema.org/identifier"))
+                links.add(l);
         }
 
 //        System.out.println("NODES:");

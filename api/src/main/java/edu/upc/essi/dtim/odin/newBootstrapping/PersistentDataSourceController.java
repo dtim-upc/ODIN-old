@@ -120,6 +120,7 @@ public class PersistentDataSourceController {
         // TODO: RESET GLOBAL SCHEMA IF NO DATA SOURCES LEFT
         dataSourceService.delete(dsID);
         projectService.decreaseNumberDSBy1(project);
+
         LOGGER.info(LOG_MSG, "deleteDataSources", dsID, HttpStatus.NO_CONTENT.toString() );
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

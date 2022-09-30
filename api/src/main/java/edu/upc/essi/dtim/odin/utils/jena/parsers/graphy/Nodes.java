@@ -18,14 +18,16 @@ public class Nodes {
     String label;
     String domain;
     String range;
+    Boolean isIntegrated;
 
     // optional
     String linkId;
 
-//    public Nodes(){
-//        this.domain = "";
-//        this.range = "";
-//    }
+    public Nodes(){
+        this.domain = "";
+        this.range = "";
+        this.isIntegrated = false;
+    }
 
     public void setXSDDatatype(){
         this.type = "xsdType";
@@ -41,7 +43,7 @@ public class Nodes {
                 this.shortType = "rdf:"+ iriType.replace(RDF.getURI(),"");
             } else if (iriType.contains("http://www.essi.upc.edu/DTIM/NextiaDI/")) {
                 this.shortType = "nextia:" + iriType.replace("http://www.essi.upc.edu/DTIM/NextiaDI/","");
-            } {
+            } else {
                 this.shortType = iriType;
             }
         }
@@ -56,29 +58,42 @@ public class Nodes {
 //        if(iriType.equals(RDFS.Class.getURI())){
 //            type = "class";
 //        }
-        if(range != null)     { // everything that contains range is property
+        if(!range.equals("") )     { // everything that contains range is property
             if( range.contains(XSD.getURI())) {
-                type = "datatypeProperty";
+//                type = "datatypeProperty";
+
+//                TODO: set in Nextiadi a variable that can be used in external
+                type = "datatype";
+                if(iriType != null)
+                    if (iriType.equals(Vocabulary.IntegrationDProperty.val())) {
+                        isIntegrated = true;
+//                                "integratedDatatypeProperty";
+                    }
+
+
 //            } else if ( iriType.equals(RDF.Property.getURI())  ) {
 //                type = "objectProperty";
             } else {
-                type = "objectProperty"; // missing subclassof and subpropertyof
+                type = "object";
+                if(iriType != null)
+                    if (iriType.equals(Vocabulary.IntegrationOProperty.val())) {
+                        isIntegrated = true;
+//                                "integratedObjectProperty";
+                    }
+
+//                type = "objectProperty"; // missing subclassof and subpropertyof
 
             }
         } else {
+            type = "class";
             if(iriType != null) {
                 if (iriType.equals(Vocabulary.IntegrationClass.val())) {
-                    type = "integratedClass";
-                } else if (iriType.equals(Vocabulary.IntegrationDProperty.val())) {
-                    type = "integratedDatatypeProperty";
-                } else if (iriType.equals(Vocabulary.IntegrationOProperty.val())) {
-                    type = "integratedObjectProperty";
-                } else {
-                    type = "class";
+//                    type = "integratedClass";
+                    isIntegrated = true;
                 }
-            } else {
-                type = "class";
             }
+
+
 
         }
         computeShortType();

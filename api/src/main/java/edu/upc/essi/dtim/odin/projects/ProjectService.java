@@ -36,7 +36,12 @@ public class ProjectService {
         if(nDS < 0) {
             nDS = 0;
         }
-        return projectRepo.updateNumberDataSources(project, nDS+"");
+        Project newP =  projectRepo.updateNumberDataSources(project, nDS+"");
+        if(newP.getNumberOfDS() == "0") {
+            updateGraphicalSchema(project,"");
+            updateGraphicalSchemaIntegration(project, "");
+        }
+        return newP;
     }
 
     public Project updateGraphicalSchema(Project project, String newGraphicalSchema) {

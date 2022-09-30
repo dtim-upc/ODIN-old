@@ -24,7 +24,7 @@ export const useIntegrationStore = defineStore('integration',{
     }),
 
     getters : {
-        getSourceA(state){
+        // getSourceA(state){
           // should always be the project schema
             // if(state.project.numberOfDS == '0') {
             //     if(state.selectedDS.length == 2) 
@@ -35,8 +35,8 @@ export const useIntegrationStore = defineStore('integration',{
             //     // return project graphical schema
             //     return state.project.schema.graphical
             // }
-            return null;
-        },
+            // return null;
+        // },
         getSourceB(state) {
             if(state.selectedDS.length == 1) 
                 return state.selectedDS[0]
@@ -216,7 +216,9 @@ export const useIntegrationStore = defineStore('integration',{
             // console.log(this.datasources)
         },
         addSelectedDatasource(ds){
-            this.selectedDS.push(ds)
+          // we can only have one selected ds
+          this.selectedDS = []
+          this.selectedDS.push(ds)
         },
 
         deleteSelectedDatasource(ds){

@@ -49,6 +49,8 @@ const props = defineProps({
     alignment: { type:Object, default:{
 
     type : '', //both resource must be same type
+    trueType: '',
+    shortType: '',
     resourceA : {
         name:'',
         label: '',
@@ -63,21 +65,25 @@ const props = defineProps({
 });
 const emit = defineEmits(["elementClick"])
 
-console.log("Graph props ", props.graphical)
+// console.log("Graph props ", props.graphical)
 let json = !props.graphical || props.graphical == "" ? {"nodes":[], "links":[]}: JSON.parse(props.graphical)
 let graphicalNodes = json.nodes
 let graphicalLinks = json.links
 
+
+
 watch( () => props.graphical, n  => {
 
     if(props.graphical || props.graphical == "") {
-        json = JSON.parse(props.graphical)
+        console.log("entra props actualizado")
+        console.log(props.graphical)
+        json = props.graphical == ""? {"nodes":[], "links":[]}:JSON.parse(props.graphical);
         graphicalNodes = json.nodes
         graphicalLinks = json.links
         // console.log("update json")
         cleanVisualGraph()
         initVisualGraph()
-    }
+    } 
 
    
 })
@@ -116,10 +122,16 @@ const clickResource= (event, node) =>{
      var clickElement = {}
             clickElement.iri = node.iri
             clickElement.id = node.id
-            clickElement.type = node.iriType
+            // clickElement.type = node.iriType
+
+            clickElement.type = node.type
+            clickElement.shortType = node.shortType
+            clickElement.trueType = node.iriType
+
             clickElement.label = node.label
             clickElement.event = event
-            
+
+            // console.log("node....", node)
             emit('elementClick', clickElement)
 
 }
@@ -185,7 +197,7 @@ const initVisualGraph = () => {
          .force("link", d3.forceLink().id(d => d.id)
          .distance(d => {
             let visibleLinkDistance = 130 
-            if(d.target.type === "class" || d.target.type === "integratedClass"){
+            if(d.target.type === "class"){
                 visibleLinkDistance = 300  // 200 for classes
             }
             // if(d.source.radius) linkPartDistance += d.source.radius this does not enter? :'v
@@ -249,13 +261,13 @@ let glinks = linkContainer.selectAll(".link")
     .enter()
     .append("svg:g")
     .classed("node", true)
-    .classed('class', d => d.type === 'class' || d.type === 'integratedClass' )
+    .classed('class', d => d.type === 'class' )
     .classed("subclassof", d => d.iri === 'http://www.w3.org/2000/01/rdf-schema#subClassOf')
-    .classed('integratedClass', d => d.type === 'integratedClass' )
-    .classed('integratedDatatypeProperty', d => d.type === 'integratedDatatypeProperty' )
-    .classed('integratedObjectProperty', d => d.type === 'integratedObjectProperty' )
-    .classed('objectProperty', d => d.type === 'objectProperty' )
-    .classed('datatypeProperty', d => d.type === 'datatypeProperty')
+    .classed('integratedClass',  d => d.type === 'class' && d.isIntegrated )
+    .classed('integratedDatatypeProperty', d => d.type === 'datatype' &&  d.isIntegrated )
+    .classed('integratedObjectProperty', d => d.type === 'object' && d.isIntegrated )
+    .classed('objectProperty', d => d.type === 'object' )
+    .classed('datatypeProperty', d => d.type === 'datatype')
     .classed('type', d => d.type === 'xsdType')
     .attr('id', (d) => d.id)
 
@@ -273,13 +285,17 @@ const setFocus =( element, d )=> {
     let focusedElement = nodeContainer.selectAll('.focused')
     let d3element = d3.select(element)
 
+    console.log("***", props.alignment)
+    console.log("***", d)
+
     if(focusedElement.size() > 0 && !d3element.classed("focused") )  {
         // there's another element selected. user needs to unselect it
     } else if( d3element.classed("focused") ) {
         // user wants to unfocused
         d3element.classed("focused", false)
         clickResource('unfocused',d)
-    } else if (props.alignment.type == d.iriType || props.alignment.type == '') {
+    // } else if (props.alignment.trueType == d.iriType || props.alignment.trueType == '') {
+    } else if (props.alignment.type == d.type || props.alignment.type == '') {
         d3element.classed("focused", true)
                 clickResource('focused',d)
     }
@@ -288,6 +304,22 @@ const setFocus =( element, d )=> {
     //  d3element.classed('focused', true)
     
 }
+
+// TODO: fix unfouc...
+const unfocusAll = () => {
+    console.log("unfocus all...")
+   nodeContainer.selectAll('.focused').each(n => n.classed("focused", false))
+}
+
+
+watch ( () => props.alignment, n => {
+
+if(props.alignment.type == ''){
+
+    unfocusAll()
+}
+
+} )
 
     gclasses.on("click", function (event, d) {
         if(props.enableClickR){
@@ -621,6 +653,9 @@ g.focused rect {
     .integratedClass > circle {
         fill: #A5FFD6;
     }
+    .integratedDatatypeProperty > rect {
+        fill:  #A5FFD6;
+    }
 
     #end-arrow{
         fill: #fff;
@@ -648,6 +683,13 @@ g.focused rect {
     fill: #D9D8FF;
        stroke: #7B79FF;
     stroke-width: 2px;
+    }
+
+    .integratedClass > circle {
+        fill: #A5FFD6;
+    }
+    .integratedDatatypeProperty > rect {
+        fill:  #A5FFD6;
     }
 
 

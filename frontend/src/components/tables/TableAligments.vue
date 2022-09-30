@@ -134,12 +134,12 @@ const columns = [
       {name: "labelA", label: "Label A", align: "center", field: "labelA", sortable: true,},
       {name: "labelB", label: "Label B", align: "center", field: "labelB", sortable: true,},
       {name: "label", label: "Integrated name", align: "center", field: "l", sortable: true,},
-      {name: "type", label: "TypeLong", align: "center", field: "type", sortable: true,},
-      {name: "shortType", label: "Type", align: "center", field: "shortType", sortable: true,},
+      {name: "type", label: "Type", align: "center", field: "type", sortable: true,},
+      {name: "shortType", label: "ShortType", align: "center", field: "shortType", sortable: true,},
       // {name: "identifier", label: "Identifier", align: "center", field: "identifier", sortable: true,},
       {name: "actions", label: "actions", align: "center", field: "actions", sortable: false,},
     ];
-const visibleCols = ref(['labelA', 'labelB', 'label', 'shortType', 'actions'])
+const visibleCols = ref(['labelA', 'labelB', 'label', 'type', 'actions'])
 
 const show_dialog = ref(false)
 const alignmentView = ref('manual')

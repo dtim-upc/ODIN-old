@@ -148,12 +148,14 @@ public class newIntegrationController {
 //       I think in this case is not necessary StringEscapeUtils.unescapeJava
         String visualG = StringEscapeUtils.unescapeJava(ng.generateVisualGraph(integratedModel));
          ng = new NextiaGraphy();
+        System.out.println("INTEGRATED....");
+        System.out.println(visualG);
         String visualMinimal = StringEscapeUtils.unescapeJava( ng.generateVisualGraph(minimal) ) ;
-//        System.out.println("MINIMAL....");
-//        System.out.println(visualMinimal);
+        System.out.println("MINIMALx....");
+        System.out.println(visualMinimal);
 //                visualMinimal=     StringEscapeUtils.unescapeJava(visualMinimal );
 //        System.out.println("MINIMAL ESCAPE....");
-        System.out.println(visualMinimal);
+//        System.out.println(visualMinimal);
         // UPDATE PROJECT GRAPHICAL GRAPH temporal!!!
         project.setGraphicalSchemaIntegration(visualG);
         project.setGraphicalGlobalSchema(visualMinimal);
@@ -242,7 +244,6 @@ public class newIntegrationController {
                 QuerySolution solution = results.nextSolution();
                 String gURI = solution.getResource("graph").getURI();
                 integratedGraph = integratedGraph.union( graph.persistent().getGraph(gURI) );
-
             }
             return integratedGraph;
 //        }
