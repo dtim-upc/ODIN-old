@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -29,6 +30,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring()
+                .antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**", "/fonts/**", "/scss/**");
+    }
+
+    @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .cors()
@@ -42,7 +49,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                                         "/error",
                                         "/login",
                                         "/signup",
-                                        "/triples"
+                                        "/triples",
+                                        "/",
+                                        "/assets/**",
+                                        "/index.html",
+                                        "/resources/**", "/static/**", "/css/**", "/js/**", "/images/**", "/fonts/**", "/scss/**"
                                 )
                                 .permitAll()
                                 .anyRequest()

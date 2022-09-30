@@ -66,8 +66,8 @@ module.exports = configure(function ( ctx ) {
       // analyze: true,
       env: {
         API: ctx.dev
-          ? 'http://localhost:8082/odin'
-          : 'https://prod.api.com'
+          ? 'http://localhost:8082'
+          : 'http://localhost:8082'
           
       },
       // rawDefine: {}

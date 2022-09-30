@@ -53,6 +53,6 @@ app:
       private-key-passphrase: "password"
 
 server:
-  servlet:
-    context-path: /odin
+#  servlet:
+#    context-path: /odin
   port: 8082
