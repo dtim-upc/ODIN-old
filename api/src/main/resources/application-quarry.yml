@@ -1,3 +1,6 @@
+server:
+  address: 0.0.0.0
+
 dataStorage:
   landingZone:
     dir: /home/javier/odin/newODIN/api/landing_zone
