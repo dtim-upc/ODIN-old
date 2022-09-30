@@ -53,7 +53,7 @@ public class DataSourceService {
         graph.persistent().addModel(ds.getIri(), g);
         graph.persistent().updateLiteral(ds.getIri(), ds.getIri(), DataSourceGraph.HAS_PATH.val(), ds.getPath(), newPath  );
         graph.temporal().deleteGraph(ds.getIri());
-        graph.persistent().getGraph(ds.getIri()).write("/Users/javierflores/Documents/upc/projects/newODIN/api/jena2/prueba2.ttl");
+//        graph.persistent().getGraph(ds.getIri()).write("/Users/javierflores/Documents/upc/projects/newODIN/api/jena2/prueba2.ttl");
 
         return ds;
     }
@@ -74,7 +74,7 @@ public class DataSourceService {
         graph.temporal().addModel(_dataSource.getIri(), bootsrapM);
         graph.temporal().addTripleLiteral(_dataSource.getIri(), _dataSource.getIri(), DataSourceGraph.GRAPHICAL.val(), _dataSource.getGraphicalGraph());
         graph.temporal().addTripleLiteral(_dataSource.getIri(), _dataSource.getIri(), DataSourceGraph.HAS_FILENAME.val(), filename);
-        graph.temporal().getGraph(_dataSource.getIri()).write("/Users/javierflores/Documents/upc/projects/newODIN/api/jena2/prueba.ttl");
+//        graph.temporal().getGraph(_dataSource.getIri()).write("/Users/javierflores/Documents/upc/projects/newODIN/api/jena2/prueba.ttl");
 
 //        }
 //        else {

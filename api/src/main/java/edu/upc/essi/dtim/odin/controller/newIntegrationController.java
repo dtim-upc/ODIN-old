@@ -126,22 +126,22 @@ public class newIntegrationController {
         Model graphB = retrieveSourceGraph(dsB, iData.getAlignments(), graph.temporal() );
 
         Model integratedModel = n.Integrate(graphA, graphB, iData.getAlignments());
-        try {
-            RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/integratedModel.ttl"), integratedModel, Lang.TURTLE);
-            System.out.println("file written temporal");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/integratedModel.ttl"), integratedModel, Lang.TURTLE);
+//            System.out.println("file written temporal");
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
 
 
         Model minimal = n.getMinimalGraph2();
 //        Model minimal = n.getOldMinimalGraph();
-        try {
-            RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/minimal.ttl"), minimal, Lang.TURTLE);
-            System.out.println("file written temporal");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/minimal.ttl"), minimal, Lang.TURTLE);
+//            System.out.println("file written temporal");
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
         LOGGER.info("unused are: {}",n.getUnused());
 //
         NextiaGraphy ng = new NextiaGraphy();

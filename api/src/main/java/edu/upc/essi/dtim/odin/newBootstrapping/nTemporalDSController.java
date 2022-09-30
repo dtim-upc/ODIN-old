@@ -71,7 +71,7 @@ public class nTemporalDSController {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Data source not created sucessfully");
             }
 
-            projectRepo.getTemporalG(_dataSource.getIri()).write("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/"+dataSource.getName()+"_"+p.getCreatedBy()+".ttl");
+//            projectRepo.getTemporalG(_dataSource.getIri()).write("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/"+dataSource.getName()+"_"+p.getCreatedBy()+".ttl");
             System.out.println("file written temporal");
 //            System.out.println( graph.temporal().getGraph(dataSource.getIri()).size());
 
