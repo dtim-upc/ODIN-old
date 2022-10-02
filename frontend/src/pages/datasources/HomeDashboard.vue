@@ -4,7 +4,7 @@
       <q-card class="my-card">
       <q-card-section>
         <div  style="max-width: 500px">
-          <p>Welcome Javier </p>
+          <p>Welcome {{authStore.getUserName}} </p>
           <q-list bordered separator>
 
             <q-item clickable v-ripple :active="active" @click="addDataSource = true">
@@ -14,7 +14,7 @@
               </q-item-section>
 
               <q-item-section>
-                <q-item-label>Upload a data sources</q-item-label>
+                <q-item-label>Upload a data source</q-item-label>
                 <q-item-label caption>This will automatically define an schema</q-item-label>
               </q-item-section>
 
@@ -66,7 +66,7 @@
 
               <q-item-section>
                 <q-item-label>Explore the integrated data</q-item-label>
-                <!-- <q-item-label caption>lorem</q-item-label> -->
+                <q-item-label caption>Not available for this survey</q-item-label>
               </q-item-section>
 
               <q-item-section side>
@@ -90,9 +90,14 @@
 import { ref } from "vue";
 import FormNewDataSource from "components/forms/FormNewDataSource.vue";
 
+import { useAuthStore } from 'stores/auth.store.js'
+
 const addDataSource = ref(false)
 const active = ref(false)
 
+
+
+const authStore = useAuthStore()
 
 </script>
   

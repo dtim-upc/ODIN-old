@@ -18,7 +18,16 @@ export const useAuthStore = defineStore('auth',{
         //  user: localStorage.getItem('user') !== null? JSON.parse(localStorage.getItem('user')):{},
     }),
 
-    getters : {},
+    getters : {
+
+        getUserName(state){
+            if(state.user.firstName) {
+                return state.user.firstName.charAt(0).toUpperCase() + state.user.firstName.slice(1);
+              
+            } 
+            return ""
+        }
+    },
     actions: {
 
         // it is initialized in router creation. File src/router/index.js
@@ -98,7 +107,7 @@ export const useAuthStore = defineStore('auth',{
             localStorage.removeItem('odinDarkMode')
             this.router.push('/auth');
         },
-        registerUser(credentials, callback) {
+        registerUser(credentials, successC, callback) {
             console.log('registerUser action', credentials)
 
             api.registerUser(credentials).then(response => {
@@ -106,6 +115,11 @@ export const useAuthStore = defineStore('auth',{
                 const notify = useNotify()
                      console.log("data received ")
                      console.log(response)
+                     if(response.status == 201) {
+                        if(successC)
+                            successC()
+                        notify.positive("User successfully registered")
+                     }
                     
                    }).catch(function (error) {
 

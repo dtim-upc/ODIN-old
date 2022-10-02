@@ -53,6 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                                         "/",
                                         "/assets/**",
                                         "/index.html",
+                                        "/prueba",
                                         "/resources/**", "/static/**", "/css/**", "/js/**", "/images/**", "/fonts/**", "/scss/**"
                                 )
                                 .permitAll()

@@ -37,6 +37,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -57,7 +60,13 @@ public class newIntegrationController {
     ProjectRepository projectRepo;
 
     @Autowired
+    private newDataSourceRepository dataSourceRepo;
+
+    @Autowired
     private ProjectService projectService;
+
+    @Autowired
+    SurveyAlignments surveyA;
 
     // maybe this can be done with @preauthorize isresourceowner
     // https://stackoverflow.com/questions/70096839/how-to-check-security-access-before-validation-valid-in-controller
@@ -97,6 +106,19 @@ public class newIntegrationController {
         projectService.updateGraphicalSchemaIntegration(project, visualSchemaIntegration);
         return new ResponseEntity(project, HttpStatus.OK);
     }
+
+    @PostMapping("survey")
+    public ResponseEntity<List<Alignment>> getSurveyAlignments(Authentication authentication, @PathVariable("id") String id, @RequestBody String idDS){
+        Project project = validateAccess(id, authentication);
+        newDataSource ds = repository.findByIDTemp(idDS);
+
+
+        List<newDataSource> dataSources = dataSourceRepo.findAll(id);
+        List<Alignment> alignments  = surveyA.getAlignments(project, dataSources,ds);
+
+        return new ResponseEntity(alignments, HttpStatus.OK);
+    }
+
 
     @PostMapping
     public ResponseEntity<Project> integrate(Authentication authentication, @PathVariable("id") String id, @RequestBody IntegrationData iData) {
@@ -226,6 +248,23 @@ public class newIntegrationController {
 
 
     }
+
+
+    @RequestMapping(path = "/download/sourcegraph", method = RequestMethod.GET)
+    public ResponseEntity<String> download(Authentication authentication, @PathVariable("id") String id, @RequestParam("dsID") String dsID ) throws IOException {
+//        Resource
+        System.out.println("download temporal source graph...");
+        Project p = validateAccess(id, authentication);
+        newDataSource ds = dataSourceRepo.findByIDTemp(dsID);
+        // TODO: validate access to datasource? or its enough with project access?
+        Model m = dataSourceRepo.getTempG(ds);
+
+        StringWriter v = new StringWriter();
+        m.write(v, "TTL");
+
+        return ResponseEntity.ok().body(v.toString());
+    }
+
 
 //    public Model retrieveGraph(String uri, DataSource data, List<Alignment> alignments){
 //

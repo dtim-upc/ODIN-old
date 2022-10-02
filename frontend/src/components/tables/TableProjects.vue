@@ -136,7 +136,14 @@ const showDialog = ref(false)
 
     // const projects = ref([])
 
-    onMounted(() => {  projectsStore.getProjects() } )
+    onMounted(() => {  
+      projectsStore.getProjects()
+//       console.log(projectsStore.projects)
+//       console.log("++d",projectsStore.projects.filter(function (el) {
+//   return el.name === 'Survey_NextiaDI'
+// }))
+    
+    } )
 
     // const rows = [
     //     {"id":"1","name" : "Museums", "numberDS":"3", "createdBy":"DTIM user", "privacy":"public", "color":"#e1664e"},

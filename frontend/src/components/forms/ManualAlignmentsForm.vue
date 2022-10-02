@@ -5,7 +5,7 @@
       <q-item class="q-py-none">
 
         <q-item-section>
-          <q-item-label class="dark_title">Select alignments 2</q-item-label>
+          <q-item-label class="dark_title">Select alignments</q-item-label>
         </q-item-section>
 
         <q-card-section class="row items-center q-pb-none q-pt-none">
@@ -80,13 +80,14 @@
           </div>
           <q-card-section class="row justify-between q-pt-none">
             <!--                  <div>-->
-            <div class="col-3">
-              <q-input outlined v-model="alignment.integratedLabel" prefix="Integrated label: " dense/>
-              <q-checkbox v-model="identifier" label="Make it identifier" color="teal" />
+            <div class="col-6">
+              <q-input outlined v-model="alignment.integratedLabel" prefix="Integrated label: " dense />
+              <!-- <q-checkbox v-model="identifier" label="Make it identifier" color="teal" /> -->
             </div>
             <div class="col-3">
-              <q-btn outline color="primary" label="Add alignment" @click="addAlignment" :disable="alignment.integratedLabel == ''"/>
               <q-btn outline color="primary" label="Close" @click="close"/>
+              <q-btn class="q-ml-sm" color="primary" label="Add alignment" @click="addAlignment" :disable="alignment.integratedLabel == ''"/>
+              
             </div>
 
           </q-card-section>

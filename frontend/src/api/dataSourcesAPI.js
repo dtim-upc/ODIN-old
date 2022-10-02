@@ -38,6 +38,8 @@ export default {
     deleteTemporal(projectID, id, token) {return odinApi.delete('/project/'+ projectID + '/temp/ds/'+id, {headers: { Authorization: `Bearer ${token}` }} )},
     createDSTemp( projectID, token, data) { return odinApi.post('/project/'+projectID+'/temp/ds', data, {headers: {'Content-Type': 'multipart/form-data', Authorization: `Bearer ${token}` }  }) },
     
+
+    downloadSourceGraph(projectID, datasourceID, token) { return odinApi.get('/project/'+projectID+'/datasources/download/sourcegraph',  {headers: { Authorization: `Bearer ${token}` }, params: { dsID: datasourceID }, responseType: 'blob'  }    ) },
     
 
 

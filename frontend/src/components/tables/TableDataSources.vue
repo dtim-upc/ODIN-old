@@ -50,16 +50,16 @@
 
             <template v-slot:body-cell-View_Source_Graph="props">
                 <q-td :props="props">
-                    <q-btn dense round flat color="grey" :to="'/dataSources/webvowl/' + props.row.id"
-                        icon="remove_red_eye" :disable="!hasSourceGraph(props)"></q-btn>
+                    <q-btn dense round flat color="grey" 
+                        icon="download" @click="storeDS.downloadSource(props.row.id)"></q-btn>
 
-                    <q-btn v-if="props.row.type == 'INTEGRATED'" dense round flat color="grey"
+                    <!-- <q-btn v-if="props.row.type == 'INTEGRATED'" dense round flat color="grey"
                         :to="{ name: 'webvowl', params: { id: props.row.id, minimalI: true } }"
                         icon="mdi-vector-circle-variant"></q-btn>
 
                     <q-btn v-if="props.row.type == 'INTEGRATED'" dense round flat color="grey"
                         :to="{ name: 'webvowl', params: { id: props.row.id, integrated: true } }"
-                        icon="mdi-shape-circle-plus"></q-btn>
+                        icon="mdi-shape-circle-plus"></q-btn> -->
 
                     <!--          :disable="props.row.graphicalGraph"-->
                 </q-td>
@@ -142,7 +142,7 @@ const columns = [
     // {name: "#Wrappers", label: "#Wrappers", align: "center", field: "wrappers", sortable: true,},
     { name: "View Metadata", label: "View Metadata", align: "center", field: "View Metadata", sortable: false, },
     {
-        name: "View_Source_Graph", label: "View Source Graph", align: "center", field: "View Source Graph",
+        name: "View_Source_Graph", label: "Source Graph", align: "center", field: "View Source Graph",
         sortable: false,
     },
     { name: "actions", label: "actions", align: "center", field: "actions", sortable: false, },

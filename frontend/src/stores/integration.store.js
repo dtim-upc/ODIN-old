@@ -6,6 +6,7 @@ import integrationAPI from "src/api/integration.api.js";
 import { useAuthStore } from 'stores/auth.store.js'
 import { useRoute } from "vue-router";
 import projectAPI from 'src/api/projectAPI';
+import download from 'downloadjs'
 // const notify = useNotify()
 
 // let notify;
@@ -313,7 +314,7 @@ export const useIntegrationStore = defineStore('integration',{
               // this.projectTemporal = response.data
                 if(callback)
                   callback(this.selectedDS[0])
-                notify.positive("Integration persistent succeeded")
+                notify.positive("Integration saved successfully")
             } else {
               notify.negative("There was an error to save the integration")
             }
@@ -330,6 +331,37 @@ export const useIntegrationStore = defineStore('integration',{
           let index = this.alignments.indexOf(aligment)
           console.log("index is ", index)
           this.alignments.splice(index,1)
+
+        },
+        getAlignmentsSurvey(){
+          console.log("getting alignments survey....", this.selectedDS[0].id)
+          const authStore = useAuthStore()
+          const notify = useNotify()
+
+          
+          integrationAPI.surveyAlignments(this.project.id, this.selectedDS[0].id ,authStore.user.accessToken).then((response) => {
+            console.log("survey alignments response...", response)
+         
+            if (response.status == 200) {
+                this.alignments = response.data
+            } 
+          }).catch( (error) => {
+            console.log("error alignments survye ", error)
+          notify.negative("Something went wrong in the server.")
+        });
+
+        },
+        async downloadSourceTemporal(dsID){
+          console.log("download....",dsID)
+
+            
+
+          const authStore = useAuthStore()
+          const notify  = useNotify()
+          const response = await integrationAPI.downloadSourceGraph(this.project.id,dsID,authStore.user.accessToken);
+
+          const content = response.headers['content-type'];
+          download(response.data, "source_graph.ttl", content)
 
         }
 

@@ -1,8 +1,12 @@
 <template>
 
   <q-table :rows="integrationStore.alignments" :columns="columns" :class="{ 'no-shadow': no_shadow }"
-          :visible-columns="visibleCols"
+          :visible-columns="visibleCols" id="TableAlignments"
            row-key="uriA"
+           virtual-scroll
+           :rows-per-page-options="[0]"
+           style="height: 60vh"
+           v-model:pagination="pagination"
            no-data-label="Consider adding some alignments to start the integration process"
            no-results-label="The filter didn't uncover any results" >
     <template v-slot:top-left="">
@@ -11,13 +15,14 @@
         <!-- <q-btn padding="none" color="secondary" icon="add" @click="show_dialog = true"/> -->
             <q-btn-dropdown color="primary" dropdown-icon="add" no-icon-animation padding="none" menu-anchor="top right" menu-self="top left">
               <q-list>
-                <q-item clickable v-close-popup @click="setManualView('manual')">
+                <!-- @click="setManualView('manual')" -->
+                <q-item clickable v-close-popup style="cursor: not-allowed !important">
                   <q-item-section>
-                    <q-item-label>Manual alignment</q-item-label>
+                    <q-item-label>Manual alignment (Disable)</q-item-label>
                   </q-item-section>
                 </q-item>
 
-                <q-item clickable v-close-popup @click="setManualView">
+                <q-item clickable v-close-popup @click="integrationStore.getAlignmentsSurvey()">
                   <q-item-section>
                     <q-item-label>Automatic survey</q-item-label>
                   </q-item-section>
@@ -58,9 +63,23 @@
       </q-td>
     </template>
 
+    <template v-slot:body-cell-labelIntegrated="props">
+      <q-td :props="props">
 
-    
-
+        <div>
+          <span v-if="props.row.edit == null || !props.row.edit" >{{props.row.l}} 
+            <q-icon @click="props.row.edit=true" size="xs" name="edit"/>
+          </span>
+          <!-- -->
+          <q-input v-else  outlined v-model="props.row.l" dense   v-on:keyup.enter="props.row.edit = false;" >
+            <template v-slot:append>
+                <q-icon name="o_task_alt" @click.stop.prevent="props.row.edit=false" class="cursor-pointer" />
+            </template>
+          </q-input>
+          <!-- <input type="text" v-show="props.row.edit == null || props.row.edit"  v-on:keyup.enter="props.row.edit = false;"> -->
+        </div>
+      </q-td>
+    </template>
     <template v-slot:body-cell-actions="props">
       <q-td :props="props">
         <q-btn dense round flat color="grey" @click="deleteRow(props)" icon="delete"></q-btn>
@@ -133,13 +152,13 @@ const columns = [
       {name: "uriB", label: "Resource B", align: "center", field: "iriB", sortable: true,},
       {name: "labelA", label: "Label A", align: "center", field: "labelA", sortable: true,},
       {name: "labelB", label: "Label B", align: "center", field: "labelB", sortable: true,},
-      {name: "label", label: "Integrated name", align: "center", field: "l", sortable: true,},
+      {name: "labelIntegrated", label: "Integrated name", align: "center", field: "l", sortable: true,},
       {name: "type", label: "Type", align: "center", field: "type", sortable: true,},
       {name: "shortType", label: "ShortType", align: "center", field: "shortType", sortable: true,},
       // {name: "identifier", label: "Identifier", align: "center", field: "identifier", sortable: true,},
       {name: "actions", label: "actions", align: "center", field: "actions", sortable: false,},
     ];
-const visibleCols = ref(['labelA', 'labelB', 'label', 'type', 'actions'])
+const visibleCols = ref(['labelA', 'labelB', 'labelIntegrated', 'type', 'actions'])
 
 const show_dialog = ref(false)
 const alignmentView = ref('manual')
@@ -148,7 +167,7 @@ const alignmentView = ref('manual')
     // const selectedDS = computed(() => store.state.datasource.selectedDatasources)
     const selectedDS = {}
 
-
+   const pagination = ref({rowsPerPage: 0})
   
     // const rows = [];
     const title = "Alignments";
@@ -196,7 +215,17 @@ const setManualView = (view) => {
 
 </script>
 
-<style lang="css" scoped>
+<style lang="scss">
+
+#TableAlignments {
+
+  .q-table__middle {
+  flex: unset !important;
+  }
+
+
+}
+
 
 
 </style>

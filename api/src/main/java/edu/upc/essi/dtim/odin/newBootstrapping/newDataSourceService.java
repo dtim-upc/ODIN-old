@@ -2,6 +2,7 @@ package edu.upc.essi.dtim.odin.newBootstrapping;
 
 import edu.upc.essi.dtim.nextiadi.bootstraping.CSVBootstrap;
 import edu.upc.essi.dtim.nextiadi.bootstraping.JSONBootstrap;
+import edu.upc.essi.dtim.nextiadi.bootstraping.JSONBootstrapSWJ;
 import edu.upc.essi.dtim.odin.config.DataSourceTypes;
 import edu.upc.essi.dtim.odin.storage.filestorage.StorageService;
 import edu.upc.essi.dtim.odin.utils.jena.NextiaGraphy;
@@ -82,6 +83,8 @@ public class newDataSourceService {
             case "json":
                 JSONBootstrap jsonBootstrap =  new JSONBootstrap();
                 bootsrapM = jsonBootstrap.bootstrapSchema(dataSource.getName(), dataSource.getId(), dataSource.getPath());
+//                JSONBootstrapSWJ j = new JSONBootstrapSWJ();
+//                bootsrapM = j.bootstrapSchema(dataSource.getName(), dataSource.getId(), dataSource.getPath());
                 break;
             default:
                 break;

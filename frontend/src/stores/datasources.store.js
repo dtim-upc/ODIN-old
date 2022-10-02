@@ -6,6 +6,7 @@ import { useAuthStore } from 'stores/auth.store.js'
 import { useRoute, useRouter } from "vue-router";
 import projectAPI from 'src/api/projectAPI';
 import { useIntegrationStore } from 'src/stores/integration.store.js'
+import download from 'downloadjs'
 // const notify = useNotify()
 
 
@@ -134,11 +135,12 @@ export const useDataSourceStore = defineStore('datasource',{
               console.log("createPersistentDS()",response)
               if (response.status == 201) {
   
+                this.router.push({name:"datasources"})
                 this.datasources.push(response.data)
 
                 // remove from temporal
                 
-                this.router.push({name:"datasources"})
+                
                 integrationStore.finishIntegration(datasource)
                 //to update project info
                 this.updateProjectInfo()
@@ -185,6 +187,30 @@ export const useDataSourceStore = defineStore('datasource',{
           })
       
 
+
+        },
+        async downloadSource(dsID){
+          console.log("download....",dsID)
+
+            
+
+          const authStore = useAuthStore()
+          const notify  = useNotify()
+          const response = await api.downloadSourceGraph(this.project.id,dsID,authStore.user.accessToken);
+
+          const content = response.headers['content-type'];
+          download(response.data, "prueba.ttl", content)
+
+
+          // const path = Path.resolve(__dirname, 'prueba.ttl')
+          // const writer = Fs.createWriteStream(path)
+
+          // response.data.pipe(writer)
+
+          // return new Promise((resolve, reject) => {
+          //   writer.on('finish', resolve)
+          //   writer.on('error', reject)
+          // })
 
         }
 

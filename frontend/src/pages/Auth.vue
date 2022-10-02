@@ -124,8 +124,8 @@
             <div v-if="loginView">
                 <q-card-section>
                     <q-form class="q-gutter-md">
-                    <q-input square filled clearable v-model="credentials.username" type="text" label="username" autocomplete="current-password" />
-                     <q-input square filled  v-model="credentials.password" type="password" label="password" autocomplete="current-password"/>
+                    <q-input square filled v-model="credentials.username" type="text" label="username" autocomplete="current-password" />
+                     <q-input square filled  v-model="credentials.password" type="password" label="password" autocomplete="current-password" v-on:keyup.enter="login" />
                     <!-- <q-input square filled v-model="credentials.password" type="password" label="password" /> -->
                     </q-form>
                 </q-card-section>
@@ -133,7 +133,7 @@
                     <q-btn unelevated color="light-green-7" size="lg" class="full-width" label="Login" @click="login"/>
                 </q-card-actions>
                 <q-card-section class="text-center q-pa-none">
-                    <p class="text-grey-6" @click="loginView=!loginView">Not registered? Created an Account</p>
+                    <p class="text-grey-6 cursor-pointer" @click="loginView=!loginView" >Not registered? Created an Account</p>
                 </q-card-section>
                     
             </div>
@@ -141,17 +141,19 @@
 
                 <q-card-section>
                     <q-form class="q-gutter-md">
-                    <q-input square filled clearable v-model="user.username" type="text" label="username"  autocomplete="current-password" :error-message="errorM" :error="errorUserName"/>
-                    <q-input square filled clearable v-model="user.password" type="password" label="password" autocomplete="current-password"/>
-                    <q-input square filled clearable v-model="user.firstName" type="text" label="first name" />
-                    <q-input square filled clearable v-model="user.lastName" type="text" label="last name" />
+                    <q-input square filled v-model="user.firstName" type="text" label="first name" />
+                    <q-input square filled v-model="user.lastName" type="text" label="last name" />
+                    <q-input square filled v-model="user.username" type="text" label="username"  autocomplete="current-password" :error-message="errorM" :error="errorUserName"/>
+                    <q-input square filled v-model="user.password" type="password" label="password" autocomplete="current-password"/>
+  
+                    <!-- v-on:keyup.enter="props.row.edit = false;" -->
                     </q-form>
                 </q-card-section>
                 <q-card-actions class="q-px-md">
                     <q-btn unelevated color="light-green-7" size="lg" class="full-width" label="SIGN-UP" @click="signUp()" />
                 </q-card-actions>
                 <q-card-section class="text-center q-pa-none">
-                    <p class="text-grey-6" @click="loginView=!loginView">Already an account? sign in</p>
+                    <p class="text-grey-6 cursor-pointer" @click="loginView=!loginView">Already an account? sign in</p>
                 </q-card-section>
 
             </div>
@@ -206,9 +208,15 @@ const login = () => {
     authStore.login(credentials)
 }
 
+const successSignUp = () => {
+  loginView.value = true;
+}
+
 const signUp = () => {
 
-    authStore.registerUser(user, userNameTaken)
+    
+    authStore.registerUser(user, successSignUp, userNameTaken)
+
 
 }
 

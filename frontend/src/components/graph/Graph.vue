@@ -76,7 +76,7 @@ watch( () => props.graphical, n  => {
 
     if(props.graphical || props.graphical == "") {
         console.log("entra props actualizado")
-        console.log(props.graphical)
+        // console.log(props.graphical)
         json = props.graphical == ""? {"nodes":[], "links":[]}:JSON.parse(props.graphical);
         graphicalNodes = json.nodes
         graphicalLinks = json.links

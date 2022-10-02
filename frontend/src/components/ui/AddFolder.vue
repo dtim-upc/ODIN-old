@@ -35,13 +35,14 @@ import TableQueryResult from "components/tables/TableQueryResult.vue"
 
 const props = defineProps({
     row: {type:Object},
-    folderColor: {type:String, default: "#3dbb94"}
+    folderColor: {type:String, default: "#F2E9E9"} //#3dbb94
 });
 const emit = defineEmits(["addFolder"])
 const activeFolder = ref("")
 
 const folderBackColor = computed(() => {
-    return 'background:' +colors.lighten(props.folderColor, -10)+';'
+    // return 'background:' +colors.lighten(props.folderColor, -10)+';'
+    return 'background:' +colors.lighten(props.folderColor,0)+';'
 })
 
 const folderFrontColor = computed(() => 'background:' +props.folderColor+';')
@@ -49,7 +50,7 @@ const folderFrontColor = computed(() => 'background:' +props.folderColor+';')
 </script>
 
 <style lang="scss">
-$folderColor: #70a1ff;
+$folderColor: $neutral0 #70a1ff;
 $paperColor: #ffffff;
 
 

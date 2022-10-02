@@ -46,6 +46,13 @@ public class newDataSourceRepository {
 
     }
 
+    public Model getG(newDataSource ds){
+        return graph.persistent().getGraph(ds.getIri());
+    }
+    public Model getTempG(newDataSource ds){
+        return graph.temporal().getGraph(ds.getIri());
+    }
+
     public Boolean exists(newDataSource ds) {
         boolean g = graph.temporal().containsGraph(ds.getIri());
         if( g)

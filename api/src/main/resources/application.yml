@@ -2,11 +2,11 @@ spring:
   application:
     name: ODIN
   profiles:
-    active: quarry
-  data:
-    mongodb:
-      database: odin
-      port: 27017
+    active: javier
+#  data:
+#    mongodb:
+#      database: odin
+#      port: 27017
 
   servlet:
     multipart:

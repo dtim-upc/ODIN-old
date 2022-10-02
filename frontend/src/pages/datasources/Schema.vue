@@ -47,10 +47,11 @@
 
     <div class="col-2" style="background:white">
       <q-scroll-area class="fit">
-        <q-list class="q-pa-md">
+        <!-- class="q-pa-md" -->
+        <q-list >
           <q-item-section>
             <q-item-label>
-              <h5>Schema 2</h5>
+              <h5 >Schema</h5>
             </q-item-label>
           </q-item-section>
 

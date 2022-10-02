@@ -49,6 +49,7 @@
           <div class="row" style="height: 92%;" >
             <div class="col-12">
              <!-- hola {{integrationStore.getGlobalSchema}} -->
+             This is a preview of the global schema generated. Note that green elements are integrated resources. If you would like to see the schema integrated, use the toggle to visualize how source schemas are connected. 
               <Graph :graphical="previewGS == 'Global schema' ? integrationStore.getGlobalSchema: integrationStore.getGraphicalSchemaIntegration"></Graph>
             </div>
          </div>   
@@ -56,10 +57,11 @@
 
         <template v-slot:navigation>
           <q-stepper-navigation class="">
-            <q-btn @click="clickOk" :disable="disableStepBtn()" color="primary" :label="stepLabel()"/>
+            <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()"   :label="step === 4 ? 'Back' : 'Back'" class="q-ml-sm"/>
+
+            <q-btn class="q-ml-sm" @click="clickOk" :disable="disableStepBtn()" color="primary" :label="stepLabel()"/>
             <!-- <q-btn @click="" color="primary" label="Delete"/> -->
-            <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()"   :label="step === 4 ? 'Delete' : 'Back'" class="q-ml-sm"/>
-          </q-stepper-navigation>
+                      </q-stepper-navigation>
         </template>
     </q-stepper>
 

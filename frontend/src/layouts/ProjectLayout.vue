@@ -2,12 +2,12 @@
 <template>
   <q-layout view="hHh lpR fFf">
 
-    <q-header bordered class="bg-primary text-white">
+    <q-header bordered class="header_bg text-black">
       <q-toolbar>
         <q-toolbar-title>
-          <q-avatar>
+          <!-- <q-avatar>
             <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
-          </q-avatar>
+          </q-avatar> -->
           ODIN
         </q-toolbar-title>
         <q-space/> 
@@ -45,3 +45,22 @@ const logout = () => {
 
 
 </script>
+
+<style lang="scss">
+
+
+.body--light{
+  .header_bg{
+    background: $neutral0 !important;
+  }
+}
+
+.body--dark{
+  .header_bg{
+    background: $neutral500d !important;
+  }
+}
+  
+
+
+</style>

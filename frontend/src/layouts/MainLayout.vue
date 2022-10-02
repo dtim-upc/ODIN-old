@@ -31,6 +31,9 @@
                           </q-tooltip>
                         </q-btn> 
             </q-item-section>
+            <q-item-section>
+                  Home
+            </q-item-section>
           </q-item>
                     <!-- <q-item manual-focus>
                       <q-item-section avatar>
@@ -66,6 +69,9 @@
                 </q-tooltip>
               </q-btn> 
             </q-item-section>
+            <q-item-section>
+              Schema
+            </q-item-section>
           
           </q-item>
 
@@ -80,18 +86,23 @@
                 </q-tooltip>
               </q-btn> 
             </q-item-section>
-          
+            <q-item-section>
+              Data sources
+            </q-item-section>
           </q-item>
 
 
           <q-item manual-focus>
             <q-item-section avatar>
               <!-- <q-icon name="mdi-selection-search"/> -->
-              <q-btn flat padding="xs" icon="mdi-selection-search" to="/omq" :color="$route.name === 'omq' ? 'primary600': 'neutral500' " :class="{ activebg: $route.name === 'omq' }">
+              <q-btn disable flat padding="xs" icon="mdi-selection-search" to="/omq" :color="$route.name === 'omq' ? 'primary600': 'neutral500' " :class="{ activebg: $route.name === 'omq' }">
                 <q-tooltip anchor="center right" self="center left" :offset="[10, 10]" transition-show="fade" transition-hide="fade">
                   Query
                 </q-tooltip>
               </q-btn> 
+            </q-item-section>
+            <q-item-section>
+              Query
             </q-item-section>
           </q-item>
 
@@ -101,6 +112,7 @@
             <q-item-section avatar>
                 <q-btn class="q-mr-xs" flat round @click="authStore.setDark()" :icon="$q.dark.isActive ? 'nights_stay' : 'wb_sunny'"/>
             </q-item-section>
+            
           </q-item>
 
           <q-item manual-focus>
@@ -116,6 +128,15 @@
                   <q-avatar size="26px">
                     <img src="https://cdn.quasar.dev/img/boy-avatar.png"/>
                   </q-avatar>
+
+                  <q-menu auto-close transition-show="scale" transition-hide="scale" anchor="top end" self="bottom left">
+                    <q-list style="min-width: 100px">
+                      <q-item clickable @click="authStore.logout()">
+                        <q-item-section>Log out</q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-menu>
+
                 </q-btn>
             </q-item-section>
           </q-item>
@@ -135,31 +156,21 @@
 <script setup>
 import {ref} from "vue";
 import ODIN_short from "components/icons/ODIN_short.vue";
-
 import { useAuthStore } from 'stores/auth.store.js'
 // import {outlinedHub as hubi}  from "@quasar/extras/material-icons-outlined"
-
 const miniState = ref(true)
-
-
 const authStore = useAuthStore()
-
-
 </script>
 
 <style lang="scss">
-
 .q-drawer--left.q-drawer--bordered {
   border-right: 1px solid rgb(234, 234, 239);
 }
-
-
 .body--light {
   .activebg{
     background-color: $primary100;
   }
 }
-
 .body--dark {
  
   .activebg{
@@ -167,52 +178,37 @@ const authStore = useAuthStore()
   }
  
 }
-
 /* a.router-link-exact-active{
   background-color: #f0f0ff;
 } */
-
-
-
-
 /* .bg-color {
    background-color: #f4f8fb;
   background-color: #ffffff;
 } */
-
-
-
 .bg-white {
   background-color: #ffffff;
 }
-
 .bg-active {
   /* color: #8f81bd; */
   /* color:#5e429e; */
   /* background: #f0edfd; */
   /* background: #e7e2f3; */
 }
-
 /* .bg-active .q-btn {
   background: #e7e2f3;
 } */
-
-
-
 /*@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro");*/
 /*body {*/
 /*  background-color: #fff;*/
 /*  color: #171717;*/
 /*  transition: background-color 0.2s ease, color 0.2s ease;*/
 /*}*/
-
 /*body.dark-mode {*/
 /*  background-color: #242424;*/
 /*}*/
 /*body.dark-mode .flex h1 {*/
 /*  color: #fff;*/
 /*}*/
-
 .mode-toggle {
   position: relative;
   padding: 0;
@@ -232,7 +228,6 @@ const authStore = useAuthStore()
   appearance: none;
   transition: background-color 0.5s ease;
 }
-
 .mode-toggle .toggle {
   position: absolute;
   top: 0;
@@ -247,7 +242,6 @@ const authStore = useAuthStore()
   overflow: hidden;
   transition: transform 0.5s ease;
 }
-
 .mode-toggle .toggle #dark-mode {
   position: relative;
   width: 100%;
@@ -255,7 +249,6 @@ const authStore = useAuthStore()
   overflow: hidden;
   border-radius: 50%;
 }
-
 .mode-toggle .toggle #dark-mode:before {
   content: "";
   position: relative;
@@ -266,15 +259,12 @@ const authStore = useAuthStore()
   background-color: #a5abba;
   transition: border-radius 0.5s ease, width 0.5s ease, height 0.5s ease, left 0.5s ease, transform 0.5s ease;
 }
-
 .mode-toggle {
   background-color: #333333;
 }
-
 body.dark-mode .mode-toggle .toggle {
   transform: translateX(19px);
 }
-
 body.dark-mode .mode-toggle .toggle #dark-mode:before {
   border-radius: 50%;
   width: 150%;
@@ -282,6 +272,4 @@ body.dark-mode .mode-toggle .toggle #dark-mode:before {
   left: 40%;
   transform: translate(-10%, -40%), rotate(-35deg);
 }
-
-
 </style>

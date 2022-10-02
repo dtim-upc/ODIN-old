@@ -14,9 +14,15 @@ import edu.upc.essi.dtim.odin.auth.user.UserService;
 import edu.upc.essi.dtim.odin.config.auth.JwtHelper;
 import edu.upc.essi.dtim.odin.config.auth.WebSecurityConfig;
 import edu.upc.essi.dtim.odin.models.rest.Triple;
+import edu.upc.essi.dtim.odin.projects.Project;
+import edu.upc.essi.dtim.odin.projects.ProjectService;
 import edu.upc.essi.dtim.odin.storage.JenaConnection;
+import edu.upc.essi.dtim.odin.utils.jena.NextiaGraphy;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.XSD;
@@ -41,6 +47,10 @@ public class AuthController {
 
     private UserService userService;
     private UserRepository userRepo;
+
+    @Autowired
+    ProjectService projectService;
+
 
     @Autowired
     private JenaConnection graph;
@@ -110,6 +120,16 @@ public class AuthController {
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated");
     }
 
+    @GetMapping("prueba")
+    public ResponseEntity<String> pru(){
+        Model model = RDFDataMgr.loadModel("/Users/javierflores/Downloads/b.ttl") ;
+
+        NextiaGraphy ng = new NextiaGraphy();
+//        String visualSchemaIntegration = ng.generateVisualGraph(model);
+        String visualSchemaIntegration = ng.generateVisualGraphNew(model);
+
+        return new ResponseEntity<>(visualSchemaIntegration, HttpStatus.OK);
+    }
 
     @PostMapping("signup")
     public ResponseEntity signup(@RequestBody User user){
@@ -130,10 +150,18 @@ public class AuthController {
 
         Boolean flag = userService.saveUser(user);
 
+
+
         if(flag) {
+            // SURVEY. remove after survey finished
+            System.out.println("**hola***");
+            Project project = new Project();
+            project.setName("Survey_NextiaDI");
+            project.setCreatedBy(user.getUsername());
+            project.setColor("#dbe2e7");
+            projectService.create(project);
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
-
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

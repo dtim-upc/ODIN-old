@@ -12,6 +12,7 @@
             <template v-slot:top-left="">
                 <div class="q-table__title">
                     {{ title }}
+                    <q-btn unelevated padding="none" color="primary700" icon="add" @click="addDataSource = true" />
                     <!-- <q-btn unelevated v-if="view === 'datasources'" padding="none" color="primary700" icon="add"
                         @click="addDataSource = true" /> -->
                 </div>
@@ -44,21 +45,13 @@
                 </q-td>
             </template>
 
-            <!-- <template v-slot:body-cell-View_Source_Graph="props">
+            <template v-slot:body-cell-View_Source_Graph="props">
                 <q-td :props="props">
-                    <q-btn dense round flat color="grey" :to="'/dataSources/webvowl/' + props.row.id"
-                        icon="remove_red_eye" :disable="!hasSourceGraph(props)"></q-btn>
-
-                    <q-btn v-if="props.row.type == 'INTEGRATED'" dense round flat color="grey"
-                        :to="{ name: 'webvowl', params: { id: props.row.id, minimalI: true } }"
-                        icon="mdi-vector-circle-variant"></q-btn>
-
-                    <q-btn v-if="props.row.type == 'INTEGRATED'" dense round flat color="grey"
-                        :to="{ name: 'webvowl', params: { id: props.row.id, integrated: true } }"
-                        icon="mdi-shape-circle-plus"></q-btn>
+                    <q-btn dense round flat color="grey" 
+                        icon="download" @click="integrationStore.downloadSourceTemporal(props.row.id)"></q-btn>
 
                 </q-td>
-            </template> -->
+            </template>
 
             <template v-if="view === 'datasources'" v-slot:body-cell-actions="props">
                 <q-td :props="props">
@@ -81,6 +74,7 @@
     <!-- <q-dialog v-model="addDataSource" >
       <StepNewDataSource style="max-width: calc(100vh - 48px)" @finished="addDataSource = false"/>
     </q-dialog>  -->
+    <FormNewDataSource v-model:show="addDataSource"></FormNewDataSource>
 
     <!-- </div> -->
 </template>
@@ -90,7 +84,7 @@
 import {  onMounted, defineProps, ref } from "vue";
 import { useIntegrationStore } from 'src/stores/integration.store.js'
 import {useNotify} from 'src/use/useNotify.js'
-import api from "src/api/dataSourcesAPI.js";
+import FormNewDataSource from "components/forms/FormNewDataSource.vue";
 
 
 const props = defineProps({
@@ -98,6 +92,9 @@ const props = defineProps({
     view: { type: String, default: "datasources" },
     selected: {type: String, default: ""}
 });
+const addDataSource = ref(false)
+
+
 
 if(props.selected != "" ){
     console.log("complete code!!!")
@@ -118,10 +115,10 @@ const columns = [
     { name: "Type", label: "Type", align: "center", field: "type", sortable: true, },
     // {name: "#Wrappers", label: "#Wrappers", align: "center", field: "wrappers", sortable: true,},
     // { name: "View Metadata", label: "View Metadata", align: "center", field: "View Metadata", sortable: false, },
-    // {
-    //     name: "View_Source_Graph", label: "View Source Graph", align: "center", field: "View Source Graph",
-    //     sortable: false,
-    // },
+    {
+        name: "View_Source_Graph", label: "Source Graph", align: "center", field: "View Source Graph",
+        sortable: false,
+    },
     { name: "actions", label: "actions", align: "center", field: "actions", sortable: false, },
 ];
 
@@ -132,7 +129,7 @@ const views = {
 
 
 
-const title = "Pending Data Sources";
+const title = "Landing Data Sources";
 const search = ref("")
 
 const visibleColumns = views[props.view]

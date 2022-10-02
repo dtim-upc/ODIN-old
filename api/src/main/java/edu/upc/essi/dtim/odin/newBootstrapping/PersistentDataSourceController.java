@@ -3,18 +3,28 @@ package edu.upc.essi.dtim.odin.newBootstrapping;
 import edu.upc.essi.dtim.odin.projects.Project;
 import edu.upc.essi.dtim.odin.projects.ProjectRepository;
 import edu.upc.essi.dtim.odin.projects.ProjectService;
+import org.apache.jena.rdf.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -90,10 +100,46 @@ public class PersistentDataSourceController {
 //        }
 //    }
 
+    @RequestMapping(path = "/download/sourcegraph", method = RequestMethod.GET)
+    public ResponseEntity<String> download(Authentication authentication, @PathVariable("id") String id, @RequestParam("dsID") String dsID ) throws IOException {
+//        Resource
+        Project p = validateAccess(id, authentication);
+        newDataSource ds = dataSourceRepo.findByID(dsID);
+        // TODO: validate access to datasource? or its enough with project access?
+        Model m = dataSourceRepo.getG(ds);
+//        OutputStream out = new FileOutputStream(ds.getName()+ ".ttl");
+//        m.write(out, "TTL");
+        StringWriter v = new StringWriter();
+        m.write(v, "TTL");
+
+//        File file = new File(ds.getPath());
+//        Path path = Paths.get(file.getAbsolutePath());
+//        InputStream inputStream = new FileInputStream(file.getAbsolutePath());
+//        InputStreamResource inputStreamResource = new InputStreamResource(inputStream);
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentLength(Files.size(Paths.get(filePath)));
+//        return new ResponseEntity(inputStreamResource, headers, HttpStatus.OK);
+//
+//
+//        HttpHeaders header = new HttpHeaders();
+//        header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+ds.getFilename());
+//        header.add("Cache-Control", "no-cache, no-store, must-revalidate");
+//        header.add("Pragma", "no-cache");
+//        header.add("Expires", "0");
+//
+//
+//        ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
+
+        return ResponseEntity.ok()
+//                .headers(header)
+//                .contentLength(file.length())
+//                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(v.toString());
+    }
+
     @GetMapping
     public ResponseEntity<List<newDataSource>> getAllDataSources(Authentication authentication, @PathVariable("id") String id) {
 //        System.out.println("Project is " + p.getCreatedBy());
-
         validateAccess(id, authentication);
 
         try {

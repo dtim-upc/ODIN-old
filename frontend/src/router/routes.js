@@ -32,6 +32,14 @@ const routes = [
     
   },
   {
+    path: '/viewGraph',
+    component: () => import('layouts/ProjectLayout.vue'),
+    children: [
+        {path: '' , name: 'vg', component: () => import('pages/datasources/ViewGraph.vue') }
+    ]
+
+  },
+  {
     path: '/auth',
     name: 'auth',
     component: () => import('pages/Auth.vue'),

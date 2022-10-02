@@ -31,6 +31,8 @@ public class Project {
         this.id = UUID.randomUUID().toString().replace("-", "");
 //        this.globalSchemaID = UUID.randomUUID().toString().replace("-", "");
         this.numberOfDS = "0";
+        this.privacy = "private";
+        this.description = "";
         this.graphicalGlobalSchema = "";
         this.graphicalSchemaIntegration = "";
     }
