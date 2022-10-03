@@ -1,5 +1,5 @@
 <template>
- <q-dialog v-model="show" @hide="$emit('update:show', props.show)" >
+ <q-dialog v-model="showS" @hide="props.show=false">
  <!--  -->
    <q-card style="width: 400px; max-width: 80vw">
      <q-card-section>
@@ -58,7 +58,7 @@
 </template>
 
 <script setup>
-import {ref, reactive, onMounted} from "vue";
+import {ref, reactive, onMounted, watch, computed} from "vue";
 // import {odinApi} from "boot/axios";
 import api from "src/api/dataSourcesAPI.js";
 import {useNotify} from 'src/use/useNotify.js'
@@ -72,13 +72,16 @@ import { useIntegrationStore } from 'src/stores/integration.store.js'
 // -------------------------------------------------------------
 
 const props = defineProps({
-  show: {type:Boolean, default: false},
+  show: {type:Boolean, default: false, required: true},
   showFormButtons: { type: Boolean, default: true },
 });
 
 
 const emit = defineEmits(["update:show"])
-
+const showS = computed({
+      get() { return props.show },
+      set(newValue) { emit('update:show', newValue) }
+    })
 
 // -------------------------------------------------------------
 //                         STORES & GLOBALS
@@ -160,8 +163,9 @@ const successCallback = (datasource) => {
                   notify.positive(`Data Source ${datasource.name} successfully uploaded`)
                   onReset()
                   form.value.resetValidation()
-
-
+	
+		showS.value = false;
+		console.log("here*****")
                   integrationStore.addSelectedDatasource(datasource)
                   router.push({name:'dsIntegration'})
                 
