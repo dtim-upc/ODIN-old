@@ -16,6 +16,7 @@
             <q-btn-dropdown color="primary" dropdown-icon="add" no-icon-animation padding="none" menu-anchor="top right" menu-self="top left">
               <q-list>
                 <!-- @click="setManualView('manual')" -->
+                <!-- @click="setManualView('manual') -->
                 <q-item clickable v-close-popup style="cursor: not-allowed !important">
                   <q-item-section>
                     <q-item-label>Manual alignment (Disable)</q-item-label>
@@ -121,10 +122,8 @@ import {computed, ref, onMounted} from 'vue'
 // import SelectAlignments from "components/forms/integration/SelectAlignments.vue";
 import {useQuasar} from "quasar";
 import ManualAlignmentsForm from 'components/forms/ManualAlignmentsForm.vue';
-
 import { useIntegrationStore } from 'src/stores/integration.store.js'
 // import alerts from "components/hooks/alerts"
-
 // -------------------------------------------------------------
 //                         PROPS & EMITS
 // -------------------------------------------------------------
@@ -132,14 +131,12 @@ const props = defineProps({
     no_shadow: {type: Boolean, default: false},
     alignments: {type :Array, default: []}
 });
-
 const emit = defineEmits(['update:alignments'])
 // -------------------------------------------------------------
 //                          STORES & GLOBALS
 // -------------------------------------------------------------
 const integrationStore = useIntegrationStore()
 const $q = useQuasar()
-
 onMounted(() => {
   // TODO: maybe need refactor
   integrationStore.init()
@@ -159,24 +156,18 @@ const columns = [
       {name: "actions", label: "actions", align: "center", field: "actions", sortable: false,},
     ];
 const visibleCols = ref(['labelA', 'labelB', 'labelIntegrated', 'type', 'actions'])
-
 const show_dialog = ref(false)
 const alignmentView = ref('manual')
-
-
     // const selectedDS = computed(() => store.state.datasource.selectedDatasources)
     const selectedDS = {}
-
    const pagination = ref({rowsPerPage: 0})
   
     // const rows = [];
     const title = "Alignments";
-
     // :visible-columns="visibleColumns"
     const addRow= (props2  )=> {
       if(props2){
         if(props2.row){
-
           console.log(props.alignments)
           console.log(props.row)
           console.log(props.alignments.indexOf(props2.row))
@@ -184,18 +175,13 @@ const alignmentView = ref('manual')
             props.alignments.push(props2.row);
             // console.log(this.items);
           }
-
           // console.log("emitted")
           // emit("update:alignments", props.alignments )
           // notify.positive(`Alignment ${props2.row.l} added`)
           // console.log(this.rows)
         }
       }
-
-
     }
-
-
     const deleteRow = (alignmentRow) =>{
       integrationStore.deleteAligment(alignmentRow)
       // props.alignments.splice(props2.rowIndex, 1);
@@ -203,29 +189,16 @@ const alignmentView = ref('manual')
       // emit("alignments", { data: rows          } )
       // this.this.$emit("alignments", { data: this.rows          } )
     }
-
-
 const setManualView = (view) => {
-
   alignmentView.value = view
   show_dialog.value = true
-
-
 }    
-
 </script>
 
 <style lang="scss">
-
 #TableAlignments {
-
   .q-table__middle {
   flex: unset !important;
   }
-
-
 }
-
-
-
 </style>

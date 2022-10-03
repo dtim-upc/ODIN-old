@@ -81,7 +81,7 @@ export const useIntegrationStore = defineStore('integration',{
         //     if(response.status == 200) {
         //       this.project = response.data
         //       // console.log("project assigned ", this.project)
-        //     } else {
+        //     } else {
         //       console.log("something wrong with response: ", response)
         //     }
         // }
@@ -363,7 +363,11 @@ export const useIntegrationStore = defineStore('integration',{
           const content = response.headers['content-type'];
           download(response.data, "source_graph.ttl", content)
 
-        }
+        },
+       
+
+
+        
 
     }
 

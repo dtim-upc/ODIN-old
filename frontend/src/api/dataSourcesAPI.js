@@ -40,6 +40,7 @@ export default {
     
 
     downloadSourceGraph(projectID, datasourceID, token) { return odinApi.get('/project/'+projectID+'/datasources/download/sourcegraph',  {headers: { Authorization: `Bearer ${token}` }, params: { dsID: datasourceID }, responseType: 'blob'  }    ) },
+    downloadProjectGraph(projectID, token) { return odinApi.get('/project/'+projectID+'/integration/download/projectschema',  {headers: { Authorization: `Bearer ${token}` }, responseType: 'blob'  }    ) },
     
 
 

@@ -169,7 +169,7 @@ public class newIntegrationController {
         NextiaGraphy ng = new NextiaGraphy();
 //       I think in this case is not necessary StringEscapeUtils.unescapeJava
         String visualG = StringEscapeUtils.unescapeJava(ng.generateVisualGraph(integratedModel));
-         ng = new NextiaGraphy();
+        ng = new NextiaGraphy();
         System.out.println("INTEGRATED....");
         System.out.println(visualG);
         String visualMinimal = StringEscapeUtils.unescapeJava( ng.generateVisualGraph(minimal) ) ;
@@ -261,6 +261,33 @@ public class newIntegrationController {
 
         StringWriter v = new StringWriter();
         m.write(v, "TTL");
+
+        return ResponseEntity.ok().body(v.toString());
+    }
+
+    @RequestMapping(path = "/download/projectschema", method = RequestMethod.GET)
+    public ResponseEntity<String> downloadP(Authentication authentication, @PathVariable("id") String id ) throws IOException {
+//        Resource
+        System.out.println("download temporal source graph...");
+        Project p = validateAccess(id, authentication);
+
+        Model graphA = ModelFactory.createDefaultModel();;
+        if( p.getNumberOfDS().equals("1") ) {
+
+            // datasource A is the only data source ingested in project
+            List<newDataSource> listDS = repository.findAll(id);
+            if(listDS.size() == 1) {
+                graphA = dataSourceRepo.getG(listDS.get(0));
+            } else {
+                System.out.println("ERROR!!! CHECK NEW INTEGRATION CONTROLLER");
+            }
+
+        } else {
+            graphA =  graph.persistent().getGraph(p.getSchemaIntegrationIRI());
+        }
+
+        StringWriter v = new StringWriter();
+        graphA.write(v, "TTL");
 
         return ResponseEntity.ok().body(v.toString());
     }

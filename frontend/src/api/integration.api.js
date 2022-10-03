@@ -12,6 +12,6 @@ export default {
     surveyAlignments(projectID, data, token){ return odinApi.post('/project/'+projectID+'/integration/survey', data,{headers: { 'Content-Type': 'text/plain', Authorization: `Bearer ${token}` }}) },
 
     downloadSourceGraph(projectID, datasourceID, token) { return odinApi.get('/project/'+projectID+'/integration/download/sourcegraph',  {headers: { Authorization: `Bearer ${token}` }, params: { dsID: datasourceID }, responseType: 'blob'  }    ) },
-    
+   
+     
 }
-

@@ -37,11 +37,121 @@ public class SurveyAlignments {
 
     List<Alignment> ds1_ds2;
     List<Alignment> ds1_ds2_ds3;
+    List<Alignment> ds1_ds2_ds3_ds4;
     SurveyAlignments(){
-
+        aligments_ds1_ds2_ds3_ds4();
         aligments_ds1_ds2_ds3();
         aligments_ds1_ds2();
     }
+
+
+    public void aligments_ds1_ds2_ds3_ds4(){
+        ds1_ds2_ds3_ds4 = new ArrayList<>();
+        Alignment a = new Alignment();
+        a.setIriA("_dsName_.Seq1.contributors");
+        a.setIriB("_dsName_.Seq1.artworks.Seq2.contributors");
+        a.setType("class");
+        ds1_ds2_ds3_ds4.add(a);
+        a = new Alignment();
+        a.setIriA("_dsName_");
+        a.setIriB("_dsName_");
+        a.setType("class");
+        ds1_ds2_ds3_ds4.add(a);
+        a = new Alignment();
+        a.setIriA("_dsName_.medium");
+        a.setIriB("_dsName_.Seq1.artworks.medium");
+        a.setType("datatype");
+        ds1_ds2_ds3_ds4.add(a);
+        a = new Alignment();
+        a.setIriA("_dsName_.url");
+        a.setIriB("_dsName_.Seq1.artworks.url");
+        a.setType("datatype");
+        ds1_ds2_ds3_ds4.add(a);
+        a = new Alignment();
+        a.setIriA("_dsName_.title");
+        a.setIriB("_dsName_.Seq1.artworks.title");
+        a.setType("datatype");
+        ds1_ds2_ds3_ds4.add(a);
+        a = new Alignment();
+        a.setIriA("_dsName_.acquisitionYear");
+        a.setIriB("_dsName_.Seq1.artworks.acquisitionYear");
+        a.setType("datatype");
+        ds1_ds2_ds3_ds4.add(a);
+        // TODO: name of datasets
+        a = new Alignment();
+        a.setIriA("_dsName_.Seq1.contributors.role");
+        a.setIriB("_dsName_.Seq1.artworks.Seq2.contributors.role");
+        a.setType("datatype");
+        ds1_ds2_ds3_ds4.add(a);
+        a = new Alignment();
+        a.setIriA("_dsName_.Seq2.creator.birth_date");
+        a.setIriB("_dsName_.Seq1.artworks.Seq2.contributors.birthYear");
+        a.setType("datatype");
+        ds1_ds2_ds3_ds4.add(a);
+        a = new Alignment();
+        a.setIriA("_dsName_.Seq1.contributors.gender");
+        a.setIriB("_dsName_.Seq1.artworks.Seq2.contributors.gender");
+        a.setType("datatype");
+        ds1_ds2_ds3_ds4.add(a);
+
+//        Alignment a = new Alignment();
+//        a.setIriA("contributors_artists");
+//        a.setIriB("creator");
+//        a.setType("class");
+//        ds1_ds2.add(a);
+//        // TODO: name of datasets
+//        a = new Alignment();
+//        a.setIriA("artworks");
+//        a.setIriB("cmoa");
+//        a.setType("class");
+//        ds1_ds2.add(a);
+//        a = new Alignment();
+//        a.setIriA("fc_fc");
+//        a.setIriB("full_name");
+//        a.setType("datatype");
+//        ds1_ds2.add(a);
+//        a = new Alignment();
+//        a.setIriA("title");
+//        a.setIriB("title");
+//        a.setType("datatype");
+//        ds1_ds2.add(a);
+//        a = new Alignment();
+//        a.setIriA("url");
+//        a.setIriB("web_url");
+//        a.setType("datatype");
+//        ds1_ds2.add(a);
+//        a = new Alignment();
+//        a.setIriA("medium");
+//        a.setIriB("medium");
+//        a.setType("datatype");
+//        ds1_ds2.add(a);
+//        a = new Alignment();
+//        a.setIriA("width");
+//        a.setIriB("item_width");
+//        a.setType("datatype");
+//        ds1_ds2.add(a);
+//        a = new Alignment();
+//        a.setIriA("depth");
+//        a.setIriB("item_depth");
+//        a.setType("datatype");
+//        ds1_ds2.add(a);
+//        a = new Alignment();
+//        a.setIriA("creditLine");
+//        a.setIriB("credit_line");
+//        a.setType("datatype");
+//        ds1_ds2.add(a);
+//        a = new Alignment();
+//        a.setIriA("classification");
+//        a.setIriB("classification");
+//        a.setType("datatype");
+//        ds1_ds2.add(a);
+//        a = new Alignment();
+//        a.setIriA("acquisitionYear");
+//        a.setIriB("date_acquired");
+//        a.setType("datatype");
+//        ds1_ds2.add(a);
+    }
+
 
     public void aligments_ds1_ds2_ds3(){
         ds1_ds2_ds3 = new ArrayList<>();
@@ -231,33 +341,33 @@ public class SurveyAlignments {
         for( Alignment a : listA  ) {
 //            if( !a.getIriA().equals("_dsName_")) {
 
-                // get iri or integrated
-                dsID.forEach(ds -> {
-                    if(!a.getIriA().contains("http:")){
-                        String posibleA = Schema.val() + ds.getId() +"/" + a.getIriA().replace("_dsName_", ds.getName());
-                        if(containsSub(posibleA, gA)) {
+            // get iri or integrated
+            dsID.forEach(ds -> {
+                if(!a.getIriA().contains("http:")){
+                    String posibleA = Schema.val() + ds.getId() +"/" + a.getIriA().replace("_dsName_", ds.getName());
+                    if(containsSub(posibleA, gA)) {
 
-                            if(a.getType().equals("class")){
-                                a.setIriA(getSuperClass(posibleA, gA));
-                            } else {
-                                a.setIriA(getSuperProperty(posibleA, gA));
-                            }
+                        if(a.getType().equals("class")){
+                            a.setIriA(getSuperClass(posibleA, gA));
                         } else {
-                            System.out.println("ERORORD a");
+                            a.setIriA(getSuperProperty(posibleA, gA));
                         }
-                    }
-                });
-
-                String posibleB = Schema.val() + dsB.getId() +"/" + a.getIriB().replace("_dsName_", dsB.getName());
-                if(containsSub(posibleB, gB)) {
-                    if(a.getType().equals("class")){
-                        a.setIriB(getSuperClass(posibleB, gB));
                     } else {
-                        a.setIriB(getSuperProperty(posibleB, gB));
+                        System.out.println("ERORORD a");
                     }
-                } else {
-                    System.out.println("ERORORD b");
                 }
+            });
+
+            String posibleB = Schema.val() + dsB.getId() +"/" + a.getIriB().replace("_dsName_", dsB.getName());
+            if(containsSub(posibleB, gB)) {
+                if(a.getType().equals("class")){
+                    a.setIriB(getSuperClass(posibleB, gB));
+                } else {
+                    a.setIriB(getSuperProperty(posibleB, gB));
+                }
+            } else {
+                System.out.println("ERORORD b");
+            }
 //            }
         }
 
@@ -309,10 +419,10 @@ public class SurveyAlignments {
         int contA = 0;
         int contB = 0;
         String q = "PREFIX rdfs: <"+ RDFS.getURI()+"> " +
-                        "PREFIX rdf: <"+ RDF.getURI() +"> " +
-                        "SELECT * WHERE { " +
-                        " ?s a ?o. " +
-                        " } ";
+                "PREFIX rdf: <"+ RDF.getURI() +"> " +
+                "SELECT * WHERE { " +
+                " ?s a ?o. " +
+                " } ";
 
         ResultSet rsA = gA.runAQuery(q);
         contA = check(contA, rsA, true);
@@ -374,14 +484,21 @@ public class SurveyAlignments {
 
 
         if(project.getNumberOfDS().equals("1")){
+            aligments_ds1_ds2();
             getAlig(ds1_ds2,graphA, graphB, dsAs ,dsB);
             createILabels(ds1_ds2);
             return ds1_ds2;
 
         } else if( project.getNumberOfDS().equals("2") ) {
+            aligments_ds1_ds2_ds3();
             getAlig(ds1_ds2_ds3,graphA, graphB, dsAs ,dsB);
             createILabels(ds1_ds2_ds3);
             return ds1_ds2_ds3;
+        } else if( project.getNumberOfDS().equals("3") ) {
+            aligments_ds1_ds2_ds3_ds4();
+            getAlig(ds1_ds2_ds3_ds4,graphA, graphB, dsAs ,dsB);
+            createILabels(ds1_ds2_ds3_ds4);
+            return ds1_ds2_ds3_ds4;
         }
 
 
