@@ -363,7 +363,11 @@ export const useIntegrationStore = defineStore('integration',{
           const content = response.headers['content-type'];
           download(response.data, "source_graph.ttl", content)
 
-        }
+        },
+       
+
+
+        
 
     }
 

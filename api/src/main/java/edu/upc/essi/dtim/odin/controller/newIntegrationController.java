@@ -265,6 +265,33 @@ public class newIntegrationController {
         return ResponseEntity.ok().body(v.toString());
     }
 
+    @RequestMapping(path = "/download/projectschema", method = RequestMethod.GET)
+    public ResponseEntity<String> downloadP(Authentication authentication, @PathVariable("id") String id ) throws IOException {
+//        Resource
+        System.out.println("download temporal source graph...");
+        Project p = validateAccess(id, authentication);
+
+        Model graphA = ModelFactory.createDefaultModel();;
+        if( p.getNumberOfDS().equals("1") ) {
+
+            // datasource A is the only data source ingested in project
+            List<newDataSource> listDS = repository.findAll(id);
+            if(listDS.size() == 1) {
+                graphA = dataSourceRepo.getG(listDS.get(0));
+            } else {
+                System.out.println("ERROR!!! CHECK NEW INTEGRATION CONTROLLER");
+            }
+
+        } else {
+            graphA =  graph.persistent().getGraph(p.getSchemaIntegrationIRI());
+        }
+
+        StringWriter v = new StringWriter();
+        graphA.write(v, "TTL");
+
+        return ResponseEntity.ok().body(v.toString());
+    }
+
 
 //    public Model retrieveGraph(String uri, DataSource data, List<Alignment> alignments){
 //

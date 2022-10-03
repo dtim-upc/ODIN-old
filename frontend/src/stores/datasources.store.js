@@ -212,6 +212,19 @@ export const useDataSourceStore = defineStore('datasource',{
           //   writer.on('error', reject)
           // })
 
+        },
+        async downloadProjectS(){
+          console.log("download project....")
+
+            
+
+          const authStore = useAuthStore()
+          const notify  = useNotify()
+          const response = await api.downloadProjectGraph(this.project.id,authStore.user.accessToken);
+
+          const content = response.headers['content-type'];
+          download(response.data, "source_graph.ttl", content)
+
         }
 
         

@@ -23,6 +23,8 @@
                     <q-badge color="orange" floating>{{integrationStore.datasources.length}}</q-badge>    
                 </q-btn>
 
+                <q-btn label="Integrated schema" dense color="primary" icon="download" @click="storeDS.downloadProjectS" style="margin-right:10px"></q-btn>
+
                 <q-input outlined dense debounce="400" color="primary" v-model="search">
                     <template v-slot:append>
                         <q-icon name="search" />
