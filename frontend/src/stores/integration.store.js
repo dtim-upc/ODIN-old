@@ -38,6 +38,9 @@ export const useIntegrationStore = defineStore('integration',{
             // }
             // return null;
         // },
+        getDatasourcesNumber(state){
+          return state.datasources.length
+        },
         getSourceB(state) {
             if(state.selectedDS.length == 1) 
                 return state.selectedDS[0]
@@ -71,6 +74,7 @@ export const useIntegrationStore = defineStore('integration',{
     actions: {
 
       async init(){
+
         // console.log("integration stores init...")
         // // const notify  = useNotify()
         // const authStore = useAuthStore()

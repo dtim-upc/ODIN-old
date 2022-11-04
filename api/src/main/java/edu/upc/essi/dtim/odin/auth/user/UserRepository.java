@@ -1,18 +1,14 @@
 package edu.upc.essi.dtim.odin.auth.user;
 
 import edu.upc.essi.dtim.Graph;
-import edu.upc.essi.dtim.odin.config.auth.JwtHelper;
 import edu.upc.essi.dtim.odin.config.vocabulary.Namespaces;
 import edu.upc.essi.dtim.odin.storage.JenaConnection;
 import edu.upc.essi.dtim.odin.utils.jena.GraphOperations;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.vocabulary.RDF;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -32,9 +28,9 @@ public class UserRepository {
     }
 
     public Boolean save(User user){
-        gp.addTriple(userGraph, user.getIri(), RDF.type.getURI(), Namespaces.User.val() );
+        gp.addTriple(userGraph, user.getIri(), RDF.type.getURI(), Namespaces.USER.val() );
         gp.addTripleLiteral(userGraph, user.getIri(), UserVocabulary.HAS_USERNAME.val(), user.getUsername());
-        graph.persistent().addTriple(userGraph, user.getIri(), RDF.type.getURI(), Namespaces.User.val() );
+        graph.persistent().addTriple(userGraph, user.getIri(), RDF.type.getURI(), Namespaces.USER.val() );
         graph.persistent().addTripleLiteral(userGraph, user.getIri(), UserVocabulary.HAS_USERNAME.val(), user.getUsername());
         graph.persistent().addTripleLiteral(userGraph, user.getIri(), UserVocabulary.HAS_FIRSTNAME.val(), user.getFirstName());
         graph.persistent().addTripleLiteral(userGraph, user.getIri(), UserVocabulary.HAS_LASTNAME.val(), user.getLastName());
@@ -59,7 +55,7 @@ public class UserRepository {
         Graph g = graph.persistent().getGraph(userGraph);
 
         if(g!=null) {
-            return g.contains(user.getIri(), RDF.type.getURI(), Namespaces.User.val());
+            return g.contains(user.getIri(), RDF.type.getURI(), Namespaces.USER.val());
         }
         // user graph have not been initialized. No users
         return false;
@@ -74,7 +70,7 @@ public class UserRepository {
         u.setUsername(username);
         String subject = u.getIri();
         String query = commonPrefixes() + " SELECT * WHERE { " +
-                " <"+subject+"> rdf:type <"+Namespaces.User.val()+">; " +
+                " <"+subject+"> rdf:type <"+Namespaces.USER.val()+">; " +
                 " <"+UserVocabulary.HAS_USERNAME.val()+"> ?username; " +
                 " <"+UserVocabulary.HAS_PASSWORD.val()+"> ?password; " +
                 " <"+UserVocabulary.HAS_FIRSTNAME.val()+"> ?firstname;" +

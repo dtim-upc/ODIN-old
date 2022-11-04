@@ -10,10 +10,14 @@ import edu.upc.essi.dtim.odin.utils.jena.NextiaGraphy;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 @Component
@@ -84,8 +88,21 @@ public class newDataSourceService {
             case "json":
                 JSONBootstrap jsonBootstrap =  new JSONBootstrap();
                 bootsrapM = jsonBootstrap.bootstrapSchema(dataSource.getName(), dataSource.getId(), dataSource.getPath());
+                try {
+            RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/json_old.ttl"), bootsrapM, Lang.TURTLE);
+            System.out.println("file written temporal");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 //                JSONBootstrapSWJ j = new JSONBootstrapSWJ();
 //                bootsrapM = j.bootstrapSchema(dataSource.getName(), dataSource.getId(), dataSource.getPath());
+//                try {
+//                    RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/json_new.ttl"), bootsrapM, Lang.TURTLE);
+//                    System.out.println("file written temporal");
+//                } catch (FileNotFoundException e) {
+//                    e.printStackTrace();
+//                }
+
                 break;
             default:
                 break;

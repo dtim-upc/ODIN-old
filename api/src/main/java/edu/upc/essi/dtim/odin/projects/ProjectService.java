@@ -37,7 +37,7 @@ public class ProjectService {
             nDS = 0;
         }
         Project newP =  projectRepo.updateNumberDataSources(project, nDS+"");
-        if(newP.getNumberOfDS() == "0") {
+        if(newP.getNumberOfDS().equals("0") ) {
             updateGraphicalSchema(project,"");
             updateGraphicalSchemaIntegration(project, "");
         }

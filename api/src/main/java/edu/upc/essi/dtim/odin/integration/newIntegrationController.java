@@ -198,7 +198,7 @@ public class newIntegrationController {
         graph.temporal().deleteGraph(project.getSchemaIntegrationIRI());
         graph.temporal().addModel(project.getSchemaIntegrationIRI(), simplifyI);
 
-        graph.temporal().addTriple(project.getSchemaIntegrationIRI(), project.getSchemaIntegrationIRI(), RDF.type.getURI(), Namespaces.Integration.val());
+        graph.temporal().addTriple(project.getSchemaIntegrationIRI(), project.getSchemaIntegrationIRI(), RDF.type.getURI(), Namespaces.INTEGRATION.val());
 //        graph.temporal().addTripleLiteral(project.getSchemaIntegrationIRI(), project.getSchemaIntegrationIRI(), DataSourceGraph.HAS_ID.val(), project.getGlobalSchemaID() );
 
         // we usually have project - datasource, but the first is datasource - datasource integration

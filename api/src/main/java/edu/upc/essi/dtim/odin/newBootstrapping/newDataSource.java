@@ -1,11 +1,9 @@
 package edu.upc.essi.dtim.odin.newBootstrapping;
 
 import edu.upc.essi.dtim.nextiadi.config.DataSourceVocabulary;
-import edu.upc.essi.dtim.nextiadi.models.Alignment;
 import edu.upc.essi.dtim.odin.config.DataSourceTypes;
 import edu.upc.essi.dtim.odin.config.vocabulary.DataSourceGraph;
 import edu.upc.essi.dtim.odin.config.vocabulary.Namespaces;
-import edu.upc.essi.dtim.odin.utils.jena.parsers.graphy.Graphy;
 import lombok.Data;
 import org.apache.hadoop.shaded.org.codehaus.jackson.annotate.JsonIgnore;
 
@@ -71,7 +69,7 @@ public class newDataSource {
     // used to prepare data for query algorithm
     public String getMinimalIRI(){
         // todo: use the namespaces from nextiadi library
-        return Namespaces.NextiaDI.val() + id + "/minimal";
+        return Namespaces.NEXTIADI.val() + id + "/minimal";
     }
 
 

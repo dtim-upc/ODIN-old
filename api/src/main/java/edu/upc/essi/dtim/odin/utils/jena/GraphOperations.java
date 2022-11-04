@@ -7,15 +7,11 @@ import edu.upc.essi.dtim.odin.utils.jena.query.SelectQuery;
 import edu.upc.essi.dtim.nextiadi.config.DataSourceVocabulary;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.query.*;
-import org.apache.jena.rdf.model.InfModel;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.apache.jena.rdf.model.impl.ResourceImpl;
-import org.apache.jena.reasoner.Reasoner;
-import org.apache.jena.reasoner.ReasonerRegistry;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.system.Txn;
@@ -136,9 +132,9 @@ public class GraphOperations {
 
         Map<String, String> prefixes = new HashMap<>();
         prefixes.put("sourceSchema", DataSourceGraph.SCHEMA.val() + "/");
-        prefixes.put("datasource", Namespaces.DataSource.val()+"/");
-        prefixes.put("nextiaDI", Namespaces.NextiaDI.val() );
-        prefixes.put("integration", Namespaces.Integration.val()+"/" );
+        prefixes.put("datasource", Namespaces.DATASOURCE.val()+"/");
+        prefixes.put("nextiaDI", Namespaces.NEXTIADI.val() );
+        prefixes.put("integration", Namespaces.INTEGRATION.val()+"/" );
 
         Model copyM = model;
         model.setNsPrefixes(prefixes);

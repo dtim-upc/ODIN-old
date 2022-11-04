@@ -4,11 +4,11 @@ import edu.upc.essi.dtim.odin.config.vocabulary.Namespaces;
 
 public enum UserVocabulary {
 
-    HAS_USERNAME(Namespaces.User.val()+"/hasUserName"),
-    HAS_FIRSTNAME(Namespaces.User.val()+"/hasFirstName"),
-    HAS_LASTNAME(Namespaces.User.val()+"/hasLastName"),
-    HAS_PASSWORD(Namespaces.User.val()+"/hasPassword"),
-    HAS_ROLES(Namespaces.User.val()+"/hasRoles");
+    HAS_USERNAME(Namespaces.USER.val()+"/hasUserName"),
+    HAS_FIRSTNAME(Namespaces.USER.val()+"/hasFirstName"),
+    HAS_LASTNAME(Namespaces.USER.val()+"/hasLastName"),
+    HAS_PASSWORD(Namespaces.USER.val()+"/hasPassword"),
+    HAS_ROLES(Namespaces.USER.val()+"/hasRoles");
 
     private String element;
 

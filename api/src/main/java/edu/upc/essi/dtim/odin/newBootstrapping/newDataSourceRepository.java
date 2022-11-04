@@ -8,23 +8,17 @@ import edu.upc.essi.dtim.odin.projects.Project;
 import edu.upc.essi.dtim.odin.storage.JenaConnection;
 import edu.upc.essi.dtim.odin.storage.graph.GraphStore;
 import edu.upc.essi.dtim.odin.utils.jena.GraphOperations;
-import edu.upc.essi.dtim.odin.utils.jena.parsers.graphy.Nodes;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.tdb.TDB;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class newDataSourceRepository {
@@ -189,7 +183,7 @@ public class newDataSourceRepository {
         while(res.hasNext()) {
             QuerySolution r = res.next();
             String graphIRI = r.get("graph").toString();
-            if(!graphIRI.contains(Namespaces.GlobalSchema.val()) && !graphIRI.contains(Namespaces.SchemaIntegration.val()) ) {
+            if(!graphIRI.contains(Namespaces.GLOBALSCHEMA.val()) && !graphIRI.contains(Namespaces.SCHEMAINTEGRATION.val()) ) {
                 newDataSource ds = new newDataSource();
                 ds.setName(r.get("name").toString());
                 ds.setType(getDataSourcetype(r.get("format").toString()));

@@ -3,12 +3,9 @@ package edu.upc.essi.dtim.odin.utils.jena;
 import com.google.gson.Gson;
 import edu.upc.essi.dtim.nextiadi.jena.Graph;
 import edu.upc.essi.dtim.odin.config.vocabulary.SourceGraph;
-import edu.upc.essi.dtim.odin.storage.JenaConnection;
-import edu.upc.essi.dtim.odin.utils.jena.parsers.OWLToWebVOWL;
 import edu.upc.essi.dtim.odin.utils.jena.parsers.graphy.Graphy;
 import edu.upc.essi.dtim.odin.utils.jena.parsers.graphy.Links;
 import edu.upc.essi.dtim.odin.utils.jena.parsers.graphy.Nodes;
-import edu.upc.essi.dtim.odin.utils.jena.parsers.models.Subject;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
@@ -17,16 +14,14 @@ import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.XSD;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static edu.upc.essi.dtim.odin.config.vocabulary.Namespaces.GlobalSchema;
-import static edu.upc.essi.dtim.odin.config.vocabulary.Namespaces.SchemaIntegration;
+import static edu.upc.essi.dtim.odin.config.vocabulary.Namespaces.GLOBALSCHEMA;
+import static edu.upc.essi.dtim.odin.config.vocabulary.Namespaces.SCHEMAINTEGRATION;
 
 public class NextiaGraphy {
 
@@ -117,8 +112,8 @@ public class NextiaGraphy {
 
         List<String> excluded = new ArrayList<>();
         excluded.add("http://www.essi.upc.edu/DTIM/NextiaDI/DataSource");
-        excluded.add(SchemaIntegration.val());
-        excluded.add(GlobalSchema.val());
+        excluded.add(SCHEMAINTEGRATION.val());
+        excluded.add(GLOBALSCHEMA.val());
 
         List<String> excludedForProperties = new ArrayList<>();
         excludedForProperties.add("class");
@@ -127,7 +122,7 @@ public class NextiaGraphy {
 
         System.out.println(nodes.size());
         List<Nodes> nodesReady = nodes.stream().filter( s -> !excluded.contains(s.getIriType()) )
-                .filter( s -> !s.getIri().contains(GlobalSchema.val()) && !s.getIri().contains(SchemaIntegration.val())
+                .filter( s -> !s.getIri().contains(GLOBALSCHEMA.val()) && !s.getIri().contains(SCHEMAINTEGRATION.val())
                         && !s.getIri().contains(RDFS.subPropertyOf.toString()) && !s.getRange().equals("http://schema.org/identifier") )
                 .collect(Collectors.toList());
 //        List<Nodes> nodesProperties = nodes.stream().filter(n -> !n.getType().equals("class")).collect(Collectors.toList());
@@ -305,8 +300,8 @@ public class NextiaGraphy {
 
         List<String> excluded = new ArrayList<>();
         excluded.add("http://www.essi.upc.edu/DTIM/NextiaDI/DataSource");
-        excluded.add(SchemaIntegration.val());
-        excluded.add(GlobalSchema.val());
+        excluded.add(SCHEMAINTEGRATION.val());
+        excluded.add(GLOBALSCHEMA.val());
 
         List<String> excludedForProperties = new ArrayList<>();
         excludedForProperties.add("class");
@@ -315,7 +310,7 @@ public class NextiaGraphy {
 
         System.out.println(nodes.size());
         List<Nodes> nodesReady = nodes.stream().filter( s -> !excluded.contains(s.getIriType()) )
-                .filter( s -> !s.getIri().contains(GlobalSchema.val()) && !s.getIri().contains(SchemaIntegration.val())
+                .filter( s -> !s.getIri().contains(GLOBALSCHEMA.val()) && !s.getIri().contains(SCHEMAINTEGRATION.val())
                         && !s.getIri().contains(RDFS.subPropertyOf.toString()) && !s.getRange().equals("http://schema.org/identifier") )
                 .collect(Collectors.toList());
 //        List<Nodes> nodesProperties = nodes.stream().filter(n -> !n.getType().equals("class")).collect(Collectors.toList());

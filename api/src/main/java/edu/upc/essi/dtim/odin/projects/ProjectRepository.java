@@ -24,7 +24,7 @@ public class ProjectRepository {
 
 
         Graph g = Graph.createDefaultGraph();
-        g.add(project.getIri(), RDF.type.getURI(), Namespaces.Project.val());
+        g.add(project.getIri(), RDF.type.getURI(), Namespaces.PROJECT.val());
         g.addLiteral(project.getIri(), ProjectGraph.HAS_ID.val(), project.getId() );
         g.addLiteral(project.getIri(), ProjectGraph.CREATED_BY.val(), project.getCreatedBy() );
         g.addLiteral(project.getIri(), ProjectGraph.DESCRIPTION.val(), project.getDescription() );
@@ -102,7 +102,7 @@ public class ProjectRepository {
 
         // resulset is supposed to be unique
         String query = commonPrefixes() + "SELECT * WHERE { " +
-                "?project rdf:type <"+ Namespaces.Project.val()+">;" +
+                "?project rdf:type <"+ Namespaces.PROJECT.val()+">;" +
                 " <"+ProjectGraph.CREATED_BY.val()+"> '"+username+"'  " +
                 "OPTIONAL { ?project <"+ProjectGraph.HAS_ID.val()+"> ?id } " +
                 "OPTIONAL { ?project <"+ProjectGraph.DESCRIPTION.val()+"> ?description } " +
@@ -137,7 +137,7 @@ public class ProjectRepository {
 
         // resulset is supposed to be unique
         String query = commonPrefixes() + "SELECT * WHERE { " +
-                "?project rdf:type <"+ Namespaces.Project.val()+">;" +
+                "?project rdf:type <"+ Namespaces.PROJECT.val()+">;" +
                 " <"+ProjectGraph.CREATED_BY.val()+"> ?username;  " +
                 " <"+ProjectGraph.HAS_ID.val()+"> '"+id+"'. " +
                 "OPTIONAL { ?project <"+ProjectGraph.DESCRIPTION.val()+"> ?description } " +

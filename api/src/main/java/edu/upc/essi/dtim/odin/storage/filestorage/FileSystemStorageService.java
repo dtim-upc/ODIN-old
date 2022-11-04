@@ -3,7 +3,6 @@ package edu.upc.essi.dtim.odin.storage.filestorage;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -36,7 +35,10 @@ public class FileSystemStorageService implements StorageService {
     public String storePersistent(String filename){
         File f = new File( temporalDir.resolve(filename).toString() );
         Path destPath = persistentDir.resolve(filename);
-        f.renameTo(new File( destPath.toString() ));
+        Boolean flag = f.renameTo(new File( destPath.toString() ));
+        if(!flag){
+            System.out.println("Error persistent file....");
+        }
         return destPath.toString();
     }
 

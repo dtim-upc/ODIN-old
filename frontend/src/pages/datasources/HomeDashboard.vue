@@ -1,16 +1,17 @@
 <template>
     <q-page class="flex flex-center">
-      
-      <q-card class="my-card">
+      <home_pattern style="top:10;right:0;position:absolute;margin-right: 10px;width:500px;"></home_pattern>
+      <q-card class="my-card q-pa-md" >
       <q-card-section>
         <div  style="max-width: 500px">
           <p>Welcome {{authStore.getUserName}} </p>
           <q-list bordered separator>
 
-            <q-item clickable v-ripple :active="active" @click="addDataSource = true">
+            <q-item clickable style="padding:12px" v-ripple :active="active" @click="addDataSource = true">
               
               <q-item-section avatar>
-                <q-icon name="o_file_upload" />
+                <!-- check_circle -->
+                <q-icon :name="storeDS.getDatasourcesNumber >0? 'check_circle':'o_file_upload'" :color="storeDS.getDatasourcesNumber >0? 'green':null"  />
               </q-item-section>
 
               <q-item-section>
@@ -24,10 +25,10 @@
 
             </q-item>
 
-            <q-item clickable v-ripple :active="active" @click="addDataSource = true">
+            <q-item clickable style="padding:12px" v-ripple :active="active" @click="addDataSource = true">
               
               <q-item-section avatar>
-                <q-icon name="o_file_upload" />
+                <q-icon :name="storeDS.getDatasourcesNumber == 2 || (integrationStore.getDatasourcesNumber>0 && storeDS.getDatasourcesNumber >0) ? 'check_circle':'o_file_upload'" :color="storeDS.getDatasourcesNumber == 2 || (integrationStore.getDatasourcesNumber>0 && storeDS.getDatasourcesNumber >0)? 'green':null"   />
               </q-item-section>
 
               <q-item-section>
@@ -41,10 +42,10 @@
 
             </q-item>
 
-            <q-item clickable v-ripple :active="active">
+            <q-item clickable style="padding:12px" v-ripple :active="active">
               
               <q-item-section avatar>
-                <q-icon name="o_merge" />
+                <q-icon :name="storeDS.getDatasourcesNumber == 2? 'check_circle':'o_merge'" :color="storeDS.getDatasourcesNumber == 2? 'green':null"  />
               </q-item-section>
 
               <q-item-section>
@@ -58,7 +59,7 @@
 
             </q-item>
 
-            <q-item clickable v-ripple :active="active">
+            <q-item clickable style="padding:12px" v-ripple :active="active">
               
               <q-item-section avatar>
                 <q-icon name="mdi-selection-search" />
@@ -87,8 +88,11 @@
   </template>
   
 <script setup>
-import { ref } from "vue";
+import { ref, onBeforeMount } from "vue";
 import FormNewDataSource from "components/forms/FormNewDataSource.vue";
+import { useDataSourceStore } from 'src/stores/datasources.store.js'
+import { useIntegrationStore } from 'src/stores/integration.store.js'
+import home_pattern from "components/icons/home_pattern.vue";
 
 import { useAuthStore } from 'stores/auth.store.js'
 
@@ -98,6 +102,15 @@ const active = ref(false)
 
 
 const authStore = useAuthStore()
+
+const storeDS = useDataSourceStore();
+const integrationStore = useIntegrationStore()
+
+onBeforeMount( () => {
+    storeDS.setProject()
+    integrationStore.setProject()
+})
+
 
 </script>
   

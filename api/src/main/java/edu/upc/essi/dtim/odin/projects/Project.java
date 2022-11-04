@@ -40,19 +40,19 @@ public class Project {
     // this is for minimal
     @JsonIgnore
     public String getGlobalSchemaIRI(){
-        return Namespaces.GlobalSchema.val() + '/'+id;
+        return Namespaces.GLOBALSCHEMA.val() + '/'+id;
 
     }
 
     @JsonIgnore
     public String getSchemaIntegrationIRI(){
-        return Namespaces.SchemaIntegration.val() + '/'+id;
+        return Namespaces.SCHEMAINTEGRATION.val() + '/'+id;
 
     }
 
     @JsonIgnore
     public String getIri(){
-        return Namespaces.Project.val() + '/' + id;
+        return Namespaces.PROJECT.val() + '/' + id;
     }
 
 }

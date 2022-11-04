@@ -19,6 +19,10 @@ export const useDataSourceStore = defineStore('datasource',{
 
     getters : {
 
+      getDatasourcesNumber(state){
+        return state.datasources.length
+      },
+
       getGlobalSchema(state){
 
         if(state.project.graphicalGlobalSchema)
@@ -135,7 +139,7 @@ export const useDataSourceStore = defineStore('datasource',{
               console.log("createPersistentDS()",response)
               if (response.status == 201) {
   
-                this.router.push({name:"datasources"})
+                
                 this.datasources.push(response.data)
 
                 // remove from temporal
@@ -145,6 +149,11 @@ export const useDataSourceStore = defineStore('datasource',{
                 //to update project info
                 this.updateProjectInfo()
                 
+
+                // we use go since the user can come from home or table sources pages
+                this.router.go(-1)
+                // this.router.push({name:"datasources"})
+
               } else {
                 // console.log("error")
                 notify.negative("Cannot integrate datasource with project. Something went wrong in the server.")

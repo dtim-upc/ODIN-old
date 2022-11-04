@@ -1,24 +1,18 @@
 package edu.upc.essi.dtim.odin.auth;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import edu.upc.essi.dtim.odin.config.vocabulary.Namespaces;
-import edu.upc.essi.dtim.odin.models.rest.TripleStore;
 import edu.upc.essi.dtim.odin.auth.responses.LoginResult;
 import edu.upc.essi.dtim.odin.auth.user.User;
 import edu.upc.essi.dtim.odin.auth.user.UserRepository;
 import edu.upc.essi.dtim.odin.auth.user.UserService;
 import edu.upc.essi.dtim.odin.config.auth.JwtHelper;
 import edu.upc.essi.dtim.odin.config.auth.WebSecurityConfig;
+import edu.upc.essi.dtim.odin.config.vocabulary.Namespaces;
 import edu.upc.essi.dtim.odin.models.rest.Triple;
+import edu.upc.essi.dtim.odin.models.rest.TripleStore;
 import edu.upc.essi.dtim.odin.projects.Project;
 import edu.upc.essi.dtim.odin.projects.ProjectService;
 import edu.upc.essi.dtim.odin.storage.JenaConnection;
 import edu.upc.essi.dtim.odin.utils.jena.NextiaGraphy;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
@@ -28,15 +22,22 @@ import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.XSD;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 public class AuthController {
@@ -213,8 +214,8 @@ public class AuthController {
         String xsd = XSD.getURI();
         String rdf = RDF.getURI();
         String rdfs = RDFS.getURI();
-        String nextia = Namespaces.NextiaDI.val();
-        String nextiaSchema = Namespaces.NextiaDI.val()+"DataSource/Schema/";
+        String nextia = Namespaces.NEXTIADI.val();
+        String nextiaSchema = Namespaces.NEXTIADI.val()+"DataSource/Schema/";
 
 
         if(uri.contains(xsd)){

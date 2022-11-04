@@ -45,7 +45,7 @@
       <!-- <q-drawer show-if-above  :breakpoint="500" bordered > -->
   
   
-      <div class="col-2" style="background:white">
+      <div class="col-2 columnHeader">
         <q-scroll-area class="fit">
           <!-- class="q-pa-md" -->
           <q-list >
@@ -298,3 +298,21 @@ onBeforeMount( async () => {
   
   </script>
   
+<style lang="scss">
+.body--light {
+
+  .columnHeader{
+  background:white;
+}
+}
+
+.body--dark {
+  .columnHeader{
+  background: #202024;
+}
+
+}
+
+
+
+</style>

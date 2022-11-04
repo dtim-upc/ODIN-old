@@ -28,7 +28,7 @@ public class User {
 
     @JsonIgnore
     public String getIri(){
-        return Namespaces.User.val() + "/" + this.username;
+        return Namespaces.USER.val() + "/" + this.username;
     }
 
 }

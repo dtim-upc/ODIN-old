@@ -45,14 +45,14 @@
     <!-- <q-drawer show-if-above  :breakpoint="500" bordered > -->
 
 
-    <div class="col-2" style="background:white">
+    <div class="col-2 columnHeader">
       <q-scroll-area class="fit">
         <!-- class="q-pa-md" -->
         <q-list >
           <q-item-section>
-            <q-item-label>
+            <q-item>
               <h5 >Schema</h5>
-            </q-item-label>
+            </q-item>
           </q-item-section>
 
           <q-expansion-item label="Global schema" expand-icon="arrow_drop_down" default-opened>
@@ -188,3 +188,23 @@ onMounted ( () => {
 // {"id":"Link10","source":"Class13","target":"Datatype22","label":"madeBy"}]
 
 </script>
+
+
+<style lang="scss">
+.body--light {
+
+  .columnHeader{
+  background:white;
+}
+}
+
+.body--dark {
+  .columnHeader{
+  background: #202024;
+}
+
+}
+
+
+
+</style>
