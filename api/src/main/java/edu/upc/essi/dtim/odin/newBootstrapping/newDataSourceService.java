@@ -4,6 +4,7 @@ import edu.upc.essi.dtim.nextiadi.bootstraping.CSVBootstrap;
 import edu.upc.essi.dtim.nextiadi.bootstraping.JSONBootstrap;
 import edu.upc.essi.dtim.nextiadi.bootstraping.JSONBootstrapSWJ;
 import edu.upc.essi.dtim.odin.config.DataSourceTypes;
+import edu.upc.essi.dtim.odin.projects.Project;
 import edu.upc.essi.dtim.odin.storage.filestorage.StorageService;
 import edu.upc.essi.dtim.odin.utils.jena.NextiaGraphy;
 import org.apache.commons.io.FilenameUtils;
@@ -24,11 +25,11 @@ public class newDataSourceService {
     @Autowired
     private newDataSourceRepository dataSourceRepo;
 
-    public newDataSource persist(newDataSource ds) {
+    public newDataSource persist(Project p, newDataSource ds) {
         String newPath = storageService.storePersistent(ds.getFilename());
         String oldPath = ds.getPath();
         ds.setPath(newPath);
-        dataSourceRepo.save(ds, oldPath);
+        dataSourceRepo.save(ds, oldPath, p);
         return ds;
     }
 

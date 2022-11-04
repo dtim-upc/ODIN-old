@@ -1,8 +1,10 @@
 package edu.upc.essi.dtim.odin.newBootstrapping;
 
+import edu.upc.essi.dtim.odin.config.vocabulary.DataSourceGraph;
 import edu.upc.essi.dtim.odin.projects.Project;
 import edu.upc.essi.dtim.odin.projects.ProjectRepository;
 import edu.upc.essi.dtim.odin.projects.ProjectService;
+import edu.upc.essi.dtim.odin.storage.JenaConnection;
 import org.apache.jena.rdf.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +39,9 @@ public class PersistentDataSourceController {
     private final String EMPTY_INPUTS = "{}";
 
     @Autowired
+    private JenaConnection graph;
+
+    @Autowired
     private newDataSourceService dataSourceService;
 
     @Autowired
@@ -67,7 +72,7 @@ public class PersistentDataSourceController {
         Project project = validateAccess(id, authentication);
         // just for security
         dataSource.setProjectID(id);
-        dataSourceService.persist(dataSource);
+        newDataSource ds = dataSourceService.persist(project, dataSource);
 
 
         if(project.getNumberOfDS().equals("0") ) {

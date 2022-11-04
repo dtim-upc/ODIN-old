@@ -12,13 +12,15 @@
                    
                    
      <q-btn-group spread style="flex-direction: column;position:absolute;" class="fixed-bottom-right q-ma-md"  >
+        <q-btn v-if="props.enableQuery"  color="white" text-color="black"  icon="o_search" @click="querySelection" style="padding: 4px 8px"/>
+      <q-btn v-if="props.enableSelection"  color="white" text-color="black"  icon="o_highlight_alt" @click="enableSelection" style="padding: 4px 8px"/>
       <q-btn color="white" text-color="black"  :icon="$q.fullscreen.isActive ? 'fullscreen_exit' : 'fullscreen'" @click="toggleFullscreen" style="padding: 4px 8px"/>
       <q-btn color="white" text-color="black"  icon="filter_center_focus" @click="center" style="padding: 4px 8px"/>
       <q-btn color="white" text-color="black" icon="add" @click="zoomIn" style="padding: 4px 8px"/>
       <q-btn color="white" text-color="black" icon="remove" @click="zoomOut" style="padding: 4px 8px"/>
     </q-btn-group>
                    
-                   <!-- </div> -->
+       <!-- </div> -->
                    <!--  -->
 
 
@@ -31,21 +33,26 @@
 
 <script setup>
 import { onMounted, onUnmounted, ref, watch } from '@vue/runtime-core'
-import { def } from '@vue/shared';
 import * as d3 from "d3";
 import { useGraphUtils } from 'src/use/useGraphUtils.js'
 import { useGraphZoom } from 'src/use/useGraphZoom.js'
 import { useLazzo } from 'src/use/useLazzo.js'
 import {useGeometry} from 'src/use/useGeometry.js'
+import {useSelectionGraph} from 'src/use/useSelectionGraph.js'
 import { useQuasar } from 'quasar'
+import {useNotify} from 'src/use/useNotify.js'
 
 const props = defineProps({
     graphical: {type: String},
-    selectSubGraph: {type:Boolean, default: false},
-    zoomDragEnable: {type: Boolean, default:true},
+    enableQuery: {type:Boolean, default: false},
+    enableSelection: {type:Boolean, default: false},
+    zoomDragEnable: {type: Boolean, default:false},
 
     centerGraphonLoad: {type:Boolean, default:true},
     enableClickR: { type:Boolean, default: false  },
+
+    queryFunc : { type: Function, default(){return 'default funtion'}  },
+
     alignment: { type:Object, default:{
 
     type : '', //both resource must be same type
@@ -64,13 +71,12 @@ const props = defineProps({
 } }
 });
 const emit = defineEmits(["elementClick"])
-
-// console.log("Graph props ", props.graphical)
+// ----------------------------------------------------------------------------
+//                  Data set up
+// ----------------------------------------------------------------------------
 let json = !props.graphical || props.graphical == "" ? {"nodes":[], "links":[]}: JSON.parse(props.graphical)
 let graphicalNodes = json.nodes
 let graphicalLinks = json.links
-
-
 
 watch( () => props.graphical, n  => {
 
@@ -84,14 +90,35 @@ watch( () => props.graphical, n  => {
         cleanVisualGraph()
         initVisualGraph()
     } 
-
    
 })
 
-const $q = useQuasar()
-
+// ----------------------------------------------------------------------------
+//                  HTML set up
+// ----------------------------------------------------------------------------
 const graphDiv = ref(null); 
 const graphParent = ref(null);
+let svg = ref(null);
+let root = ref(null);
+// ----------------------------------------------------------------------------
+//                  Graph set up variables
+// ----------------------------------------------------------------------------
+
+let simulation = null;
+
+let width = ref(null);
+let height = ref(null);
+let linkContainer = null;
+let nodeContainer = null;
+
+
+const notify = useNotify()
+// ----------------------------------------------------------------------------
+// 
+//                  Buttons functionalities
+// 
+// ----------------------------------------------------------------------------
+const $q = useQuasar()
 
 const toggleFullscreen = (e) => {
         $q.fullscreen.toggle(graphParent.value)
@@ -103,18 +130,40 @@ const toggleFullscreen = (e) => {
             // uh, oh, error!!
             // console.error(err)
           })
-      }
+}
 
+const enableSelection = () => {
 
+    // we disable zoom since overlap with the drag functionality of selection
+    disableZoom(true);
+    resetSelection();
+    // if(props.selectSubGraph)
+    console.log("width:",width.value)
+    lazzo.initSelection(root.value,svg.value) 
+    lazzo.marked(selectMarked)
+    lazzo.afterMarked(afterMarked)
+}
+
+const querySelection = () => {
+    console.log("query...",Object.keys(selectionG.getSelected()))
+    if( Object.keys(selectionG.getSelected()).length == 0 ){
+        notify.negative("You must perform a selection over the graph before querying")
+    } else {
+        
+        var data = selectionG.prepareSelectionObject();
+        props.queryFunc(data)
+    }
+    
+}
+
+// ----------------------------------------------------------------------------
+// 
+//                  OTHERS
+// 
+// ----------------------------------------------------------------------------
 // const zoomDragEnable  = ref(true) 
 
-let simulation = null;
 
-let svg = ref(null);
-let root = ref(null);
-// let zoom = null;
-let width = ref(null);
-let height = ref(null);
 let centerGraphView = props.centerGraphonLoad;
 
 const clickResource= (event, node) =>{
@@ -150,10 +199,11 @@ const onResize =  (size) => {
       }
 
 
-const { getLabel, setClass, calcPropertyBoxWidth, defaultPropertyHeight, defaultRadius, drag} = useGraphUtils();
-const { zoomIn, zoomOut,center, initZoom,toggleZoom  } = useGraphZoom(svg, root, width, height, props.zoomDragEnable);
+const { getLabel, setClass, calcPropertyBoxWidth, defaultPropertyHeight, defaultRadius, drag, isGConvex} = useGraphUtils();
+const { zoomIn, zoomOut,center, initZoom,disableZoom  } = useGraphZoom(svg, root, width, height);
 const lazzo = useLazzo();
 const geometry = useGeometry();
+const selectionG = useSelectionGraph();
 
 const cleanVisualGraph = () => {
 
@@ -162,6 +212,70 @@ simulation.stop()
     
     svg.value = d3.select(graphDiv.value).append('svg')
     // .attr("width", width.value).attr("height", height.value);
+
+}
+
+const resetSelection = () => {
+    svg.value.selectAll(".link").style("opacity", "0.3");
+    svg.value.selectAll(".node").style("opacity", "0.3");
+    selectionG.clearSelection()
+}
+
+const afterMarked = () => {
+    console.log("after...")
+    if( Object.keys(selectionG.getSelected()).length > 1 &&  !isGConvex(Object.keys(selectionG.getSelected()),selectionG.getLinks()) ){
+        notify.negative("The query graph must be convex")
+        // reset opacity
+        resetSelection()
+    } 
+    lazzo.removeEvents(root.value,svg.value)
+    disableZoom(false);
+}
+
+const selectMarked = (node) => {
+    // console.log("selectedMarked...")
+    // simulation.stop
+    svg.value.selectAll(".class,.type").each( function (node) {
+      
+        
+        if (!selectionG.contains(node)) {
+            var point = [node.x, node.y];
+            // console.log("node point...", node)
+            // console.log("node inside...", node)
+                // console.log(node.getCTM())
+            if (lazzo.contains(point)) {
+                // console.log("node inside...", node)
+                selectionG.addNode(node);
+                
+                svg.value.select("#" + node.id).style("opacity", "1");
+                if( Object.keys(selectionG.getSelected()).length > 1) {
+
+                    var nodesId = Object.keys(selectionG.getSelected());
+                    nodesId.forEach(function (id)  {
+                        svg.value.select("#" + id).style("opacity", "1");
+                    });
+                    var labs = [];
+                    svg.value.selectAll(".link").each(function (link) {
+                        var domain = link.source.id;
+                        var range =link.target.id;
+                        if(nodesId.includes(domain) && nodesId.includes(range)){
+                            //path
+                            svg.value.select("#" + link.id).style("opacity", "1");
+                            //rect
+                            let linkN = svg.value.select("#" + link.nodeId)
+                            linkN.style("opacity", "1"); 
+
+                            // console.log("dpks",linkN.data()[0])
+                            labs.push(link);
+                            selectionG.addLinkNode(linkN.data()[0])
+                        }
+                    })
+                    selectionG.setLinks(labs)
+                }
+            }
+        }
+
+    } )
 
 }
 
@@ -217,7 +331,8 @@ const initVisualGraph = () => {
     root.value = svg.value.append('g'); 
     
     initZoom();
-
+    // disableZoom(false);
+    // disableDragZoom(true)
 
      var marker = root.value.selectAll("marker")
         .append("svg:defs")
@@ -236,13 +351,13 @@ const initVisualGraph = () => {
 
 
     // Last container -> elements of this container OVERLAP others
-    const linkContainer = root.value.append('g').classed('linkContainer', true);
+    linkContainer = root.value.append('g').classed('linkContainer', true);
     // const labelContainer = root.append("g").classed("labelContainer", true);
     // const labelContainer2 = root.append("g").classed("labelContainer2", true);
-    const nodeContainer = root.value.append('g').classed('nodeContainer', true);
+    nodeContainer = root.value.append('g').classed('nodeContainer', true);
 
-    if(props.selectSubGraph)
-        lazzo.initSelection(root.value,svg.value, width.value*-1, height.value*-1) 
+    // if(props.selectSubGraph)
+    //     lazzo.initSelection(root.value,svg.value, width.value*-1, height.value*-1) 
 
 let glinks = linkContainer.selectAll(".link")
     .data(graphicalLinks)

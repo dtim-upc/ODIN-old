@@ -4,7 +4,7 @@ import { isRef, watch } from '@vue/runtime-core'
 /*
 * All parameters are vue reactive 
 */
-export function useGraphZoom(svg, root, fullWidth, fullHeight, zoomEnabled) {
+export function useGraphZoom(svg, root, fullWidth, fullHeight /*, zoomEnabled*/) {
 
    
 
@@ -49,20 +49,23 @@ export function useGraphZoom(svg, root, fullWidth, fullHeight, zoomEnabled) {
 
     }
 
-    const toggleZoom = (z) => {
-        console.log("togglez")
-        console.log(z)
+    const disableZoom = (flag) => {
+        console.log("disable Zoom", flag)
          if(svg.value){
-            if (z) {
+            if (!flag) {
                 console.log("enable zoom")
                 svg.value.call(zoom);
             } else {
                 console.log("disable zoom")
                 svg.value.on('.zoom', null);
             }
+         } else {
+            console.log("no svg defined...disableZoom")
          }
        
     }
+
+
 
     const zoomToFit = (time) => {
 
@@ -92,12 +95,15 @@ export function useGraphZoom(svg, root, fullWidth, fullHeight, zoomEnabled) {
 
       }
 
-    if(isRef(zoomEnabled)){
-        watch( zoomEnabled, (first, second) => {
-            console.log("toggle zoom for: ")
-            toggleZoom(zoomEnabled.value)
-        })
-    }
+    // if(isRef(zoomEnabled)){
+    //     watch( zoomEnabled, (first, second) => {
+    //         console.log("toggle zoom for: ")
+    //         disableZoom(zoomEnabled.value)
+    //     })
+    // } else {
+    //     console.log("setting zoom to: ", zoomEnabled)
+    //     disableZoom(zoomEnabled)
+    // }
 
     
 
@@ -108,7 +114,7 @@ export function useGraphZoom(svg, root, fullWidth, fullHeight, zoomEnabled) {
         zoomOut,
         center,
         initZoom,
-        toggleZoom
+        disableZoom
     }
 
 

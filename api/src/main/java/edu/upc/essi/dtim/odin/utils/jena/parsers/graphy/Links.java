@@ -6,6 +6,7 @@ import lombok.Data;
 public class Links {
 
     String id;
+    String nodeId;
     String source;
     String target;
     String label;

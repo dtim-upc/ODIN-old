@@ -7,7 +7,9 @@ import java.util.List;
 @Data
 public class QueryDataSelection {
 
-    String graphIRI;
+//    String graphIRI;
+    String graphID;
+    String graphType;
     List<Classes> classes; // It contains IRIs
     List<Property> properties;
 

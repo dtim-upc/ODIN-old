@@ -4,6 +4,7 @@ import edu.upc.essi.dtim.Graph;
 import edu.upc.essi.dtim.odin.config.DataSourceTypes;
 import edu.upc.essi.dtim.odin.config.vocabulary.DataSourceGraph;
 import edu.upc.essi.dtim.odin.config.vocabulary.Namespaces;
+import edu.upc.essi.dtim.odin.projects.Project;
 import edu.upc.essi.dtim.odin.storage.JenaConnection;
 import edu.upc.essi.dtim.odin.storage.graph.GraphStore;
 import edu.upc.essi.dtim.odin.utils.jena.GraphOperations;
@@ -12,6 +13,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.Lang;
 import org.apache.jena.tdb.TDB;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,13 +63,26 @@ public class newDataSourceRepository {
 
     }
 
-    public newDataSource save(newDataSource dataSource, String oldPath ){
+    public newDataSource save(newDataSource dataSource, String oldPath, Project p ){
         // we just move the graph into the persistent and update the path triple with the persistent file path
+
         Graph g = graph.temporal().getGraph(dataSource.getIri());
         graph.persistent().addModel(dataSource.getIri(), g);
 //        graph.persistent().getGraph(dataSource.getIri()).write("/Users/javierflores/Documents/upc/projects/newODIN/api/jena2/newprueba2.ttl");
 
         graph.persistent().updateLiteral(dataSource.getIri(), dataSource.getIri(), DataSourceGraph.HAS_PATH.val(), oldPath, dataSource.getPath()  );
+        //update path if there is integration in temporal...
+//        this should be moved into a service class...
+        if(graph.temporal().containsGraph(p.getGlobalSchemaIRI())){
+            graph.temporal().updateLiteral(p.getGlobalSchemaIRI(),dataSource.getIri(), DataSourceGraph.HAS_PATH.val(), oldPath, dataSource.getPath()   );
+//            graph.temporal().getGraph(p.getGlobalSchemaIRI()).write("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas"+dataSource.getName()+".ttl", Lang.TTL);
+        }
+//        TODO: should be a better way to update paths of minimal. Actually, minimal should not contain :has_path...Fixing this requires modifying query or updating minimal
+        if(graph.persistent().containsGraph(p.getGlobalSchemaIRI())) {
+            graph.persistent().updateLiteral(p.getGlobalSchemaIRI(),dataSource.getIri(), DataSourceGraph.HAS_PATH.val(), oldPath, dataSource.getPath()   );
+        }
+
+
         deleteTemporal(dataSource);
 //            graph.temporal().deleteGraph(dataSource.getIri());
 //        graph.persistent().getGraph(dataSource.getIri()).write("/Users/javierflores/Documents/upc/projects/newODIN/api/jena2/newprueba2.ttl");

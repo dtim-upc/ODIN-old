@@ -8,6 +8,7 @@ export function useLazzo() {
     var points = [];
     var isEnabled = false;
     var releaseFunct;
+    var resetFunct;
     var max_radius = 0;
     var selected = {};
     var callbacks = [];
@@ -90,26 +91,25 @@ export function useLazzo() {
         releaseFunct =f;
     };
 
+    const resetFunction = function(f){
+      resetFunct = f;
+    }
   
     const call = function(clear) {
       callbacks.map(function(callback) {
         callback(clear);
       })
     }
+
+    
   
     // background is svg
     // width and height of svg...
-    var initSelection = function( root ,background, _offset_x, _offset_y) {
+    var initSelection = function( root ,background) {
 
       var container = root.append("g").classed("markerContainer", true);
 
-      console.log("drawing...")
-      console.log(container)
-      console.log(background)
-
       poly = container.append('polygon').attr('class', 'polygonMarker')
-      var offset_x = _offset_x;
-      var offset_y = _offset_y;
       state.started = false;
       points = [];
   
@@ -122,6 +122,10 @@ export function useLazzo() {
       });
   
       var up = function(event) {
+
+        if(releaseFunct)
+          releaseFunct(true)
+
         console.log("up()...")
         state.started = false;
         points = [];
@@ -134,21 +138,38 @@ export function useLazzo() {
       background.on('mousemove', function(event) {
         // console.log("moving...")
         if (!state.started) return;
-        var pos = d3.pointer(event); //background.select("g").node()
+        var pos = d3.pointer(event, background.select("g").node()); //background.select("g").node()
+        // var pos= d3.mouse(background.select("g").node());
         var x = pos[0];
         var y = pos[1];
+        // console.log("x: "+x+" y: "+y)
         points.push([x, y])
         poly.attr('points', to_str(points, 4, true));
 
         call();
       });
     }
+
+    const removeEvents = (root ,background) => {
+
+        background.on('mousedown',null)
+        background.on('mouseup',null)
+        background.on('mousemove',null)
+        document.addEventListener('mouseup', null);
+
+    }
   
+
+
+
+
     return {
         enabled,
         contains,
         marked,
-        initSelection
+        initSelection,
+        afterMarked,
+        removeEvents
 
 
     //   init: init,

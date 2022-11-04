@@ -145,6 +145,7 @@ public class NextiaGraphy {
 
             Links l = new Links();
             l.setId(id);
+            l.setNodeId(n.getId());
             n.setLinkId(id);
             l.setSource(nodesId.get(n.getDomain()));
 

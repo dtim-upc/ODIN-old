@@ -15,11 +15,11 @@
         <!-- <q-btn padding="none" color="secondary" icon="add" @click="show_dialog = true"/> -->
             <q-btn-dropdown color="primary" dropdown-icon="add" no-icon-animation padding="none" menu-anchor="top right" menu-self="top left">
               <q-list>
-                <!-- @click="setManualView('manual')" -->
+                <!-- style="cursor: not-allowed !important" -->
                 <!-- @click="setManualView('manual') -->
-                <q-item clickable v-close-popup style="cursor: not-allowed !important">
+                <q-item clickable v-close-popup @click="setManualView('manual')" >
                   <q-item-section>
-                    <q-item-label>Manual alignment (Disable)</q-item-label>
+                    <q-item-label>Manual alignment</q-item-label>
                   </q-item-section>
                 </q-item>
 

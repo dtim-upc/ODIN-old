@@ -46,17 +46,17 @@ public class newDataSourceController {
         }
     }
 
-    @PostMapping("persist")
-    public ResponseEntity<newDataSource> persistDataSource(@RequestBody newDataSource dataSource) {
-        try {
-            LOGGER.debug("inside of persist data source");
-            dataSourceService.persist(dataSource);
-            return new ResponseEntity<>(dataSource, HttpStatus.CREATED);
-        } catch (Exception e) {
-            LOGGER.error("something went wrong in persistDataSource()", e);
-            return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    @PostMapping("persist")
+//    public ResponseEntity<newDataSource> persistDataSource(@RequestBody newDataSource dataSource) {
+//        try {
+//            LOGGER.debug("inside of persist data source");
+//            dataSourceService.persist(dataSource);
+//            return new ResponseEntity<>(dataSource, HttpStatus.CREATED);
+//        } catch (Exception e) {
+//            LOGGER.error("something went wrong in persistDataSource()", e);
+//            return new ResponseEntity<>( HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteDataSources(@PathVariable("id") String id) throws IOException {

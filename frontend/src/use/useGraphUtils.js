@@ -88,6 +88,7 @@ const drag = simulation => {
         simulation.alphaTarget(0);
         // console.log("alpha to 0")
       }
+      // console.log("dragended....",event)
       event.subject.fx = null;
       event.subject.fy = null;
     }
@@ -98,6 +99,63 @@ const drag = simulation => {
 
 }
 
+const isGConvex = (vertex, edges) => {
+  let componentCount = 0;
+  if(vertex.length==0){
+    return false;
+  }
+  componentCount = 1;
+        var nodes = [];
+        //construct adjacency list of graph
+        var adjList = {};
+        vertex.forEach(function(v){
+            var n = new Object();
+            n.id = v;
+            n.visited = false;
+            nodes[n.id]=n;
+            adjList[v]=[];
+        });
+
+      edges.forEach(function(e){
+          adjList[e.source.id].push(nodes[e.target.id]);
+          adjList[e.target.id].push(nodes[e.source.id]);
+      });
+
+      //perform DFS on nodes
+      var q = [];
+      q.push(nodes[Object.keys(nodes)[0]]);
+
+      while(q.length>0){
+
+          var v1 = q.shift();
+          var adj = adjList[v1.id];
+
+          for(var i=0; i<adj.length; i++){
+              var v2 = adj[i];
+              if(v2.visited)
+                  continue;
+              q.push(v2);
+          }
+
+          v1.visited = true;
+          //check for unvisited nodes
+          if(q.length==0){
+              for(var key in nodes){
+                  if(!nodes[key].visited){
+                      q.push(nodes[key]);
+                      componentCount++;
+                      break;
+                  }
+              }
+          }
+      }
+      console.log("components "+componentCount )
+      if (componentCount == 1)
+          return true
+      return false;
+
+}
+
     return {
         labelFromURI,
         getLabel,
@@ -105,7 +163,8 @@ const drag = simulation => {
         calcPropertyBoxWidth,
         defaultPropertyHeight,
         defaultRadius,
-        drag
+        drag,
+        isGConvex
     }
 
 

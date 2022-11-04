@@ -1,4 +1,4 @@
-package edu.upc.essi.dtim.odin.controller;
+package edu.upc.essi.dtim.odin.integration;
 
 import edu.upc.essi.dtim.Graph;
 import edu.upc.essi.dtim.NextiaDI;
@@ -6,6 +6,7 @@ import edu.upc.essi.dtim.nextiadi.models.Alignment;
 //import edu.upc.essi.dtim.odin.bootstrapping.DataSource;
 import edu.upc.essi.dtim.odin.config.vocabulary.DataSourceGraph;
 import edu.upc.essi.dtim.odin.config.vocabulary.Namespaces;
+import edu.upc.essi.dtim.odin.controller.SurveyAlignments;
 import edu.upc.essi.dtim.odin.models.rest.IntegrationData;
 import edu.upc.essi.dtim.odin.newBootstrapping.newDataSource;
 import edu.upc.essi.dtim.odin.newBootstrapping.newDataSourceRepository;
@@ -22,7 +23,6 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.slf4j.Logger;
@@ -35,11 +35,8 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -94,6 +91,9 @@ public class newIntegrationController {
         // complete
         Graph schemaInt = graph.temporal().getGraph(project.getSchemaIntegrationIRI());
 
+        graph.persistent().deleteGraph(project.getGlobalSchemaIRI());
+        graph.persistent().deleteGraph(project.getSchemaIntegrationIRI());
+
         graph.persistent().addModel(project.getGlobalSchemaIRI(), global);
         graph.persistent().addModel(project.getSchemaIntegrationIRI(), schemaInt );
 
@@ -102,6 +102,8 @@ public class newIntegrationController {
         String visualMinimal = StringEscapeUtils.unescapeJava( ng.generateVisualGraph(global) ) ;
         System.out.println("***");
         System.out.println(visualMinimal);
+        global.write("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/minimal_pers.ttl", Lang.TTL);
+        schemaInt.write("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/schema_int_pers.ttl", Lang.TTL);
         projectService.updateGraphicalSchema(project, visualMinimal);
         projectService.updateGraphicalSchemaIntegration(project, visualSchemaIntegration);
         return new ResponseEntity(project, HttpStatus.OK);
@@ -147,6 +149,7 @@ public class newIntegrationController {
         String dsB = iData.getDsB().getIri();
         Model graphB = retrieveSourceGraph(dsB, iData.getAlignments(), graph.temporal() );
 
+//        TODO: handle exceptions for integrations such as edu.upc.essi.dtim.nextiadi.exceptions.NoDomainForPropertyException
         Model integratedModel = n.Integrate(graphA, graphB, iData.getAlignments());
 //        try {
 //            RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/integratedModel.ttl"), integratedModel, Lang.TURTLE);
@@ -204,6 +207,12 @@ public class newIntegrationController {
         graph.temporal().addTriple(project.getSchemaIntegrationIRI(), project.getSchemaIntegrationIRI(), DataSourceGraph.INTEGRATION_OF.val(), dsB  );
         graph.temporal().addTriple(project.getSchemaIntegrationIRI(), project.getSchemaIntegrationIRI(), DataSourceGraph.MINIMAL.val(), project.getGlobalSchemaIRI()  );
         graph.temporal().addTriple(project.getGlobalSchemaIRI(), project.getGlobalSchemaIRI(), DataSourceGraph.IS_MINIMAL_OF.val(), project.getSchemaIntegrationIRI()  );
+
+
+//        String f3 = "/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/minimal_tmp.ttl";
+//        graph.write(f3, simplifyI);
+        Graph m1 = graph.temporal().getGraph(project.getGlobalSchemaIRI());
+        m1.write("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/minimal_tmp.ttl", Lang.TTL);
 
         return new ResponseEntity(project, HttpStatus.OK);
     }

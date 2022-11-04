@@ -21,6 +21,8 @@ const routes = [
 
       { path: 'configureIntegration', name:'dsIntegration',  component: () => import('pages/datasources/DataSourceIntegration.vue') },
 
+      { path: 'query', name:'query',  component: () => import('pages/datasources/Query.vue') },
+
     ]
   },
   {

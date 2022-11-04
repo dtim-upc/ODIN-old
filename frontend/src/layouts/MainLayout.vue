@@ -95,7 +95,7 @@
           <q-item manual-focus>
             <q-item-section avatar>
               <!-- <q-icon name="mdi-selection-search"/> -->
-              <q-btn disable flat padding="xs" icon="mdi-selection-search" to="/omq" :color="$route.name === 'omq' ? 'primary600': 'neutral500' " :class="{ activebg: $route.name === 'omq' }">
+              <q-btn flat padding="xs" icon="mdi-selection-search" :to="{name:'query'}" :color="$route.name === 'query' ? 'primary600': 'neutral500' " :class="{ activebg: $route.name === 'query' }">
                 <q-tooltip anchor="center right" self="center left" :offset="[10, 10]" transition-show="fade" transition-hide="fade">
                   Query
                 </q-tooltip>
