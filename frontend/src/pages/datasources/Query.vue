@@ -141,11 +141,14 @@
   import { useDataSourceStore } from 'src/stores/datasources.store.js'
   import { useAuthStore } from 'stores/auth.store.js'
   import queryAPI from "src/api/query.api.js";
-  
+  import {useNotify} from 'src/use/useNotify.js'
+
+
   const miniState = ref(true)
   const storeDS = useDataSourceStore()
   const authStore = useAuthStore();
   const alert = ref(false);
+  const notify = useNotify();
 
   const graphical = ref('')
   const graphID = ref('')
@@ -211,10 +214,13 @@
     queryAPI.queryGraph(data,storeDS.project.id ,authStore.user.accessToken).then(response => {
 
       console.log("query success",response)
+      // console.log("**", response.data)
+      if(response.data == '')
+        notify.positive("Query result is empty")
       if(response.data)
-        showResultQuery(response.data.columns, response.data.rows)
-
-    
+        if(response.data != ''){
+          showResultQuery(response.data.columns, response.data.rows)    
+        }
       }).catch(err => {
         console.log("error query graph", err)
       }) 

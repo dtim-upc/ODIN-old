@@ -206,7 +206,7 @@ public class NextiaGraphy {
             n.setIri(r.getURI());
             n.setId("Class"+nodeId);
             nodeId += 1 ;
-            n.setLabel(getLastElem(n.getIri()));
+
             nodesId.put(n.getIri(), n.getId());
 
             Nodes memberProperty = new Nodes();
@@ -266,8 +266,12 @@ public class NextiaGraphy {
 
                     // do nothing. Probably statement not useful for graphical graph
 //                    LOGGER.debug("NOT USEFUL: "+ statement.getSubject() +","+statement.getPredicate()+", "+statement.getObject() );
+                } else if( statement.getPredicate().equals(RDFS.label) ){
+                    n.setLabel( statement.getObject().toString() );
                 }
             }
+            if(n.getLabel() == null)
+                n.setLabel(getLastElem(n.getIri()));
             n.computeType();
             if(memberProperty.getIriType() != null) {
 
@@ -328,6 +332,7 @@ public class NextiaGraphy {
 
             Links l = new Links();
             l.setId(id);
+            l.setNodeId(n.getId());
             n.setLinkId(id);
             l.setSource(nodesId.get(n.getDomain()));
 

@@ -50,6 +50,13 @@
                 </q-td>
             </template>
 
+            <template v-slot:body-cell-View_triples="props">
+                <q-td :props="props">
+                    <q-btn dense round flat color="grey" 
+                        icon="mdi-graphql" :to="{name: 'viewTriples', params: {datasourceID: props.row.id}}"></q-btn>
+                </q-td>
+            </template>
+
             <template v-slot:body-cell-View_Source_Graph="props">
                 <q-td :props="props">
                     <q-btn dense round flat color="grey" 
@@ -131,7 +138,7 @@ const columns = [
     { name: "Name", label: "Name", align: "center", field: "name", sortable: true, },
     { name: "Type", label: "Type", align: "center", field: "type", sortable: true, },
     // {name: "#Wrappers", label: "#Wrappers", align: "center", field: "wrappers", sortable: true,},
-    { name: "View Metadata", label: "View Metadata", align: "center", field: "View Metadata", sortable: false, },
+    { name: "View_triples", label: "View triples", align: "center", field: "View_triples", sortable: false, },
     {
         name: "View_Source_Graph", label: "Source Graph", align: "center", field: "View Source Graph",
         sortable: false,
@@ -140,7 +147,7 @@ const columns = [
 ];
 const views = {
     "integration": ['Name', 'Type'],
-    "datasources": ['Name', 'Type', '#Wrappers', 'View Metadata', 'View_Source_Graph', 'actions']
+    "datasources": ['Name', 'Type', '#Wrappers', 'View_triples', 'View_Source_Graph', 'actions']
 }
 const title = "Data Sources";
 const search = ref("")

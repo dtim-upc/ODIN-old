@@ -3,11 +3,9 @@ package edu.upc.essi.dtim.odin.auth.user;
 import edu.upc.essi.dtim.Graph;
 import edu.upc.essi.dtim.odin.config.vocabulary.Namespaces;
 import edu.upc.essi.dtim.odin.storage.JenaConnection;
-import edu.upc.essi.dtim.odin.utils.jena.GraphOperations;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.vocabulary.RDF;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -19,8 +17,8 @@ public class UserRepository {
     private JenaConnection graph;
 
 
-    @Autowired
-    private GraphOperations gp;
+//    @Autowired
+//    private GraphOperations gp;
 
     // it does not need @autowired cause it's default constructor. More info here https://stackoverflow.com/questions/41092751/spring-injects-dependencies-in-constructor-without-autowired-annotation
     public UserRepository(JenaConnection graph) {
@@ -28,8 +26,8 @@ public class UserRepository {
     }
 
     public Boolean save(User user){
-        gp.addTriple(userGraph, user.getIri(), RDF.type.getURI(), Namespaces.USER.val() );
-        gp.addTripleLiteral(userGraph, user.getIri(), UserVocabulary.HAS_USERNAME.val(), user.getUsername());
+//        gp.addTriple(userGraph, user.getIri(), RDF.type.getURI(), Namespaces.USER.val() );
+//        gp.addTripleLiteral(userGraph, user.getIri(), UserVocabulary.HAS_USERNAME.val(), user.getUsername());
         graph.persistent().addTriple(userGraph, user.getIri(), RDF.type.getURI(), Namespaces.USER.val() );
         graph.persistent().addTripleLiteral(userGraph, user.getIri(), UserVocabulary.HAS_USERNAME.val(), user.getUsername());
         graph.persistent().addTripleLiteral(userGraph, user.getIri(), UserVocabulary.HAS_FIRSTNAME.val(), user.getFirstName());

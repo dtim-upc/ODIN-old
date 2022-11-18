@@ -18,6 +18,7 @@ const routes = [
       { path: 'schema', name:'schema',  component: () => import('pages/datasources/Schema.vue') },
 
       { path: 'datasources', name:'datasources',  component: () => import('pages/datasources/DataSources.vue') },
+      { path: 'viewTriples/:datasourceID', name:'viewTriples',  component: () => import('pages/datasources/ViewTriples.vue') },
 
       { path: 'configureIntegration', name:'dsIntegration',  component: () => import('pages/datasources/DataSourceIntegration.vue') },
 

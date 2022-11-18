@@ -1,7 +1,7 @@
 package edu.upc.essi.dtim.odin.auth.user;
 
-import edu.upc.essi.dtim.odin.utils.jena.GraphOperations;
-import org.springframework.beans.factory.annotation.Autowired;
+//import edu.upc.essi.dtim.odin.utils.jena.GraphOperations;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;

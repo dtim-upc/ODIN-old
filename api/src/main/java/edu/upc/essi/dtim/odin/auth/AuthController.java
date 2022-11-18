@@ -7,8 +7,8 @@ import edu.upc.essi.dtim.odin.auth.user.UserService;
 import edu.upc.essi.dtim.odin.config.auth.JwtHelper;
 import edu.upc.essi.dtim.odin.config.auth.WebSecurityConfig;
 import edu.upc.essi.dtim.odin.config.vocabulary.Namespaces;
-import edu.upc.essi.dtim.odin.models.rest.Triple;
-import edu.upc.essi.dtim.odin.models.rest.TripleStore;
+import edu.upc.essi.dtim.odin.auth.responses.Triple;
+import edu.upc.essi.dtim.odin.auth.responses.TripleStore;
 import edu.upc.essi.dtim.odin.projects.Project;
 import edu.upc.essi.dtim.odin.projects.ProjectService;
 import edu.upc.essi.dtim.odin.storage.JenaConnection;
@@ -123,7 +123,7 @@ public class AuthController {
 
     @GetMapping("prueba")
     public ResponseEntity<String> pru(){
-        Model model = RDFDataMgr.loadModel("/Users/javierflores/Downloads/b.ttl") ;
+        Model model = RDFDataMgr.loadModel("/Users/javierflores/Documents/upc/projects/NextiaDI/source/src/main/resources/stations_target.ttl") ;
 
         NextiaGraphy ng = new NextiaGraphy();
 //        String visualSchemaIntegration = ng.generateVisualGraph(model);

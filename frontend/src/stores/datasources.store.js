@@ -71,6 +71,7 @@ export const useDataSourceStore = defineStore('datasource',{
 
           
         } else if(!this.project.name || this.project.id != route.params.id) {
+          console.log("dfs", route.params.id)
           const response = await projectAPI.getProjectByID(route.params.id, authStore.user.accessToken)
 
             if(response.status == 200){
@@ -85,6 +86,31 @@ export const useDataSourceStore = defineStore('datasource',{
           console.log("retrieving persistent data sources...")
            this.getDatasources()
          }  
+         return this.project;
+      },
+      async getTriples(project, dsID){
+        // TODO: change pinias to setup structure, route is only supported one time in this structure. Changing will make things easier
+        //https://stackoverflow.com/questions/71249575/i-cant-access-my-routes-from-the-store-pinia-vuejs3
+        
+        const authStore = useAuthStore()
+        
+        // console.log("***")
+        // console.log("dfs", route.params.id)
+        // console.log("gettriples", route.params.id)
+        let response = await api.getTriples(project.id, dsID ,authStore.user.accessToken)
+        return response.data
+        // .then((response => {
+
+        //   console.log("response",response)
+        //   if(response.status == 200){
+        //     return response.data
+        //   }
+        //   return []
+
+        // }))
+        
+
+
       },
 
       async updateProjectInfo(){

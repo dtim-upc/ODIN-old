@@ -1,10 +1,10 @@
 <template>
     <q-page class="flex flex-center">
       <home_pattern style="top:10;right:0;position:absolute;margin-right: 10px;width:500px;"></home_pattern>
-      <q-card class="my-card q-pa-md" >
+      <q-card class="my-card q-pa-md" style="min-width: 500px" >
       <q-card-section>
-        <div  style="max-width: 500px">
-          <p>Welcome {{authStore.getUserName}} </p>
+        <div  >
+          <h6 style="margin:10px">Welcome {{authStore.getUserName}} </h6>
           <q-list bordered separator>
 
             <q-item clickable style="padding:12px" v-ripple :active="active" @click="addDataSource = true">

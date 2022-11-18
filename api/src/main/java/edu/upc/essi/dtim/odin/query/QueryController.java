@@ -4,11 +4,12 @@ import com.clearspring.analytics.util.Lists;
 import com.google.common.collect.Sets;
 import edu.upc.essi.dtim.NextiaQR_RDFS;
 import edu.upc.essi.dtim.nextiaqr.models.querying.RDFSResult;
-import edu.upc.essi.dtim.odin.integration.QueryService;
-import edu.upc.essi.dtim.odin.models.query.ODINQuery;
-import edu.upc.essi.dtim.odin.models.rest.QueryDataSelection;
+import edu.upc.essi.dtim.odin.query.pojos.QueryDataSelection;
 import edu.upc.essi.dtim.odin.projects.Project;
 import edu.upc.essi.dtim.odin.projects.ProjectRepository;
+import edu.upc.essi.dtim.odin.query.pojos.ODINQuery;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.slf4j.Logger;
@@ -22,6 +23,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import scala.Tuple3;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -97,6 +101,36 @@ public class QueryController {
         NextiaQR_RDFS n = new NextiaQR_RDFS();
         System.out.println("QUERY: ");
         System.out.println(query.toString());
+
+        List<Integer> cont = new ArrayList<>();
+        cont.add(1);
+        constructs.getSourceGraphs().forEach( (g, m) -> {
+            try {
+                cont.set(0, cont.get(0)+1);
+                RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/source"+cont.get(0)+".ttl"), m, Lang.TURTLE);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        cont.add(1);
+        constructs.getSubGraphs().forEach( (g, m) -> {
+            try {
+                cont.set(1, cont.get(1)+1);
+                RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/subgraph"+cont.get(1)+".ttl"), m, Lang.TURTLE);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+
+        try {
+            RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/minimal2.ttl"), constructs.getMinimal(), Lang.TURTLE);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
+
         RDFSResult res = n.rewriteToUnionOfConjunctiveQueries(constructs.getSourceGraphs(), constructs.getMinimal(),
                 constructs.getSubGraphs(), query.toString());
 
