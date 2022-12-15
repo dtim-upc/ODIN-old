@@ -68,6 +68,7 @@ module.exports = configure(function ( ctx ) {
         API: ctx.dev
           ? 'http://localhost:8082'
           : 'http://localhost:8082'
+          // : 'http://quarry.essi.upc.edu:8082'
           
       },
       // rawDefine: {}

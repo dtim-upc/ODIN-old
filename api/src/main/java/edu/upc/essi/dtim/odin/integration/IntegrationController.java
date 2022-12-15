@@ -3,12 +3,11 @@ package edu.upc.essi.dtim.odin.integration;
 import edu.upc.essi.dtim.Graph;
 import edu.upc.essi.dtim.NextiaDI;
 import edu.upc.essi.dtim.nextiadi.models.Alignment;
-//import edu.upc.essi.dtim.odin.bootstrapping.DataSource;
+import edu.upc.essi.dtim.odin.bootstrapping.DataSourceRepository;
+import edu.upc.essi.dtim.odin.bootstrapping.pojos.DataSource;
 import edu.upc.essi.dtim.odin.config.vocabulary.DataSourceGraph;
 import edu.upc.essi.dtim.odin.config.vocabulary.Namespaces;
 import edu.upc.essi.dtim.odin.integration.pojos.IntegrationData;
-import edu.upc.essi.dtim.odin.bootstrapping.pojos.DataSource;
-import edu.upc.essi.dtim.odin.bootstrapping.DataSourceRepository;
 import edu.upc.essi.dtim.odin.projects.Project;
 import edu.upc.essi.dtim.odin.projects.ProjectRepository;
 import edu.upc.essi.dtim.odin.projects.ProjectService;
@@ -21,7 +20,6 @@ import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.riot.Lang;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.slf4j.Logger;
@@ -106,8 +104,8 @@ public class IntegrationController {
 
         System.out.println("***");
         System.out.println(visualMinimal);
-        global.write("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/minimal_pers.ttl", Lang.TTL);
-        schemaInt.write("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/schema_int_pers.ttl", Lang.TTL);
+//        global.write("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/minimal_pers.ttl", Lang.TTL);
+//        schemaInt.write("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/schema_int_pers.ttl", Lang.TTL);
         projectService.updateGraphicalSchema(project, visualMinimal);
         projectService.updateGraphicalSchemaIntegration(project, visualSchemaIntegration);
         return new ResponseEntity(project, HttpStatus.OK);
@@ -219,7 +217,7 @@ public class IntegrationController {
 //        String f3 = "/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/minimal_tmp.ttl";
 //        graph.write(f3, simplifyI);
         Graph m1 = graph.temporal().getGraph(project.getGlobalSchemaIRI());
-        m1.write("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/minimal_tmp.ttl", Lang.TTL);
+//        m1.write("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/minimal_tmp.ttl", Lang.TTL);
 
         return new ResponseEntity(project, HttpStatus.OK);
     }
