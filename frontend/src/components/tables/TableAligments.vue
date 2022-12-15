@@ -83,7 +83,7 @@
     </template>
     <template v-slot:body-cell-actions="props">
       <q-td :props="props">
-        <q-btn dense round flat color="grey" @click="deleteRow(props)" icon="delete"></q-btn>
+        <q-btn dense round flat color="grey" @click="deleteRow(props.row)" icon="delete"></q-btn>
       </q-td>
     </template>
 

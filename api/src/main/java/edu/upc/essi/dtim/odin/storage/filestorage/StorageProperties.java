@@ -45,6 +45,10 @@ public class StorageProperties {
         return location + "/" + temporal_name;
     }
 
+    public String getDir(){
+        return location;
+    }
+
 
 //    public void setLocation(String location) {
 //        this.location = location;

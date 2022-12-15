@@ -28,7 +28,7 @@
             <q-item clickable style="padding:12px" v-ripple :active="active" @click="addDataSource = true">
               
               <q-item-section avatar>
-                <q-icon :name="storeDS.getDatasourcesNumber == 2 || (integrationStore.getDatasourcesNumber>0 && storeDS.getDatasourcesNumber >0) ? 'check_circle':'o_file_upload'" :color="storeDS.getDatasourcesNumber == 2 || (integrationStore.getDatasourcesNumber>0 && storeDS.getDatasourcesNumber >0)? 'green':null"   />
+                <q-icon :name="storeDS.getDatasourcesNumber > 1 || (integrationStore.getDatasourcesNumber>0 && storeDS.getDatasourcesNumber >0) ? 'check_circle':'o_file_upload'" :color="storeDS.getDatasourcesNumber > 1 || (integrationStore.getDatasourcesNumber>0 && storeDS.getDatasourcesNumber >0)? 'green':null"   />
               </q-item-section>
 
               <q-item-section>
@@ -45,7 +45,7 @@
             <q-item clickable style="padding:12px" v-ripple :active="active">
               
               <q-item-section avatar>
-                <q-icon :name="storeDS.getDatasourcesNumber == 2? 'check_circle':'o_merge'" :color="storeDS.getDatasourcesNumber == 2? 'green':null"  />
+                <q-icon :name="storeDS.getDatasourcesNumber > 1? 'check_circle':'o_merge'" :color="storeDS.getDatasourcesNumber > 1? 'green':null"  />
               </q-item-section>
 
               <q-item-section>

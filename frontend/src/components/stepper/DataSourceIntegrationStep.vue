@@ -45,11 +45,12 @@
 
 
         <q-step v-if="integrationStore.project.numberOfDS != '0'" :name="4" title="Preview integration" icon="settings" style="min-height: 70vh;height: 1px" id="previewIntegration">
-          <q-toggle :label="previewGS" false-value="Schema integrated" true-value="Global schema" v-model="previewGS"/>
           <div class="row" style="height: 92%;" >
             <div class="col-12">
              <!-- hola {{integrationStore.getGlobalSchema}} -->
              This is a preview of the global schema generated. Note that green elements are integrated resources. If you would like to see the schema integrated, use the toggle to visualize how source schemas are connected. 
+             <q-toggle :label="previewGS" false-value="Schema integrated" true-value="Global schema" v-model="previewGS"/>
+          
               <Graph :graphical="previewGS == 'Global schema' ? integrationStore.getGlobalSchema: integrationStore.getGraphicalSchemaIntegration"></Graph>
             </div>
          </div>   

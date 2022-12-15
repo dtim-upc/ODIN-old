@@ -1,17 +1,18 @@
 package edu.upc.essi.dtim.odin.auth;
 
 import edu.upc.essi.dtim.odin.auth.responses.LoginResult;
+import edu.upc.essi.dtim.odin.auth.responses.Triple;
+import edu.upc.essi.dtim.odin.auth.responses.TripleStore;
 import edu.upc.essi.dtim.odin.auth.user.User;
 import edu.upc.essi.dtim.odin.auth.user.UserRepository;
 import edu.upc.essi.dtim.odin.auth.user.UserService;
 import edu.upc.essi.dtim.odin.config.auth.JwtHelper;
 import edu.upc.essi.dtim.odin.config.auth.WebSecurityConfig;
 import edu.upc.essi.dtim.odin.config.vocabulary.Namespaces;
-import edu.upc.essi.dtim.odin.auth.responses.Triple;
-import edu.upc.essi.dtim.odin.auth.responses.TripleStore;
 import edu.upc.essi.dtim.odin.projects.Project;
 import edu.upc.essi.dtim.odin.projects.ProjectService;
 import edu.upc.essi.dtim.odin.storage.JenaConnection;
+import edu.upc.essi.dtim.odin.storage.filestorage.StorageProperties;
 import edu.upc.essi.dtim.odin.utils.jena.NextiaGraphy;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
@@ -34,7 +35,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -51,6 +58,10 @@ public class AuthController {
 
     @Autowired
     ProjectService projectService;
+
+    //just temporal. delete later
+    @Autowired
+    StorageProperties properties;
 
 
     @Autowired
@@ -145,17 +156,22 @@ public class AuthController {
 //            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
-//        if(existingUser != null && existingUser.getUsername() != null && !existingUser.getUsername().isEmpty()){
-//
-//        }
 
         Boolean flag = userService.saveUser(user);
-
+        try(FileWriter fw = new FileWriter(properties.getDir()+"/users.txt", true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter out = new PrintWriter(bw))
+        {
+            SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+            Date date = new Date(System.currentTimeMillis());
+            out.println("Created user: "+user.getUsername() +",Name: "+ user.getFirstName() +" "+user.getLastName() +" , Date: " + formatter.format(date) );
+        } catch (IOException e) {
+            //exception handling left as an exercise for the reader
+        }
 
 
         if(flag) {
-            // SURVEY. remove after survey finished
-            System.out.println("**hola***");
+            // SURVEY. remove after survey finished. Otherwise, it will create a project called "survey_NextiaDI" for every user.
             Project project = new Project();
             project.setName("Survey_NextiaDI");
             project.setCreatedBy(user.getUsername());
