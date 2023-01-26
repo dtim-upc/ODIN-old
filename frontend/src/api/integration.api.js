@@ -4,6 +4,7 @@ import {odinApi} from 'boot/axios';
 
 export default {
 
+    integrateJoins(projectID, joins,token) { return odinApi.post('/project/'+projectID+'/integration/join', joins, {headers: { Authorization: `Bearer ${token}` }})  }, 
 
     integrate(projectID,data, token) { return odinApi.post('/project/'+projectID+'/integration', data, {headers: { Authorization: `Bearer ${token}` }})  },
 

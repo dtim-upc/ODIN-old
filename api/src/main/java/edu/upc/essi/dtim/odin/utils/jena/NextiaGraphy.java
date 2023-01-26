@@ -200,7 +200,7 @@ public class NextiaGraphy {
         for( Resource r : model.listSubjects().toList() ) {
 
             Nodes n = new Nodes();
-            if(r.getURI().equals("http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/359835e0cff94c5da6886eac2bb05992/prueba1.Seq1.artworks.Seq2.contributors.gender")) {
+            if(r.getURI().contains("pop")) {
                 System.out.println("here");
             }
             n.setIri(r.getURI());

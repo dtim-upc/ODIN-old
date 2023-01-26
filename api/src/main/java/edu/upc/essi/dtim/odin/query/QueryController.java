@@ -2,16 +2,18 @@ package edu.upc.essi.dtim.odin.query;
 
 import com.clearspring.analytics.util.Lists;
 import com.google.common.collect.Sets;
-import edu.upc.essi.dtim.NextiaQR_RDFS;
+import edu.upc.essi.dtim.NextiaQR_new;
 import edu.upc.essi.dtim.nextiaqr.models.querying.RDFSResult;
-import edu.upc.essi.dtim.odin.query.pojos.QueryDataSelection;
 import edu.upc.essi.dtim.odin.projects.Project;
 import edu.upc.essi.dtim.odin.projects.ProjectRepository;
 import edu.upc.essi.dtim.odin.query.pojos.ODINQuery;
+import edu.upc.essi.dtim.odin.query.pojos.QueryDataSelection;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.XSD;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,6 @@ import scala.Tuple3;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -58,9 +59,9 @@ public class QueryController {
 
 //    fromGraphicalToSPARQL
     @PostMapping(value="graphical")
-    public ResponseEntity<RDFSResult> POST_query_fromGraphicalToSPARQL(Authentication authentication, @PathVariable("id") String id, @RequestBody QueryDataSelection body) {
+    public ResponseEntity<RDFSResult> queryFromGraphicalToSPARQL(Authentication authentication, @PathVariable("id") String id, @RequestBody QueryDataSelection body) {
 
-        LOGGER.info("[POST /OMQ/fromGraphicalToSPARQL/]");
+        LOGGER.info("[POST /query/fromGraphicalToSPARQL/]");
         Project project = validateAccess(id, authentication);
         System.out.println("saving integration persistent");
         ODINQuery constructs = Iservice.retrieveConstructs(project, body);
@@ -68,17 +69,20 @@ public class QueryController {
         List<String> SELECT = Lists.newArrayList();
         Set<Tuple3<String,String,String>> WHERE = Sets.newHashSet();
         SELECT.addAll(
-                body.getProperties().stream().map(c -> c.getIri()).collect(Collectors.toList())
+//                .filter(p -> p.getType() == "")
+                body.getProperties().stream().filter(p -> p.getRange().contains(XSD.getURI())).map(c -> c.getIri()).collect(Collectors.toList())
         );
         WHERE.addAll(
-                body.getClasses().stream().map(c -> new Tuple3<>(c.getIri(), RDF.type.getURI(), c.getType()))
+                body.getClasses().stream().map(c -> new Tuple3<>(c.getIri(), RDF.type.getURI(), RDFS.Class.getURI()))
                         .collect(Collectors.toSet())
         );
+
         WHERE.addAll(
                 body.getProperties().stream().flatMap(c -> {
                     List<Tuple3<String,String,String>> out = Lists.newArrayList();
                     out.add(new Tuple3<>(c.getIri(), RDFS.domain.getURI(), c.getDomain()));
-                    out.add(new Tuple3<>(c.getIri(),RDF.type.getURI(),c.getType()));
+                    out.add(new Tuple3<>(c.getIri(), RDFS.range.getURI(), c.getRange()));
+                    out.add(new Tuple3<>(c.getIri(),RDF.type.getURI(),RDF.Property.getURI()));
                     return out.stream();
                 }).collect(Collectors.toSet())
         );
@@ -98,40 +102,73 @@ public class QueryController {
         WHERE.forEach(w -> query.append(" <"+w._1()+"> <"+w._2()+"> <"+w._3()+"> . "));
         query.append("}");
 
-        NextiaQR_RDFS n = new NextiaQR_RDFS();
+//        NextiaQR_RDFS n = new NextiaQR_RDFS();
+        NextiaQR_new n = new NextiaQR_new();
         System.out.println("QUERY: ");
         System.out.println(query.toString());
 
-        List<Integer> cont = new ArrayList<>();
-        cont.add(1);
-        constructs.getSourceGraphs().forEach( (g, m) -> {
-            try {
-                cont.set(0, cont.get(0)+1);
-                RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/source"+cont.get(0)+".ttl"), m, Lang.TURTLE);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        });
+//        List<Integer> cont = new ArrayList<>();
+//        cont.add(1);
+//        constructs.getSourceGraphs().forEach( (g, m) -> {
+//            try {
+//                cont.set(0, cont.get(0)+1);
+//                RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/source"+cont.get(0)+".ttl"), m, Lang.TURTLE);
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//            }
+//        });
 
-        cont.add(1);
-        constructs.getSubGraphs().forEach( (g, m) -> {
+//        cont.add(1);
+//        constructs.getSubGraphs().forEach( (g, m) -> {
+//            try {
+//                cont.set(1, cont.get(1)+1);
+//                RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/subgraph"+cont.get(1)+".ttl"), m, Lang.TURTLE);
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//            }
+//        });
+//
+//        try {
+//            RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/minimal2.ttl"), constructs.getMinimal(), Lang.TURTLE);
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+
+
+
+            int contador = 0;
+            for( Model m : constructs.getSubGraphs().values() ) {
+                try {
+                    contador = contador+ 1;
+                    RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/landing_zone_1/pruebaquery/subgraph_"+contador+".ttl"), m, Lang.TURTLE);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        contador = 0;
+        for( Model m : constructs.getSourceGraphs().values() ) {
             try {
-                cont.set(1, cont.get(1)+1);
-                RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/subgraph"+cont.get(1)+".ttl"), m, Lang.TURTLE);
+                contador = contador+ 1;
+                RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/landing_zone_1/pruebaquery/source_"+contador+".ttl"), m, Lang.TURTLE);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-        });
+        }
 
         try {
-            RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/minimal2.ttl"), constructs.getMinimal(), Lang.TURTLE);
+            RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/landing_zone_1/pruebaquery/globalSchema.ttl"), constructs.getMinimal(), Lang.TURTLE);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
+        System.out.println("****\nQUERY NEXTIAQR: "+query);
 
 
-        RDFSResult res = n.rewriteToUnionOfConjunctiveQueries(constructs.getSourceGraphs(), constructs.getMinimal(),
+//       working here:
+//       params: sourceGraphs contains sameAs
+//       , Model globalSchema, Map<String, Model> subgraphs, String query
+        RDFSResult res = n.query(constructs.getSourceGraphs(), constructs.getMinimal(),
                 constructs.getSubGraphs(), query.toString());
 
         return new ResponseEntity<>(res, HttpStatus.OK );

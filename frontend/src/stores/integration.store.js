@@ -21,7 +21,9 @@ export const useIntegrationStore = defineStore('integration',{
         projectTemporal: {},
         datasources: [], // these ds are in temporal landing
         selectedDS: [], //selected ds. It is an array because of table requirement input but it will always contain only one element
-        alignments: []
+        alignments: [], 
+        joinAlignments: []
+          // {"domainLabelA":"person", "domainLabelB":"country", "rightArrow":"true" ,"iriA": "A", "iriB": "B", "labelA": "lA", "labelB": "lB", "l": "i2", "type":"property" }]
     }),
 
     getters : {
@@ -69,6 +71,17 @@ export const useIntegrationStore = defineStore('integration',{
         },
         isDSEmpty(state) {
             return state.datasources.length == 0
+        },
+        isJoinAlignmentsRelationshipsComplete(state){
+          
+          if(state.joinAlignments.length == 0)
+            return true;
+          
+          if(state.joinAlignments.filter(a => a.relationship == "").length == 0){
+            return true;
+          }  
+          return false;
+            
         }
     },
     actions: {
@@ -290,7 +303,9 @@ export const useIntegrationStore = defineStore('integration',{
             //   console.log(response)
               if (response.status == 201 || response.status) {
                 notify.positive("Integration succeeded")
-                this.projectTemporal = response.data
+               
+                this.projectTemporal = response.data.project
+                this.joinAlignments = response.data.joins
                   if(callback)
                     callback()
               } else {
@@ -300,6 +315,37 @@ export const useIntegrationStore = defineStore('integration',{
               console.log("error integrating ds")
             notify.negative("Something went wrong in the server. No possible to integrate it")
           });
+        },
+        integrateJoins(callback ) {
+          const authStore = useAuthStore()
+          const notify = useNotify()
+
+          if(this.joinAlignments.length > 0 ){
+
+            integrationAPI.integrateJoins(this.project.id, this.joinAlignments, authStore.user.accessToken).then((response) => {
+              console.log("join integration response...", response)
+
+              if (response.status == 201 || response.status) {
+                notify.positive("Integration succeeded")
+
+                this.projectTemporal = response.data
+                if(callback)
+                    callback()
+
+              }else{
+                notify.negative("There was an error for the integration task")
+               }
+
+            }).catch( (error) => {
+              console.log("error integrating ds")
+            notify.negative("Something went wrong in the server. No possible to integrate it")
+          });
+
+
+          }
+          
+
+          
         },
         saveIntegration(callback){
 
@@ -335,6 +381,14 @@ export const useIntegrationStore = defineStore('integration',{
           let index = this.alignments.indexOf(aligment)
           console.log("index is ", index)
           this.alignments.splice(index,1)
+
+        },
+        deleteJoinAlignment(alignment) {
+
+          console.log("join alignment is ", alignment)
+          let index = this.joinAlignments.indexOf(alignment)
+          console.log("index is ", index)
+          this.joinAlignments.splice(index,1)
 
         },
         getAlignmentsSurvey(){

@@ -1,6 +1,7 @@
 package edu.upc.essi.dtim.odin.projects;
 
 import edu.upc.essi.dtim.Graph;
+import edu.upc.essi.dtim.odin.config.vocabulary.DataSourceGraph;
 import edu.upc.essi.dtim.odin.config.vocabulary.Namespaces;
 import edu.upc.essi.dtim.odin.storage.JenaConnection;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -166,6 +167,20 @@ public class ProjectRepository {
             p.setGraphicalGlobalSchema(StringEscapeUtils.unescapeJava(r.get("graphicalGlobal").toString()));
             p.setGraphicalSchemaIntegration(StringEscapeUtils.unescapeJava(r.get("graphicalIntegrated").toString()));
             return p;
+        }
+        return null;
+    }
+
+    public String getTemporalUnusedAlignments(String schemaIntegrationIRI) {
+        String query = commonPrefixes() + "SELECT ?unusedAlignments WHERE { " +
+                " <"+schemaIntegrationIRI+"> <"+DataSourceGraph.UNUSED_ALIGNMENTS.val()+"> ?unusedAlignments.  " +
+                "}";
+
+        ResultSet res = graph.temporal().runAQuery(query);
+
+        if(res.hasNext() ) {
+            QuerySolution r = res.next();
+            return r.get("unusedAlignments").toString();
         }
         return null;
     }

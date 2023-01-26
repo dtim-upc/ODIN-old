@@ -17,6 +17,7 @@ public enum DataSourceGraph {
 
     HAS_PROJECTID(Namespaces.DATASOURCE.val()+"/hasProjectID"),
 
+    UNUSED_ALIGNMENTS(Namespaces.NEXTIADI.val() + "unusedAlignments"),
     INTEGRATION_OF(Namespaces.NEXTIADI.val() +"integrationOf"  ),
     IS_MINIMAL_OF(Namespaces.NEXTIADI.val() +"isMinimalOf"  ),
     GRAPHICAL(DataSourceVocabulary.DataSource.val() +"/graphicalGraph"),

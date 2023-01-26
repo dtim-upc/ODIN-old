@@ -5,15 +5,10 @@ import edu.upc.essi.dtim.TripleStore;
 import edu.upc.essi.dtim.nextiadi.config.DataSourceVocabulary;
 import edu.upc.essi.dtim.odin.config.DataSourceTypes;
 import edu.upc.essi.dtim.odin.config.vocabulary.DataSourceGraph;
-import edu.upc.essi.dtim.odin.config.vocabulary.Namespaces;
-//import edu.upc.essi.dtim.odin.bootstrapping.DataSource;
 import org.apache.commons.compress.utils.Lists;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.impl.ResourceImpl;
 import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.sparql.core.Transactional;
 import org.apache.jena.tdb.TDBFactory;
@@ -21,7 +16,6 @@ import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -137,7 +131,7 @@ public class GraphStore extends TripleStore {
         return results;
     }
 
-    public Model getSubGraph( List<String> resources, String uri, List<String> identifiers){
+    public Model getSubGraph( List<String> resources, String uri){
 
         StringJoiner b = new StringJoiner(" ");
         resources.forEach( x -> b.add("<"+x+">"));
@@ -150,7 +144,7 @@ public class GraphStore extends TripleStore {
         QueryExecution qexec = QueryExecutionFactory.create(query, getGraph(uri) );
         Model results = qexec.execConstruct();
 
-        identifiers.forEach(i -> results.add(new ResourceImpl(i), RDFS.subClassOf, new ResourceImpl(Namespaces.SCHEMA.val()+"identifier")) );
+//        identifiers.forEach(i -> results.add(new ResourceImpl(i), RDFS.subClassOf, new ResourceImpl(Namespaces.SCHEMA.val()+"identifier")) );
 
         return  results;
 

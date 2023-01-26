@@ -8,11 +8,11 @@ import edu.upc.essi.dtim.odin.config.vocabulary.Namespaces;
 import edu.upc.essi.dtim.odin.projects.Project;
 import edu.upc.essi.dtim.odin.storage.JenaConnection;
 import edu.upc.essi.dtim.odin.storage.graph.GraphStore;
-//import edu.upc.essi.dtim.odin.utils.jena.GraphOperations;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.Lang;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,6 +94,8 @@ public class DataSourceRepository {
             graph.temporal().addTripleLiteral(dataSource.getIri(), dataSource.getIri(), DataSourceGraph.HAS_FILENAME.val(), dataSource.getFilename());
 
             graph.temporal().addTripleLiteral(dataSource.getIri(), dataSource.getIri(), DataSourceGraph.HAS_PROJECTID.val(), dataSource.getProjectID());
+
+            graph.temporal().getGraph(dataSource.getIri()).write("/Users/javierflores/Documents/upc/projects/NextiaQR/src/test/resources/qr_rdfs/caseJoin/"+dataSource.getName()+".ttl", Lang.TTL);
 
 //            gp.addModel(dataSource.getIri(), m);
 

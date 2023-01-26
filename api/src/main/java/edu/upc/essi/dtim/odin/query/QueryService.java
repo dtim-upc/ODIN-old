@@ -1,17 +1,19 @@
 package edu.upc.essi.dtim.odin.query;
 
+import edu.upc.essi.dtim.Graph;
 import edu.upc.essi.dtim.nextiadi.config.DataSourceVocabulary;
+import edu.upc.essi.dtim.nextiadi.config.Vocabulary;
 import edu.upc.essi.dtim.odin.config.vocabulary.DataSourceGraph;
 import edu.upc.essi.dtim.odin.config.vocabulary.Namespaces;
-import edu.upc.essi.dtim.odin.query.pojos.QueryDataSelection;
 import edu.upc.essi.dtim.odin.projects.Project;
 import edu.upc.essi.dtim.odin.query.pojos.ODINQuery;
+import edu.upc.essi.dtim.odin.query.pojos.QueryDataSelection;
 import edu.upc.essi.dtim.odin.storage.JenaConnection;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.impl.ResourceImpl;
 import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,8 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Component
 public class QueryService {
@@ -36,9 +36,6 @@ public class QueryService {
 
     public ODINQuery retrieveConstructs(Project p, QueryDataSelection idata){
 
-//        String uri = idata.getGraphID();
-
-
         ODINQuery odin = new ODINQuery();
         Map<String, Model> sourceGraphs = new HashMap<>();
         Map<String, Model> subGraphs = new HashMap<>();
@@ -46,11 +43,13 @@ public class QueryService {
         List<String> ids = new ArrayList<>();
         // get all graphs
         String querySTR = "SELECT ?sourceGraph ?id ?label ?minimal WHERE { " +
-                " GRAPH ?sourceGraph { ?sourceGraph <"+ DataSourceVocabulary.HAS_ID.val()+"> ?id. " +
-                "?sourceGraph <"+ RDFS.label.getURI()+"> ?label." +
+                " GRAPH ?sourceGraph {" +
+                " ?sourceGraph <"+ DataSourceVocabulary.HAS_ID.val()+"> ?id. " +
+                " ?sourceGraph <"+ RDFS.label.getURI()+"> ?label." +
                 "} "+
                 "{" +
-                "GRAPH <"+p.getSchemaIntegrationIRI()+"> { <"+p.getSchemaIntegrationIRI()+"> <"+ DataSourceGraph.INTEGRATION_OF.val()+"> ?sourceGraph." +
+                " GRAPH <"+p.getSchemaIntegrationIRI()+"> {" +
+                " <"+p.getSchemaIntegrationIRI()+"> <"+ DataSourceGraph.INTEGRATION_OF.val()+"> ?sourceGraph." +
                 " <"+p.getSchemaIntegrationIRI()+"> <"+DataSourceGraph.MINIMAL.val()+"> ?minimal. }" +
                 "}}";
 
@@ -72,26 +71,35 @@ public class QueryService {
             Model propertiesSameAs = graph.persistent().getPropertiesSameAs(sourceG);
             sourceG = sourceG.union(propertiesSameAs);
 
-            List<String> identifiersL = getIdentifiers(sourceG);
-            ids = Stream.concat(ids.stream(), identifiersL.stream())
-                    .collect(Collectors.toList());
+//            List<String> identifiersL = getIdentifiers(sourceG);
+//            ids = Stream.concat(ids.stream(), identifiersL.stream())
+//                    .collect(Collectors.toList());
 
-            Model subG = graph.persistent().getSubGraph(getIAndSourceURIs(sourceID, idata), minimalURI, identifiersL);
+            Model subG = graph.persistent().getSubGraph(getIAndSourceURIs(sourceID, idata), minimalURI);
             minimalU = minimalURI;
 
-            sourceGraphs.put(sourceURI, sourceG);
-            subGraphs.put(sourceURI, subG);
+            sourceGraphs.put(sourceURI, castIntegratedToSimpleTypes( Graph.wrap(sourceG) ));
+            subGraphs.put(sourceURI, castIntegratedToSimpleTypes(Graph.wrap(subG) ));
 
         }
         odin.setSourceGraphs(sourceGraphs);
         odin.setSubGraphs(subGraphs);
 
-        Model minimal = graph.persistent().getGraph(minimalU);
-        ids.forEach(i -> minimal.add(new ResourceImpl(i), RDFS.subClassOf, new ResourceImpl(Namespaces.SCHEMA.val()+"identifier")) );
-        odin.setMinimal(minimal);
+        Graph globalSchema = graph.persistent().getGraph(minimalU);
+        globalSchema = castIntegratedToSimpleTypes(globalSchema);
+//        ids.forEach(i -> minimal.add(new ResourceImpl(i), RDFS.subClassOf, new ResourceImpl(Namespaces.SCHEMA.val()+"identifier")) );
+        odin.setMinimal(globalSchema);
 
         return odin;
 
+    }
+
+    public Graph castIntegratedToSimpleTypes(Graph g ){
+        g.updateResourceNodeIRI(Vocabulary.IntegrationDProperty.val(), RDF.Property.getURI());
+        g.updateResourceNodeIRI(Vocabulary.JoinObjectProperty.val(), RDF.Property.getURI());
+        g.updateResourceNodeIRI(Vocabulary.IntegrationOProperty.val(), RDF.Property.getURI());
+        g.updateResourceNodeIRI(Vocabulary.IntegrationClass.val() , RDFS.Class.getURI());
+        return g;
     }
 
     public List<String> getIdentifiers( Model model){
