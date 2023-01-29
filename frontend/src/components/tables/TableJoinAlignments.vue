@@ -9,25 +9,9 @@
              v-model:pagination="pagination"
              no-data-label="Consider adding some alignments to start the integration process"
              no-results-label="The filter didn't uncover any results" >
-      <template v-slot:top-left="">
+      <template v-slot:top-left>
         <div class="q-table__title">
          <span> {{ title }}  </span>
-          <!-- <q-btn padding="none" color="secondary" icon="add" @click="show_dialog = true"/> -->
-              <q-btn-dropdown color="primary" dropdown-icon="add" no-icon-animation padding="none" menu-anchor="top right" menu-self="top left">
-                <q-list>
-                  <q-item clickable v-close-popup @click="setManualView('manual')" >
-                    <q-item-section>
-                      <q-item-label>Manual alignment</q-item-label>
-                    </q-item-section>
-                  </q-item>
-  
-                  <q-item clickable v-close-popup @click="integrationStore.getAlignmentsSurvey()">
-                    <q-item-section>
-                      <q-item-label>Automatic survey</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </q-btn-dropdown>
         </div>
       </template>
   

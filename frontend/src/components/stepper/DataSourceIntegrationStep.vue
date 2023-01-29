@@ -62,7 +62,8 @@
 
         <template v-slot:navigation>
           <q-stepper-navigation class="">
-            <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()"   :label="step === 4 ? 'Back' : 'Back'" class="q-ml-sm"/>
+            <!-- $refs.stepper.previous -->
+            <q-btn v-if="step > 1" flat color="primary" @click="previousStep()"   :label="step === 4 ? 'Back' : 'Back'" class="q-ml-sm"/>
 
             <q-btn class="q-ml-sm" @click="clickOk" :disable="disableStepBtn()" color="primary" :label="stepLabel()"/>
             <!-- <q-btn @click="" color="primary" label="Delete"/> -->
@@ -160,6 +161,17 @@ const previewGS = ref('Global schema')
       }
     }
 
+    const previousStep = () => {
+
+      if(integrationStore.joinAlignments.length == 0 && step.value == 5) {
+        step.value = 3
+      } else {
+        step.value--
+      }
+
+
+
+    }
 
    const clickOk = () => {
       switch (step.value){
@@ -180,7 +192,14 @@ const previewGS = ref('Global schema')
         case 3:
        
         console.log("integrate with project. Step value", step.value)
-        integrationStore.integrateTemporal( function () { step.value++ } )
+        integrationStore.integrateTemporal( function () {
+
+          if( integrationStore.joinAlignments.length == 0 ) {
+            step.value = 5
+          } else {
+            step.value++ 
+          }
+        } )
         // step.value++
         // 
           // emit("finished")
@@ -188,6 +207,7 @@ const previewGS = ref('Global schema')
           break;
 
         case 4:
+
           console.log("step 4 review alignments")
           integrationStore.integrateJoins( function () { step.value++ } )
             

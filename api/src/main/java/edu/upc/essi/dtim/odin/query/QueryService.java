@@ -124,10 +124,25 @@ public class QueryService {
             }
         });
         idata.getProperties().forEach( x -> {
-            if(x.getIsIntegrated() || x.getIri().contains(id)) {
-                resources.add(x.getIri() );
+
+            if( x.getType().equals(Vocabulary.JoinObjectProperty.val()) ) {
+
+                // Note that join object properties are only represented in the range subgraph
+                // TODO: handle case when range is integrated
+                if(x.getRange().contains(id)){
+                    resources.add(x.getIri());
+                }
+
+            } else {
+                if(x.getIsIntegrated() || x.getIri().contains(id)) {
+                    resources.add(x.getIri() );
+                }
+
             }
         });
+
+
+
         return resources;
     }
 
