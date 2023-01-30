@@ -95,7 +95,7 @@
     </template>
 
     <template v-slot:no-data="{ icon, message, filter }">
-      <div class="full-width row flex-center text-accent q-gutter-sm q-pa-xl" style="flex-direction: column">
+      <div class="full-width row flex-center text-accent " style="flex-direction: column">
 <!--        <q-icon size="2em" name="sentiment_dissatisfied"/>-->
         <!-- <span> {{ message }} </span> -->
         <img src="/assets/icons/AlignmentTable.svg" alt="No alignments added" style="width: 320px; height: 176px"/>

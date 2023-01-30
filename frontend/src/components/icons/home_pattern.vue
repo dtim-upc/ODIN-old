@@ -15,8 +15,11 @@
 <style lang="scss">
 // .cls-1{fill:#f9f8fe;}
 // .cls-2{fill:#f1f1f9;}
-.cls-1{fill:#E2E2F3;}
-.cls-2{fill:#E8E6F0;}
+// .cls-1{fill:#E2E2F3;}
+// .cls-2{fill:#E8E6F0;}
+.cls-1{fill:#CECBE6;}
+.cls-2{fill:#DCDAE8;}
+
 
 
 

@@ -2,7 +2,8 @@
 .body--light {
     /* background-color: #f4f8fb; */
     /* background-color: #ffffff; */
-    background-color: $neutral100;
+    // background-color: $neutral100;
+    background-color: #ecebf3;
   }
   
 // .body--dark {
@@ -37,6 +38,10 @@ color: $neutral400;
     .text-neutral500{
         color: $neutral500;
     }
+
+    .bg-white-color{
+        background-color: #fff; 
+    }
     
 
 }
@@ -62,6 +67,10 @@ color: $neutral400;
 
     .text-neutral500{
         color: $neutral400;
+    }
+
+    .bg-white-color{
+        background-color: $dark   ; 
     }
     /* ... */
 

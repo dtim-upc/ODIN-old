@@ -238,6 +238,14 @@ export const useIntegrationStore = defineStore('integration',{
           this.selectedDS = []
           this.selectedDS.push(ds)
         },
+        SelectOneDatasource(){
+          
+          if(this.datasources.length > 0) {
+            this.selectedDS = []
+            this.selectedDS.push(this.datasources[0])
+          }
+         
+        },
 
         deleteSelectedDatasource(ds){
           console.log("deleteselect: ", ds)

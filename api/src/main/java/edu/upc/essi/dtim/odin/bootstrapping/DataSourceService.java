@@ -79,7 +79,8 @@ public class DataSourceService {
         switch (FilenameUtils.getExtension(dataSource.getPath())){
             case "csv":
                 CSVBootstrap bootstrap = new CSVBootstrap();
-                bootsrapM = bootstrap.bootstrapSchema(dataSource.getId(),dataSource.getName(),dataSource.getSchemaIRI(),  dataSource.getPath() );
+//                bootsrapM = bootstrap.bootstrapSchema(dataSource.getId(),dataSource.getName(),dataSource.getSchemaIRI(),  dataSource.getPath() );
+                bootsrapM = bootstrap.bootstrapSchema(dataSource.getId(),dataSource.getName(),  dataSource.getPath() );
                 break;
             case "json":
 //                JSONBootstrap jsonBootstrap =  new JSONBootstrap();

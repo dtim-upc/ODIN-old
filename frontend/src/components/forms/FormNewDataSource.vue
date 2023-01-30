@@ -74,6 +74,7 @@ import { useIntegrationStore } from 'src/stores/integration.store.js'
 const props = defineProps({
   show: {type:Boolean, default: false, required: true},
   showFormButtons: { type: Boolean, default: true },
+  afterSubmitShowGraph : { type: Boolean, default: true },
 });
 
 
@@ -164,9 +165,11 @@ const successCallback = (datasource) => {
                   onReset()
                   form.value.resetValidation()
 	
-		showS.value = false;
-		console.log("here*****")
+              		showS.value = false;
+
                   integrationStore.addSelectedDatasource(datasource)
+
+                if(props.afterSubmitShowGraph)
                   router.push({name:'dsIntegration'})
                 
   }

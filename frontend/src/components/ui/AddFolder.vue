@@ -35,7 +35,7 @@ import TableQueryResult from "components/tables/TableQueryResult.vue"
 
 const props = defineProps({
     row: {type:Object},
-    folderColor: {type:String, default: "#F2E9E9"} //#3dbb94
+    folderColor: {type:String, default: "#fff"} //#F2E9E9 //#3dbb94
 });
 const emit = defineEmits(["addFolder"])
 const activeFolder = ref("")

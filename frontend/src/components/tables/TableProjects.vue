@@ -1,10 +1,14 @@
 <template>
 
   <q-table :grid="gridEnable" :rows="projectsStore.projects" :columns="columns" :class="{ 'no-shadow': no_shadow }"
-           row-key="id"
+          style="height: 600px"  
+          virtual-scroll 
+          v-model:pagination="pagination"
+          :rows-per-page-options="[0]"
+          row-key="id"
            no-data-label="Consider adding some alignments to start the integration process"
            no-results-label="The filter didn't uncover any results" >
-    <template v-slot:top-left="">
+    <template v-slot:top-left>
       <div class="q-table__title">
        <span> {{ title }}  </span>
         <q-btn padding="none" color="secondary" icon="add" @click="showDialog = true"/>
@@ -18,16 +22,16 @@
 <!--          <q-icon name="search"/>-->
 <!--        </template>-->
 <!--      </q-input>-->
-
-                <q-btn unelevated padding="none" color="primary700" icon="remove"
+<!-- <q-btn flat padding="xs" icon="list" color="primary600 " style="background-color:#F6F6F9"></q-btn> -->
+                <q-btn unelevated padding="none" color="primary700" icon="list"
                         @click="gridEnable = !gridEnable" />
 
-      <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+      <!-- <q-btn flat round dense :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
              @click="props.toggleFullscreen">
         <q-tooltip :disable="$q.platform.is.mobile" v-close-popup>
           {{ props.inFullscreen ? "Exit Fullscreen" : "Toggle Fullscreen" }}
         </q-tooltip>
-      </q-btn>
+      </q-btn> -->
     </template>
 
     <!-- <template v-slot:body-cell-actions="props">
@@ -122,6 +126,9 @@ const projectsStore = useProjectsStore()
 const gridEnable = ref(true)
 // const emit = defineEmits(['update:alignments'])
 const showDialog = ref(false)
+const pagination = ref({
+        rowsPerPage: 0
+      })
 // const store = useStore()
     const $q = useQuasar()
 
