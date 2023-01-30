@@ -213,16 +213,18 @@ public class IntegrationController {
         while(result.hasNext()) {
             integrationOfs.add(result.next().get("datasource").toString());
         }
+
+        graph.temporal().addTriple(project.getSchemaIntegrationIRI(), project.getSchemaIntegrationIRI(), DataSourceGraph.INTEGRATION_OF.val(), dsB  );
         if(integrationOfs.size() != 0) {
             for(String dsIRI : integrationOfs) {
                 graph.temporal().addTriple(project.getSchemaIntegrationIRI(), project.getSchemaIntegrationIRI(), DataSourceGraph.INTEGRATION_OF.val(), dsIRI  );
             }
-        } else {
+        }
             // we usually have project - datasource then we can only add B, but the first is datasource - datasource integration, so this should add A and B
             if( project.getNumberOfDS().equals("1") )
                 graph.temporal().addTriple(project.getSchemaIntegrationIRI(), project.getSchemaIntegrationIRI(), DataSourceGraph.INTEGRATION_OF.val(), dsA  );
-            graph.temporal().addTriple(project.getSchemaIntegrationIRI(), project.getSchemaIntegrationIRI(), DataSourceGraph.INTEGRATION_OF.val(), dsB  );
-        }
+
+
 
 
         graph.temporal().addTriple(project.getSchemaIntegrationIRI(), project.getSchemaIntegrationIRI(), DataSourceGraph.MINIMAL.val(), project.getGlobalSchemaIRI()  );

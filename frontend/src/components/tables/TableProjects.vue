@@ -97,7 +97,7 @@
             </q-card-section>
 
             <q-card-section class="q-pt-none">
-                 <AddFolderForm @submit-success="showDialog=false"></AddFolderForm>
+                 <AddFolderForm @submit-success="showDialog=false" @cancel-form="showDialog=false"></AddFolderForm>
             </q-card-section>
 
          

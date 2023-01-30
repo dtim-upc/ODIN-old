@@ -94,15 +94,15 @@
           </q-item-section>
 
           <q-item-section style="position:absolute; bottom:0;left: 0;right: 0;">
-            <q-linear-progress :value="storeDS.getDatasourcesNumber == 1? 0.25 : storeDS.getDatasourcesNumber > 1? 0.75 : integrationStore.getDatasourcesNumber > 1? 0.5:0" rounded color="green" class="q-mt-sm" />
+            <q-linear-progress :value="progress()" rounded color="green" class="q-mt-sm" />
           </q-item-section>
 
           
         </template>
-        <q-card>
+        <q-card style="width:100%">
           <q-card-section>
             
-            <q-list style="width:100%" separator>
+            <q-list  separator>
 
 <q-item clickable style="padding:12px" v-ripple :active="active" @click="addDataSource = true">
   
@@ -158,7 +158,7 @@
   </q-item-section>
 
   <q-item-section side>
-    <q-btn v-if="integrationStore.getDatasourcesNumber < 1 || (storeDS.getDatasourcesNumber != 1 && storeDS.getDatasourcesNumber != 0)" color="primary" label="Start" icon-right="o_navigate_next" dense no-caps />
+    <q-btn v-if="!getStartedCompleteUpload2ndDS()" color="primary" label="Start" icon-right="o_navigate_next" dense no-caps />
     <q-icon v-else name="check_circle" color="green"  />
   </q-item-section>
 
@@ -248,6 +248,33 @@ const showIntegrationView = () => {
   router.push({name:'dsIntegration'})
 }
 
+const getStartedCompleteUpload2ndDS = () => {
+
+
+  if(storeDS.getDatasourcesNumber > 1){
+    return true;
+  } else if(integrationStore.getDatasourcesNumber > 0 && storeDS.getDatasourcesNumber >= 1){
+    return true;
+  }
+  return false;
+
+}
+
+const progress = () => {
+
+  if(storeDS.getDatasourcesNumber >= 2){
+    return 0.8
+  } else if(integrationStore.getDatasourcesNumber == 1 && storeDS.getDatasourcesNumber >= 1 ) {
+    return 0.6
+  } else if(integrationStore.getDatasourcesNumber == 1) {
+    return 0.2
+  } else if ( storeDS.getDatasourcesNumber == 1 ) {
+    return 0.4
+  } else {
+    return 0
+  }
+
+}
 
 </script>
   

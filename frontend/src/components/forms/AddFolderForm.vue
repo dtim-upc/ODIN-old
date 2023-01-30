@@ -12,7 +12,7 @@
 
           <div v-if="showFormButtons" >
             <q-btn label="Submit" type="submit" color="primary"/>
-            <q-btn label="Cancel" type="reset" color="primary" flat class="q-ml-sm"/>
+            <q-btn label="Cancel" type="reset" color="primary" flat class="q-ml-sm" @click="cancelForm()"/>
           </div>
         </q-form>
 
@@ -35,7 +35,7 @@ const projectsStore = useProjectsStore()
 //     projectsStore.initStores()
 // })
 
-const emit = defineEmits(["submitSuccess"])
+const emit = defineEmits(["submitSuccess","cancelForm"])
 const form = ref(null)
 const notify = useNotify()
 
@@ -72,6 +72,11 @@ const optionsColor = ["#dbe2e7", "#4e68f5"]
          form.value.resetValidation()
         //  console.log("reset validation")
          emit("submitSuccess")
+    }
+
+    const cancelForm = () => {
+      form.value.resetValidation()
+      emit("cancelForm")
     }
 
 

@@ -16,9 +16,19 @@
                  @click="$q.fullscreen.toggle()" v-if="$q.screen.gt.sm">
           </q-btn>
           <q-btn round flat>
-            <q-avatar size="26px" @click="logout">
+            <q-avatar size="26px">
               <img src="https://cdn.quasar.dev/img/boy-avatar.png"/>
             </q-avatar>
+
+            <q-menu auto-close transition-show="scale" transition-hide="scale" anchor="bottom left" self="top left">
+                    <q-list style="min-width: 100px">
+                      <q-item clickable @click="authStore.logout()">
+                        <q-item-section>Log out</q-item-section>
+                      </q-item>
+                    </q-list>
+            </q-menu>
+
+
           </q-btn>
         </div>
 

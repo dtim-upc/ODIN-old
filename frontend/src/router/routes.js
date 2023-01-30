@@ -6,7 +6,7 @@ const routes = [
     redirect: to => {
       // the function receives the target route as the argument
       // we return a redirect path/location here.
-      return { path: '/projects' }
+      return { path: '/projects', name:'projects' }
     },
   },
   {

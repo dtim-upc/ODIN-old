@@ -51,11 +51,11 @@
           <q-list >
             <q-item-section>
               <q-item>
-                <h5>Query</h5>
+                <h5> Query</h5>
               </q-item>
             </q-item-section>
   
-            <q-expansion-item label="Global schema" expand-icon="arrow_drop_down" default-opened>
+            <!-- <q-expansion-item label="Global schema" expand-icon="arrow_drop_down" default-opened>
               <q-list dense>
   
                 <q-item >
@@ -73,7 +73,7 @@
                 </q-item>
   
               </q-list>
-            </q-expansion-item>
+            </q-expansion-item> -->
   
   
   

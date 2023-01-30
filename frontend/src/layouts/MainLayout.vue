@@ -25,6 +25,19 @@
           <q-item exact manual-focus>
             <q-item-section avatar>
               <!-- <q-icon name="o_cottage"/> -->
+              <q-btn  flat padding="xs" icon="o_folder" :to="{name: 'projects'}" color="neutral500 ">
+                          <q-tooltip anchor="center right" self="center left" :offset="[10, 10]" transition-show="fade" transition-hide="fade">
+                            Projects
+                          </q-tooltip>
+                        </q-btn> 
+            </q-item-section>
+            <q-item-section>
+                  Projects
+            </q-item-section>
+          </q-item>
+          <q-item exact manual-focus>
+            <q-item-section avatar>
+              <!-- <q-icon name="o_cottage"/> -->
               <q-btn  flat padding="xs" icon="o_cottage" :to="{name: 'home'}" :color="$route.name === 'home' ? 'primary600': 'neutral500' " :class="{ activebg: $route.name === 'home' }">
                           <q-tooltip anchor="center right" self="center left" :offset="[10, 10]" transition-show="fade" transition-hide="fade">
                             Home
