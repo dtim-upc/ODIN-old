@@ -22,7 +22,6 @@ import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.riot.Lang;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.slf4j.Logger;
@@ -321,7 +320,7 @@ public class IntegrationController {
         graph.temporal().addModel(project.getSchemaIntegrationIRI(), n.getOnlyIntegrationResources());
 
         Graph m1 = Graph.wrap( n.getOnlyIntegrationResources());
-        m1.write("/Users/javierflores/Documents/upc/projects/newODIN/api/landing_zone_1/onlyIResources.ttl", Lang.TTL);
+//        m1.write("/Users/javierflores/Documents/upc/projects/newODIN/api/landing_zone_1/onlyIResources.ttl", Lang.TTL);
 
         graph.temporal().addTriple(project.getSchemaIntegrationIRI(), project.getSchemaIntegrationIRI(), RDF.type.getURI(), Namespaces.INTEGRATION.val());
 

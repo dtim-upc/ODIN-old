@@ -8,9 +8,6 @@ import edu.upc.essi.dtim.odin.projects.Project;
 import edu.upc.essi.dtim.odin.projects.ProjectRepository;
 import edu.upc.essi.dtim.odin.query.pojos.ODINQuery;
 import edu.upc.essi.dtim.odin.query.pojos.QueryDataSelection;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.XSD;
@@ -25,8 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import scala.Tuple3;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -107,60 +102,34 @@ public class QueryController {
         System.out.println("QUERY: ");
         System.out.println(query.toString());
 
-//        List<Integer> cont = new ArrayList<>();
-//        cont.add(1);
-//        constructs.getSourceGraphs().forEach( (g, m) -> {
-//            try {
-//                cont.set(0, cont.get(0)+1);
-//                RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/source"+cont.get(0)+".ttl"), m, Lang.TURTLE);
-//            } catch (FileNotFoundException e) {
-//                e.printStackTrace();
-//            }
-//        });
 
-//        cont.add(1);
-//        constructs.getSubGraphs().forEach( (g, m) -> {
+
+//
+//            int contador = 0;
+//            for( Model m : constructs.getSubGraphs().values() ) {
+//                try {
+//                    contador = contador+ 1;
+//                    RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/landing_zone_1/pruebaquery/subgraph_"+contador+".ttl"), m, Lang.TURTLE);
+//                } catch (FileNotFoundException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//        contador = 0;
+//        for( Model m : constructs.getSourceGraphs().values() ) {
 //            try {
-//                cont.set(1, cont.get(1)+1);
-//                RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/subgraph"+cont.get(1)+".ttl"), m, Lang.TURTLE);
+//                contador = contador+ 1;
+//                RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/landing_zone_1/pruebaquery/source_"+contador+".ttl"), m, Lang.TURTLE);
 //            } catch (FileNotFoundException e) {
 //                e.printStackTrace();
 //            }
-//        });
+//        }
 //
 //        try {
-//            RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/source_schemas/minimal2.ttl"), constructs.getMinimal(), Lang.TURTLE);
+//            RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/landing_zone_1/pruebaquery/globalSchema.ttl"), constructs.getMinimal(), Lang.TURTLE);
 //        } catch (FileNotFoundException e) {
 //            e.printStackTrace();
 //        }
-
-
-
-            int contador = 0;
-            for( Model m : constructs.getSubGraphs().values() ) {
-                try {
-                    contador = contador+ 1;
-                    RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/landing_zone_1/pruebaquery/subgraph_"+contador+".ttl"), m, Lang.TURTLE);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        contador = 0;
-        for( Model m : constructs.getSourceGraphs().values() ) {
-            try {
-                contador = contador+ 1;
-                RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/landing_zone_1/pruebaquery/source_"+contador+".ttl"), m, Lang.TURTLE);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-
-        try {
-            RDFDataMgr.write(new FileOutputStream("/Users/javierflores/Documents/upc/projects/newODIN/api/landing_zone_1/pruebaquery/globalSchema.ttl"), constructs.getMinimal(), Lang.TURTLE);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
 
         System.out.println("****\nQUERY NEXTIAQR: "+query);
 
