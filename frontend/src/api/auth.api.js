@@ -6,7 +6,7 @@ export default {
     login(credentials) { return odinApi.post('/login', credentials) },
 
 
-    prueba() { return odinApi.get('/prueba'    ) },
+    prueba(path) { return odinApi.post('/prueba' , path, {headers: {'Content-Type': 'text/xml'},}  ) },
     
 
 }

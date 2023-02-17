@@ -132,13 +132,16 @@ public class AuthController {
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated");
     }
 
-    @GetMapping("prueba")
-    public ResponseEntity<String> pru(){
-        Model model = RDFDataMgr.loadModel("/Users/javierflores/Documents/upc/projects/NextiaDI/source/src/main/resources/stations_target.ttl") ;
-
-        NextiaGraphy ng = new NextiaGraphy();
+    @PostMapping("prueba")
+    public ResponseEntity<String> pru(@RequestBody String path){
+        System.out.println("Generating visual graph for file: "+path);
+        String visualSchemaIntegration = "";
+        if(path != null) {
+            Model model = RDFDataMgr.loadModel(path) ;
+            NextiaGraphy ng = new NextiaGraphy();
 //        String visualSchemaIntegration = ng.generateVisualGraph(model);
-        String visualSchemaIntegration = ng.generateVisualGraphNew(model);
+            visualSchemaIntegration = ng.generateVisualGraphNew(model);
+        }
 
         return new ResponseEntity<>(visualSchemaIntegration, HttpStatus.OK);
     }

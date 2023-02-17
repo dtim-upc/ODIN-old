@@ -2,49 +2,6 @@
   <!-- style="position:relative" -->
   <q-page class="row items-stretch">
 
-    <!-- <q-layout view="lhh LpR lff" container style="min-height: inherit;" class="shadow-2 rounded-borders">
-   <div> 
-  
- <q-drawer show-if-above  :breakpoint="500" bordered >
-      <q-scroll-area class="fit">
-        <q-list padding>
-
-<q-item clickable v-ripple>
-        <q-item-section>Single line item</q-item-section>
-      </q-item>
-
-      <q-item clickable v-ripple>
-        <q-item-section>
-          <q-item-label>Item with caption</q-item-label>
-          <q-item-label caption>Caption</q-item-label>
-        </q-item-section>
-      </q-item>
-
-      <q-item clickable v-ripple>
-        <q-item-section>
-          <q-item-label overline>OVERLINE</q-item-label>
-          <q-item-label>Item with caption</q-item-label>
-        </q-item-section>
-      </q-item>
-
-        </q-list>
-      </q-scroll-area>
-    </q-drawer>
-
-     </div> 
-
-
-<q-page-container>
-        <q-page class="row items-stretch"  style="min-height: inherit;">
-<Graph></Graph>
-</q-page>
-</q-page-container>
-    </q-layout> -->
-
-    <!-- </q-layout> -->
-    <!-- <q-drawer show-if-above  :breakpoint="500" bordered > -->
-
-
     <div class="col-2" style="background:white">
       <q-scroll-area class="fit">
         <!-- class="q-pa-md" -->
@@ -53,6 +10,8 @@
             <q-item-label>
               <h5 class="q-pa-md" >Schema</h5>
             </q-item-label>
+            <q-input outlined v-model="path" label="Path to file.ttl" />
+            <br>
             <q-btn color="primary" label="Get" @Click="setGlobalSchema" />
           </q-item-section>
 
@@ -69,7 +28,6 @@
     </div>
 
 
-    <!-- </q-drawer> -->
 
 
 
@@ -86,16 +44,18 @@ import {useNotify} from 'src/use/useNotify.js'
 
 
 const graphical = ref('')
-
+const path = ref('')
 const notify  = useNotify()
 
 const setGlobalSchema = () => {
 
-  console.log("setting global schema view")
+  console.log("setting global schema view", path.value)
 
-  api.prueba().then((response) => {
+  api.prueba(path.value).then((response) => {
+
               console.log("response",response.data)
-              graphical.value = JSON.stringify(response.data); 
+              if(response.data != "")
+                graphical.value = JSON.stringify(response.data); 
             
             }).catch( (error) => {
               console.log("error addding ds: ", error)
