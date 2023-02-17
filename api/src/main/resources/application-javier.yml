@@ -1,12 +1,3 @@
-
-#db:
-#  jena:
-#    dir: /Users/javierflores/Documents/upc/projects/newODIN/api
-#    name: jena2
-#  files:
-#    upload:
-#      dir: /Users/javierflores/Documents/upc/projects/newODIN/api/uploads
-#
 dataStorage:
   landingZone:
     dir: /Users/javierflores/Documents/upc/projects/newODIN/api/landing_zone
