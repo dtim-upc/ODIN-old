@@ -106,9 +106,8 @@ public class JpaOrmImplementation implements ORMStoreInterface {
             String queryString = "DELETE FROM " + entityClass.getSimpleName() + " d";
             em.getTransaction().begin();
             Query query = em.createQuery(queryString);
-            int deletedCount = query.executeUpdate();
+            success = query.executeUpdate() > 0;
             em.getTransaction().commit();
-            success = deletedCount > 0;
         } catch (Exception e) {
             logger.error("Error deleting all {}: {}", entityClass.getSimpleName(), e.getMessage(), e);
         } finally {
@@ -118,5 +117,4 @@ public class JpaOrmImplementation implements ORMStoreInterface {
         }
         return success;
     }
-
 }
