@@ -32,6 +32,7 @@ public class ProjectServiceTest {
         this.testProject.setProjectDescription("testDescription");
         this.testProject.setProjectColor("testColor");
         this.testProject.setProjectPrivacy("testPrivacy");
+        this.testProject.setCreatedBy("Victor Asenjo Testing");
     }
 
     @AfterEach
