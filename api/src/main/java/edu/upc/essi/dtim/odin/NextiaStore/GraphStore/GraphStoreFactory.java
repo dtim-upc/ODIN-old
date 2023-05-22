@@ -23,7 +23,8 @@ public class GraphStoreFactory {
                 case "JENA":
                     return new GraphStoreJenaImpl(appConfig);
                 case "DUMMY":
-                    return new GraphStoreDummyImpl();
+                    //OTHER IMPLEMENTATIONS
+                    throw new Exception("DUMMY IS JUST A DEMO TYPE");
                 default:
                     throw new Exception("Error with DB type");
             }
