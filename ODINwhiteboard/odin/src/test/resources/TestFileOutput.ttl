@@ -1,0 +1,26 @@
+@prefix dataFrame:        <https://www.essi.upc.edu/dtim/dataframe-metamodel#> .
+@prefix json:             <https://www.essi.upc.edu/dtim/json-metamodel#> .
+@prefix nextiaDataSource: <http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/> .
+@prefix nextiaSchema:     <http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/12/> .
+@prefix rdf:              <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:             <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:              <http://www.w3.org/2001/XMLSchema#> .
+
+nextiaSchema:Age  rdf:type  rdf:Property ;
+        rdfs:domain  nextiaSchema:artworks ;
+        rdfs:label   "Age" ;
+        rdfs:range   xsd:string .
+
+nextiaSchema:City  rdf:type  rdf:Property ;
+        rdfs:domain  nextiaSchema:artworks ;
+        rdfs:label   "City" ;
+        rdfs:range   xsd:string .
+
+nextiaSchema:Name  rdf:type  rdf:Property ;
+        rdfs:domain  nextiaSchema:artworks ;
+        rdfs:label   "Name" ;
+        rdfs:range   xsd:string .
+
+nextiaSchema:artworks
+        rdf:type    rdfs:Class ;
+        rdfs:label  "artworks" .
