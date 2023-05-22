@@ -1,6 +1,6 @@
 import { route } from 'quasar/wrappers'
 import { createRouter, createMemoryHistory, createWebHistory, createWebHashHistory } from 'vue-router'
-import { useAuthStore } from 'stores/auth.store.js' 
+import { useAuthStore } from 'stores/auth.store.js'
 import routes from './routes'
 
 /*
@@ -28,10 +28,10 @@ export default route(function (/* { store, ssrContext } */) {
   })
 
 
-  Router.beforeEach(async (to, from) => {
+  /*Router.beforeEach(async (to, from) => {
     const authStore = useAuthStore()
     authStore.init()
-  
+
 
       if(!authStore.user.accessToken && to.name !== 'auth') {
         return { name: 'auth'}
@@ -40,17 +40,17 @@ export default route(function (/* { store, ssrContext } */) {
       // if(authStore.user.accessToken && from.name === 'auth') {
       //   return {name: 'projects'}
       // }
-  
+
       if(authStore.user.accessToken && to.name === 'auth') {
         if(from.name === undefined)
           return {name: 'projects'}
-        else  
+        else
           return false
       }
 
- 
 
-  })
+
+  })*/
 
   return Router
 })

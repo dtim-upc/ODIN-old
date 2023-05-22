@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>C:/Users/victo/Documents/GitHub/ODINwhiteboard/ODINwhiteboard/odin/src/main</OriginalElement>
+  <nodes>
+    <node x="125.51693442864473" y="867.701483911228">edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreFactory</node>
+    <node x="-885.4923121951219" y="142.22835121951215">edu.upc.essi.dtim.odin.project.ProjectService</node>
+    <node x="600.0863112360969" y="856.4705307492857">edu.upc.essi.dtim.odin.NextiaGraphy.graphy.Graphy</node>
+    <node x="1354.086311236097" y="887.662532612613">edu.upc.essi.dtim.odin.NextiaGraphy.vocabulary.Namespaces</node>
+    <node x="-364.0" y="856.4705307492857">edu.upc.essi.dtim.odin.config.AppConfig</node>
+    <node x="-897.4923121951219" y="-179.4730926829269">edu.upc.essi.dtim.odin.project.ProjectController</node>
+    <node x="-51.95687101735882" y="675.3373991825971">edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreDummyImpl</node>
+    <node x="-438.5" y="-201.4730926829269">edu.upc.essi.dtim.odin.bootstrapping.SourceController</node>
+    <node x="-1241.2954346561196" y="-277.5657024126566">edu.upc.essi.dtim.odin.OdinApplication</node>
+    <node x="-587.4944224302351" y="509.15529756097555">edu.upc.essi.dtim.odin.NextiaStore.RelationalStore.ORMStoreInterface</node>
+    <node x="-586.9944224302351" y="925.9742140013183">edu.upc.essi.dtim.odin.NextiaStore.RelationalStore.ORMStoreFactory</node>
+    <node x="1358.086311236097" y="1224.530856936938">edu.upc.essi.dtim.odin.NextiaGraphy.vocabulary.Vocabulary</node>
+    <node x="140.2231899038411" y="531.1552975609756">edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreInterface</node>
+    <node x="-841.9386199077126" y="676.4268698571743">edu.upc.essi.dtim.odin.NextiaStore.RelationalStore.JpaOrmImplementation</node>
+    <node x="-1149.0544126741377" y="554.9268698571743">edu.upc.essi.dtim.odin.project.Project</node>
+    <node x="-13.355749326469322" y="234.43327089430886">edu.upc.essi.dtim.odin.bootstrapping.GraphModelPair</node>
+    <node x="1353.586311236097" y="719.2283704504507">edu.upc.essi.dtim.odin.NextiaGraphy.vocabulary.SourceGraph</node>
+    <node x="312.63061803224844" y="653.3373991825971">edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreJenaImpl</node>
+    <node x="-364.0" y="98.22835121951215">edu.upc.essi.dtim.odin.bootstrapping.SourceService</node>
+    <node x="1354.586311236097" y="1056.0966947747754">edu.upc.essi.dtim.odin.NextiaGraphy.vocabulary.GlobalGraph</node>
+    <node x="-1283.7954346561196" y="-155.99728439463863">edu.upc.essi.dtim.odin.config.CorsConfiguration</node>
+    <node x="849.5420044399455" y="602.7415236036036">edu.upc.essi.dtim.odin.NextiaGraphy.graphy.Links</node>
+    <node x="1341.586311236097" y="550.7942082882885">edu.upc.essi.dtim.odin.NextiaGraphy.vocabulary.DataSourceGraph</node>
+    <node x="1328.086311236097" y="382.36004612612624">edu.upc.essi.dtim.odin.NextiaGraphy.vocabulary.DataSourceVocabulary</node>
+    <node x="813.5420044399453" y="382.3600461261262">edu.upc.essi.dtim.odin.NextiaGraphy.NextiaGraphy</node>
+    <node x="1079.8105679455066" y="734.2670813447594">edu.upc.essi.dtim.odin.NextiaGraphy.graphy.Nodes</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="edu.upc.essi.dtim.odin.project.ProjectController" target="edu.upc.essi.dtim.odin.project.ProjectService" relationship="TO_ONE">
+      <point x="-9.0" y="83.0" />
+      <point x="-15.0" y="-138.0" />
+    </edge>
+    <edge source="edu.upc.essi.dtim.odin.NextiaGraphy.NextiaGraphy" target="edu.upc.essi.dtim.odin.NextiaGraphy.graphy.Nodes" relationship="CREATE">
+      <point x="128.9999999999999" y="0.0" />
+      <point x="1172.8105679455066" y="431.8600461261262" />
+      <point x="0.0" y="-325.5" />
+    </edge>
+    <edge source="edu.upc.essi.dtim.odin.NextiaGraphy.NextiaGraphy" target="edu.upc.essi.dtim.odin.NextiaGraphy.graphy.Links" relationship="CREATE">
+      <point x="1.1368683772161603E-13" y="49.5" />
+      <point x="0.0" y="-182.5" />
+    </edge>
+    <edge source="edu.upc.essi.dtim.odin.NextiaGraphy.graphy.Graphy" target="edu.upc.essi.dtim.odin.NextiaGraphy.graphy.Nodes" relationship="TO_MANY">
+      <point x="93.0" y="86.79655059547372" />
+      <point x="-93.0" y="0.0" />
+    </edge>
+    <edge source="edu.upc.essi.dtim.odin.bootstrapping.SourceService" target="edu.upc.essi.dtim.odin.NextiaStore.RelationalStore.ORMStoreInterface" relationship="TO_ONE">
+      <point x="-148.0" y="15.0" />
+      <point x="-503.9944224302351" y="295.22835121951215" />
+      <point x="-15.0" y="-71.0" />
+    </edge>
+    <edge source="edu.upc.essi.dtim.odin.NextiaStore.RelationalStore.ORMStoreFactory" target="edu.upc.essi.dtim.odin.NextiaStore.RelationalStore.ORMStoreInterface" relationship="TO_ONE">
+      <point x="0.0" y="38.5" />
+      <point x="0.0" y="-71.0" />
+    </edge>
+    <edge source="edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreFactory" target="edu.upc.essi.dtim.odin.config.AppConfig" relationship="TO_ONE">
+      <point x="-108.0" y="-3.0682995034055693" />
+      <point x="84.0" y="-35.83734634146322" />
+    </edge>
+    <edge source="edu.upc.essi.dtim.odin.bootstrapping.SourceService" target="edu.upc.essi.dtim.odin.bootstrapping.GraphModelPair" relationship="CREATE">
+      <point x="148.0" y="26.204919674796713" />
+      <point x="-109.0" y="0.0" />
+    </edge>
+    <edge source="edu.upc.essi.dtim.odin.NextiaGraphy.NextiaGraphy" target="edu.upc.essi.dtim.odin.NextiaGraphy.graphy.Graphy" relationship="CREATE">
+      <point x="-129.0" y="15.0" />
+      <point x="693.0863112360969" y="446.8600461261262" />
+      <point x="0.0" y="-116.5" />
+    </edge>
+    <edge source="edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreFactory" target="edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreInterface" relationship="TO_ONE">
+      <point x="-0.7937445248036283" y="-50.0" />
+      <point x="0.0" y="49.0" />
+    </edge>
+    <edge source="edu.upc.essi.dtim.odin.bootstrapping.SourceService" target="edu.upc.essi.dtim.odin.config.AppConfig" relationship="TO_ONE">
+      <point x="-64.5" y="182.0" />
+      <point x="-280.5" y="950.4705307492857" />
+      <point x="-84.0" y="0.0" />
+    </edge>
+    <edge source="edu.upc.essi.dtim.odin.bootstrapping.SourceController" target="edu.upc.essi.dtim.odin.bootstrapping.SourceService" relationship="TO_ONE">
+      <point x="0.0" y="105.0" />
+      <point x="0.0" y="-182.0" />
+    </edge>
+    <edge source="edu.upc.essi.dtim.odin.project.ProjectService" target="edu.upc.essi.dtim.odin.NextiaStore.RelationalStore.ORMStoreInterface" relationship="TO_ONE">
+      <point x="4.553692287409376" y="138.0" />
+      <point x="-737.4386199077126" y="565.1552975609756" />
+      <point x="-98.5" y="-15.0" />
+    </edge>
+    <edge source="edu.upc.essi.dtim.odin.NextiaStore.RelationalStore.JpaOrmImplementation" target="edu.upc.essi.dtim.odin.NextiaStore.RelationalStore.ORMStoreInterface" relationship="REALIZATION">
+      <point x="-15.0" y="-82.5" />
+      <point x="-752.4386199077126" y="580.1552975609756" />
+      <point x="-98.5" y="0.0" />
+    </edge>
+    <edge source="edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreJenaImpl" target="edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreInterface" relationship="REALIZATION">
+      <point x="-104.5" y="-82.5" />
+      <point x="87.40742812840733" y="49.0" />
+    </edge>
+    <edge source="edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreFactory" target="edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreJenaImpl" relationship="CREATE">
+      <point x="94.01157621621621" y="-50.0" />
+      <point x="327.52851064486094" y="843.0194415469125" />
+      <point x="320.13061803224844" y="843.0194415469125" />
+      <point x="-104.5" y="82.5" />
+    </edge>
+    <edge source="edu.upc.essi.dtim.odin.NextiaStore.RelationalStore.ORMStoreFactory" target="edu.upc.essi.dtim.odin.NextiaStore.RelationalStore.JpaOrmImplementation" relationship="CREATE">
+      <point x="-98.0" y="0.0" />
+      <point x="-737.4386199077126" y="964.4742140013183" />
+      <point x="0.0" y="82.5" />
+    </edge>
+    <edge source="edu.upc.essi.dtim.odin.bootstrapping.SourceService" target="edu.upc.essi.dtim.odin.NextiaGraphy.NextiaGraphy" relationship="CREATE">
+      <point x="0.0" y="182.0" />
+      <point x="-216.0" y="431.8600461261262" />
+      <point x="-129.0" y="0.0" />
+    </edge>
+    <edge source="edu.upc.essi.dtim.odin.bootstrapping.SourceService" target="edu.upc.essi.dtim.odin.project.ProjectService" relationship="TO_ONE">
+      <point x="-148.0" y="0.0" />
+      <point x="143.5" y="0.0" />
+    </edge>
+    <edge source="edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreFactory" target="edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreDummyImpl" relationship="CREATE">
+      <point x="-100.5" y="-50.0" />
+      <point x="133.01693442864473" y="832.0194415469125" />
+      <point x="144.64219424846453" y="832.0194415469125" />
+      <point x="92.09906526582336" y="60.5" />
+    </edge>
+    <edge source="edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreDummyImpl" target="edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreInterface" relationship="REALIZATION">
+      <point x="97.0" y="-60.5" />
+      <point x="-83.18006092119992" y="49.0" />
+    </edge>
+    <edge source="edu.upc.essi.dtim.odin.NextiaGraphy.graphy.Graphy" target="edu.upc.essi.dtim.odin.NextiaGraphy.graphy.Links" relationship="TO_MANY">
+      <point x="93.0" y="-12.72900714568209" />
+      <point x="-93.0" y="175.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="0.6055778631284916" showDependencies="true" x="-118.99704504504507" y="271.88800000000003" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Constructors</Category>
+    <Category>Fields</Category>
+    <Category>Inner Classes</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

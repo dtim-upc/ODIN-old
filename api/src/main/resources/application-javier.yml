@@ -1,8 +1,0 @@
-dataStorage:
-  landingZone:
-    dir: /Users/javierflores/Documents/upc/projects/newODIN/api/landing_zone
-
-logging:
-  level:
-    org.springframework.web: INFO
-    edu.upc.essi.dtim: DEBUG

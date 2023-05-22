@@ -3,8 +3,8 @@
   <q-page class="row items-stretch">
 
     <!-- <q-layout view="lhh LpR lff" container style="min-height: inherit;" class="shadow-2 rounded-borders">
-   <div> 
-  
+   <div>
+
  <q-drawer show-if-above  :breakpoint="500" bordered >
       <q-scroll-area class="fit">
         <q-list padding>
@@ -31,7 +31,7 @@
       </q-scroll-area>
     </q-drawer>
 
-     </div> 
+     </div>
 
 
 <q-page-container>
@@ -69,7 +69,7 @@
             <q-list dense>
 
               <q-item v-for="ds in storeDS.datasources">
-                  <q-btn  flat padding="xs" :label="ds.name" class="full-width" :class="selectedSchema == ds.id? 'activebg': ''" align="left" @Click="setSchema(ds)"/>
+                  <q-btn  flat padding="xs" :label="ds.datasetName" class="full-width" :class="selectedSchema == ds.datasetId? 'activebg': ''" align="left" @Click="setSchema(ds)"/>
               </q-item>
 
             </q-list>
@@ -108,8 +108,8 @@ const selectedSchema = ref('')
 
 
 const setSchema = datasource => {
-  selectedSchema.value = datasource.id
-  graphical.value = datasource.graphicalSchema
+  selectedSchema.value = datasource.datasetId
+  graphical.value = datasource.localGraph.graphicalSchema
 }
 
 const setGlobalSchema = () => {

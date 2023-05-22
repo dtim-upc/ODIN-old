@@ -2,8 +2,8 @@
     <div class="q-pa-md">
         <!-- style="min-height: 70vh;margin-top:15px" -->
 <!-- @selection="validateSelection2" -->
-        <q-table :grid="gridEnable" ref="tableRef" :rows="storeDS.datasources" :columns="columns" :filter="search" 
-            :class="{ 'no-shadow': no_shadow }"  row-key="id" 
+        <q-table :grid="gridEnable" ref="tableRef" :rows="storeDS.datasources" :columns="columns" :filter="search"
+            :class="{ 'no-shadow': no_shadow }"  row-key="id"
             no-data-label="I didn't find anything for you. Consider creating a new data source."
             no-results-label="The filter didn't uncover any results" :visible-columns="visibleColumns" >
 
@@ -20,7 +20,7 @@
                 <q-btn v-if="!integrationStore.isDSEmpty" outline
                     color="primary" label="Finish pending sources" class="q-mr-xs"
                     :to="{ name: 'dsIntegration' }">
-                    <q-badge color="orange" floating>{{integrationStore.datasources.length}}</q-badge>    
+                    <q-badge color="orange" floating>{{integrationStore.datasources.length}}</q-badge>
                 </q-btn>
 
                 <q-btn label="Integrated schema" dense color="primary" icon="download" @click="storeDS.downloadProjectS" style="margin-right:10px"></q-btn>
@@ -52,14 +52,14 @@
 
             <template v-slot:body-cell-View_triples="props">
                 <q-td :props="props">
-                    <q-btn dense round flat color="grey" 
+                    <q-btn dense round flat color="grey"
                         icon="mdi-graphql" :to="{name: 'viewTriples', params: {datasourceID: props.row.id}}"></q-btn>
                 </q-td>
             </template>
 
             <template v-slot:body-cell-View_Source_Graph="props">
                 <q-td :props="props">
-                    <q-btn dense round flat color="grey" 
+                    <q-btn dense round flat color="grey"
                         icon="download" @click="storeDS.downloadSource(props.row.id)"></q-btn>
 
                     <!-- <q-btn v-if="props.row.type == 'INTEGRATED'" dense round flat color="grey"
@@ -114,6 +114,7 @@ import {useNotify} from 'src/use/useNotify.js'
 import FormNewDataSource from "components/forms/FormNewDataSource.vue";
 // import { odinApi } from "boot/axios";
 import api from "src/api/dataSourcesAPI.js";
+
 /*
   props
 */
@@ -134,9 +135,9 @@ onBeforeMount( () => {
 })
 // select, name, tag, size, type -> owner, members -> delete, view local schema
 const columns = [
-    { name: "id", label: "Id", align: "center", field: "id", sortable: true, },
-    { name: "Name", label: "Name", align: "center", field: "name", sortable: true, },
-    { name: "Type", label: "Type", align: "center", field: "type", sortable: true, },
+    { name: "datasetId", label: "Id", align: "center", field: "datasetId", sortable: true, },
+    { name: "Name", label: "Name", align: "center", field: "datasetName", sortable: true, },
+    { name: "datasetType", label: "Type", align: "center", field: "datasetType", sortable: true, },
     // {name: "#Wrappers", label: "#Wrappers", align: "center", field: "wrappers", sortable: true,},
     { name: "View_triples", label: "View triples", align: "center", field: "View_triples", sortable: false, },
     {
@@ -145,6 +146,19 @@ const columns = [
     },
     { name: "actions", label: "actions", align: "center", field: "actions", sortable: false, },
 ];
+
+onMounted(() => {
+  const url = window.location.href; // Get the current URL
+  const regex = /project\/(\d+)\//;
+  const match = url.match(regex);
+  let projectId;
+  if (match) {
+    projectId = match[1];
+    console.log(projectId); // Output: 1
+  }
+
+  storeDS.getDatasources(projectId)
+} )
 const views = {
     "integration": ['Name', 'Type'],
     "datasources": ['Name', 'Type', '#Wrappers', 'View_triples', 'View_Source_Graph', 'actions']
@@ -165,19 +179,6 @@ const hasSourceGraph = (props) => {
 }
     const deleteRow = (props2) => {
         storeDS.deleteDataSource(props2.row)
-        // odinApi.delete(`/dataSource/${props2.row.id}`)
-        // api.deleteDS(props2.row.id)
-        // .then((response) => {
-        //   if (response.status == 204) {
-        //     notify.positive("Successfully deleted")
-        //     storeDS.deleteDataSource(props2.row)
-        //     // store.dispatch('deleteDatasource', props2.row)
-        //   } else {
-        //     // 500
-        //     notify.negative("Something went wrong in the server.")
-        //   }
-        // });
-      
     }
 </script>
 

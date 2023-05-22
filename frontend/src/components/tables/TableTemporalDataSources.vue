@@ -5,7 +5,7 @@
 <!-- v-model:selected="selecti" -->
  <!-- @update:selected="setSelected" -->
         <q-table ref="tableRef" :rows="integrationStore.datasources" :columns="columns" :filter="search" selection="multiple"
-            :class="{ 'no-shadow': no_shadow }" :selected="integrationStore.selectedDS" @selection="validateSelection"   row-key="id" 
+            :class="{ 'no-shadow': no_shadow }" :selected="integrationStore.selectedDS" @selection="validateSelection"   row-key="id"
             no-data-label="I didn't find anything for you. Consider creating a new data source."
             no-results-label="The filter didn't uncover any results" :visible-columns="visibleColumns">
 
@@ -47,7 +47,7 @@
 
             <template v-slot:body-cell-View_Source_Graph="props">
                 <q-td :props="props">
-                    <q-btn dense round flat color="grey" 
+                    <q-btn dense round flat color="grey"
                         icon="download" @click="integrationStore.downloadSourceTemporal(props.row.id)"></q-btn>
 
                 </q-td>
@@ -110,9 +110,9 @@ onMounted( () => {
 
 // select, name, tag, size, type -> owner, members -> delete, view local schema
 const columns = [
-    { name: "id", label: "Id", align: "center", field: "id", sortable: true, },
-    { name: "Name", label: "Name", align: "center", field: "name", sortable: true, },
-    { name: "Type", label: "Type", align: "center", field: "type", sortable: true, },
+    { name: "id", label: "Id", align: "center", field: "datasetId", sortable: true, },
+    { name: "Name", label: "Name", align: "center", field: "datasetName", sortable: true, },
+    { name: "Type", label: "Type", align: "center", field: "datasetType", sortable: true, },
     // {name: "#Wrappers", label: "#Wrappers", align: "center", field: "wrappers", sortable: true,},
     // { name: "View Metadata", label: "View Metadata", align: "center", field: "View Metadata", sortable: false, },
     {
@@ -173,7 +173,7 @@ const validateSelection = ({rows, added, evt}) => {
     const deleteRow = (row) => {
 
         integrationStore.deleteTemporalDS(row)
- 
+
         // // odinApi.delete(`/dataSource/${props2.row.id}`)
         // api.deleteDS(props2.row.id)
         // .then((response) => {
@@ -186,7 +186,7 @@ const validateSelection = ({rows, added, evt}) => {
         //     notify.negative("Something went wrong in the server.")
         //   }
         // });
-      
+
     }
 
 

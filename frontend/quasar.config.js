@@ -14,7 +14,7 @@ const { configure } = require('quasar/wrappers');
 
 module.exports = configure(function ( ctx ) {
   return {
-    
+
 
     // https://v2.quasar.dev/quasar-cli/prefetch-feature
     // preFetch: true,
@@ -23,7 +23,7 @@ module.exports = configure(function ( ctx ) {
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli/boot-files
     boot: [
-      
+
       'axios',
       'tsParticles',
     ],
@@ -66,10 +66,9 @@ module.exports = configure(function ( ctx ) {
       // analyze: true,
       env: {
         API: ctx.dev
-          ? 'http://localhost:8082'
-          : 'http://localhost:8082'
+          ? 'http://localhost:8080'
+          : 'http://localhost:8080'
           // : 'http://quarry.essi.upc.edu:8082'
-          
       },
       // rawDefine: {}
       // ignorePublicFolder: true,
@@ -80,7 +79,7 @@ module.exports = configure(function ( ctx ) {
       // extendViteConf (viteConf) {},
       // viteVuePluginOptions: {},
 
-      
+
       // vitePlugins: [
       //   [ 'package-name', { ..options.. } ]
       // ]

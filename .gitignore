@@ -1,61 +1,12 @@
 
-.idea/
-projectName.iml
-/*.classpath
-/.classpath
-/.springBeans
-*.DS_Store
-.DS_Store
-*.iml
-/build
-/local.properties
-target/
-.gradle
-/build/
-
-#Gradle
-.gradle/
-gradle/*
-out/*
-build/
-
-# IntelliJ IDEA
-*.iws
-*.ipr
-
-# Jena
-/jena2
-
-.DS_Store
-.thumbs.db
-node_modules
-
-# Quasar core related directories
-.quasar
-/dist
-
-# Cordova related directories and files
-/src-cordova/node_modules
-/src-cordova/platforms
-/src-cordova/plugins
-/src-cordova/www
-
-# Capacitor related directories and files
-/src-capacitor/www
-/src-capacitor/node_modules
-
-# BEX related directories and files
-/src-bex/www
-/src-bex/js/core
-
-# Log files
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Editor directories and files
-.idea
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
+*.csv
+ODINwhiteboard/odin/src/main/resources/credentials.properties
+*.bpt
+*.dat
+*.idn
+*.jrnl
+*.obj
+*.bdf
+*.lock
+*.db
+*.json

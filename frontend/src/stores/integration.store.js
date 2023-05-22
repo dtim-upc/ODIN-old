@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import {useNotify} from 'src/use/useNotify.js'
-// import {odinApi} from "boot/axios";
 import api from "src/api/dataSourcesAPI.js";
 import integrationAPI from "src/api/integration.api.js";
 import { useAuthStore } from 'stores/auth.store.js'
@@ -21,7 +20,7 @@ export const useIntegrationStore = defineStore('integration',{
         projectTemporal: {},
         datasources: [], // these ds are in temporal landing
         selectedDS: [], //selected ds. It is an array because of table requirement input but it will always contain only one element
-        alignments: [], 
+        alignments: [],
         joinAlignments: []
           // {"domainLabelA":"person", "domainLabelB":"country", "rightArrow":"true" ,"iriA": "A", "iriB": "B", "labelA": "lA", "labelB": "lB", "l": "i2", "type":"property" }]
     }),
@@ -30,10 +29,10 @@ export const useIntegrationStore = defineStore('integration',{
         // getSourceA(state){
           // should always be the project schema
             // if(state.project.numberOfDS == '0') {
-            //     if(state.selectedDS.length == 2) 
+            //     if(state.selectedDS.length == 2)
             //         return state.selectedDS[0]
             //     else
-            //         return null                   
+            //         return null
             // } else {
             //     // return project graphical schema
             //     return state.project.schema.graphical
@@ -44,44 +43,46 @@ export const useIntegrationStore = defineStore('integration',{
           return state.datasources.length
         },
         getSourceB(state) {
-            if(state.selectedDS.length == 1) 
+            if(state.selectedDS.length == 1)
                 return state.selectedDS[0]
             else
-                return null       
+                return null
         },
         getGraphicalA(state){
-            return state.project.graphicalGlobalSchema      
+            return state.project.graphicalGlobalSchema
         },
         getGraphicalB(state){
-          if(state.selectedDS.length == 1) 
-              return state.selectedDS[0].graphicalSchema
+          if(state.selectedDS.length == 1){
+            console.log("******************"+state.selectedDS[0])
+              return state.selectedDS[0].localGraph.graphicalSchema
+          }
           else
-              return ""       
+              return ""
         },
         getGlobalSchema(state){
 
           if(state.projectTemporal.graphicalGlobalSchema)
             return state.projectTemporal.graphicalGlobalSchema
-          return ""  
+          return ""
         },
         getGraphicalSchemaIntegration(state){
           if(state.projectTemporal.graphicalSchemaIntegration)
             return state.projectTemporal.graphicalSchemaIntegration
-           return "" 
+           return ""
         },
         isDSEmpty(state) {
             return state.datasources.length == 0
         },
         isJoinAlignmentsRelationshipsComplete(state){
-          
+
           if(state.joinAlignments.length == 0)
             return true;
-          
+
           if(state.joinAlignments.filter(a => a.relationship == "").length == 0){
             return true;
-          }  
+          }
           return false;
-            
+
         }
     },
     actions: {
@@ -94,7 +95,7 @@ export const useIntegrationStore = defineStore('integration',{
         // const route = useRoute()
         // if(authStore.user.accessToken && !this.project.name){
         //   const response = await projectAPI.getProjectByID(route.params.id, authStore.user.accessToken)
-          
+
         //     if(response.status == 200) {
         //       this.project = response.data
         //       // console.log("project assigned ", this.project)
@@ -130,8 +131,8 @@ export const useIntegrationStore = defineStore('integration',{
             console.log("retrieving temporal data sources...")
             this.getTemporalDatasources()
             this.alignments = []
-          }  
-          
+          }
+
         },
         deleteTemporalDS(ds){
           const notify  = useNotify()
@@ -148,9 +149,9 @@ export const useIntegrationStore = defineStore('integration',{
                     this.datasources.splice(index,1)
                 } else {
                     console.log("something wrong, could not find data source in array to delete it")
-                    // this.selectedDS = 
+                    // this.selectedDS =
                 }
-                
+
                 if(this.selectedDS.length > 0) {
 
                   if(this.selectedDS[0].id === ds.id){
@@ -160,7 +161,7 @@ export const useIntegrationStore = defineStore('integration',{
 
 
                 }
-                
+
 
 
               } else {
@@ -183,68 +184,76 @@ export const useIntegrationStore = defineStore('integration',{
           const authStore = useAuthStore()
 
             console.log("Pinia getting temporal data sources...")
-            const res = await api.getAllTemporal(this.project.id, authStore.user.accessToken).then(response => {
-        
+            const res = await api.getAll(this.project.id, authStore.user.accessToken).then(response => {
+
               console.log("ds temporal received", response)
 
               if(response.data === "") { // when no datasources, api answer ""
                 this.datasources = []
+                notify.positive("There are no data sources yet. Add sources to see them.")
               } else {
                 this.datasources = response.data
-              }      
+              }
             }).catch(err => {
               console.log("error retrieving data sources")
-              // check how to get err status e.g., 401
               console.log(err)
-              notify.negative("Cannot conect to the server.")
-            })
-        
+              if (err.response && err.response.status === 401) {
+                // Handle unauthorized error
+                // Notify the user or perform any other necessary actions
+                notify.negative("Unauthorized access.")
+              } else if(err.response && err.response.status === 404){
+                this.datasources = []
+                notify.positive("There are no data sources yet. Add sources to see them.")
+              }
+              else {
+                notify.negative("Cannot connect to the server.")
+              }
+            });
+
         },
 
         // this will upload the data source
-        addDataSource(projectID, data,success){
+        addDataSource(projectID, data, success){
           const notify  = useNotify()
           const authStore = useAuthStore()
             console.log("adding data source...", data)
+            api.bootstrap(projectID, authStore.user.accessToken, data)
+              .then((response) => {
+                console.log("dataset created ",response)
+                if (response.status == 200) {
 
-            api.createDSTemp(projectID, authStore.user.accessToken, data)
-            .then((response) => {
-              console.log("createDSTemp()",response)
-              if (response.status == 201) {
-    
-                // this should be in temporal landing
-                this.datasources.push(response.data)
+                  // this should be in temporal landing
+                  this.datasources.push(response.data)
 
-                // this.temporalDatasources.push(response.data)
-                
-                success(response.data);
-                // storeDS.addDataSource(response.data)
-                
-              } else {
-                // console.log("error")
-                notify.negative("Cannot create datasource. Something went wrong in the server.")
-              }
-            }).catch( (error) => {
+                  // this.temporalDatasources.push(response.data)
+
+                  success(response.data);
+                  // storeDS.addDataSource(response.data)
+
+                } else {
+                  // console.log("error")
+                  notify.negative("Cannot create datasource. Something went wrong in the server.")
+                }
+              }).catch( (error) => {
               console.log("error addding ds: ", error)
-            notify.negative("Something went wrong in the server.")
-          });
-
-            // console.log(ds)
-            // this.datasources.push(ds)
-            // console.log(this.datasources)
+              notify.negative("Something went wrong in the server.")
+            });
         },
         addSelectedDatasource(ds){
+        console.log(
+          "METODO ADDSELECTEDDATASOURCE**************************",ds
+        )
           // we can only have one selected ds
           this.selectedDS = []
           this.selectedDS.push(ds)
         },
         SelectOneDatasource(){
-          
+
           if(this.datasources.length > 0) {
             this.selectedDS = []
             this.selectedDS.push(this.datasources[0])
           }
-         
+
         },
 
         deleteSelectedDatasource(ds){
@@ -255,10 +264,10 @@ export const useIntegrationStore = defineStore('integration',{
                 console.log("dele index")
                 this.selectedDS.splice(index,1)
             } else {
-              
+
               this.selectedDS = this.selectedDS.filter(x => x.id != ds.id)
                 // console.log("check!!! something wrong else delete selected ds")
-                // this.selectedDS = 
+                // this.selectedDS =
             }
         },
         finishIntegration(ds){
@@ -270,7 +279,7 @@ export const useIntegrationStore = defineStore('integration',{
                     this.datasources.splice(index,1)
                 } else {
                     console.log("something wrong, could not find data source in array to delete it")
-                    // this.selectedDS = 
+                    // this.selectedDS =
                 }
 
         },
@@ -290,7 +299,7 @@ export const useIntegrationStore = defineStore('integration',{
                 a.labelB = aligment.resourceB.label
                 a.l = aligment.integratedLabel
                 a.type = aligment.type
-                
+
             } else {
                 a = aligment
             }
@@ -311,7 +320,7 @@ export const useIntegrationStore = defineStore('integration',{
             //   console.log(response)
               if (response.status == 201 || response.status) {
                 notify.positive("Integration succeeded")
-               
+
                 this.projectTemporal = response.data.project
                 this.joinAlignments = response.data.joins
                   if(callback)
@@ -351,9 +360,9 @@ export const useIntegrationStore = defineStore('integration',{
 
 
           }
-          
 
-          
+
+
         },
         saveIntegration(callback){
 
@@ -366,9 +375,9 @@ export const useIntegrationStore = defineStore('integration',{
           // acceptIntegration
           integrationAPI.finishIntegration( this.project.id, authStore.user.accessToken ).then((response) => {
             console.log("integration response...", response)
-         
+
             if (response.status == 200) {
-              
+
               // this.projectTemporal = response.data
                 if(callback)
                   callback(this.selectedDS[0])
@@ -404,13 +413,13 @@ export const useIntegrationStore = defineStore('integration',{
           const authStore = useAuthStore()
           const notify = useNotify()
 
-          
+
           integrationAPI.surveyAlignments(this.project.id, this.selectedDS[0].id ,authStore.user.accessToken).then((response) => {
             console.log("survey alignments response...", response)
-         
+
             if (response.status == 200) {
                 this.alignments = response.data
-            } 
+            }
           }).catch( (error) => {
             console.log("error alignments survye ", error)
           notify.negative("Something went wrong in the server.")
@@ -420,7 +429,7 @@ export const useIntegrationStore = defineStore('integration',{
         async downloadSourceTemporal(dsID){
           console.log("download....",dsID)
 
-            
+
 
           const authStore = useAuthStore()
           const notify  = useNotify()
@@ -430,13 +439,13 @@ export const useIntegrationStore = defineStore('integration',{
           download(response.data, "source_graph.ttl", content)
 
         },
-       
 
 
-        
+
+
 
     }
 
 
 
-})    
+})

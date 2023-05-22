@@ -12,8 +12,8 @@
                 <div class="text-center flex flex-center" style="height:100%">
                      <q-icon size="xl" name="add" />
                 </div>
-                
-                
+
+
             </div>
             <div class="folder__back_after" :style="folderBackColor">
             </div>
@@ -58,23 +58,6 @@ $paperColor: #ffffff;
     transition: all 0.2s ease-in;
     margin: 10px;
     width: 100%;
-
-    //   &.big &__back{
-    // width: 264px;
-    // height: 183px;;
-    //   }  
-    //   &.medium &__back{
-
-
-    // width: 176px;
-    // height: 122px;
-    //   }  
-
-    //   &.medium &__back::after{
-    //     width: 64px;
-    //     height: 16px;
-
-    //   }  
 
     &__back {
         position: relative;
@@ -140,19 +123,9 @@ $paperColor: #ffffff;
         }
     }
 
-
-
-
-    //   &:hover {
-    //     transform: translateY(-8px);
-    //   }
     &.active {
         transform: translateY(-8px);
     }
-
-    //   &:hover .paper {
-    //     transform: translate(-50%, 0%);
-    //   }
 
     &.active .paper {
         transform: translate(-50%, 0%);
