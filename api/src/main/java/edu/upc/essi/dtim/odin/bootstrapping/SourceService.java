@@ -305,16 +305,7 @@ public class SourceService {
                     new URI(stmt.getObject().isLiteral() ? stmt.getObject().asLiteral().toString():stmt.getObject().asResource().getURI())
             ));
         }
-
-        Graph graph = new LocalGraph(null, name, triples);
-        for(Triple t : triples){
-            System.out.println();
-            System.out.println(t.getSubject().getURI());
-            System.out.println(t.getPredicate().getURI());
-            System.out.println(t.getObject().toString());
-            System.out.println();
-        }
-        return graph;
+        return new LocalGraph(null, name, triples);
     }
 }
 

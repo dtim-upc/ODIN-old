@@ -86,9 +86,9 @@ public class SourceController {
             // Return success message
             return new ResponseEntity<>(savedDataset, HttpStatus.OK);
         } catch (UnsupportedOperationException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Data source not created sucessfully");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Data source not created successfully");
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Data source not created sucessfully");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred while creating the data source");
         }
     }
 
