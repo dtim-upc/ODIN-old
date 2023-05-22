@@ -102,10 +102,10 @@ public class JpaOrmImplementation implements ORMStoreInterface {
     public boolean deleteAll(Class<?> entityClass) {
         EntityManager em = emf.createEntityManager();
         boolean success = false;
-        String queryText = "DELETE FROM " + entityClass.getSimpleName();
         try {
+            String queryString = "DELETE FROM " + entityClass.getSimpleName() + " d";
             em.getTransaction().begin();
-            Query query = em.createQuery(queryText);
+            Query query = em.createQuery(queryString);
             int deletedCount = query.executeUpdate();
             em.getTransaction().commit();
             success = deletedCount > 0;
@@ -118,4 +118,5 @@ public class JpaOrmImplementation implements ORMStoreInterface {
         }
         return success;
     }
+
 }
