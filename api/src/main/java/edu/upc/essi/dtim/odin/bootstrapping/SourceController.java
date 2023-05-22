@@ -55,11 +55,6 @@ public class SourceController {
             logger.info("POST DATASOURCE RECEIVED FOR BOOTSTRAP");
             // Validate and authenticate access here
             //TODO: future check when adding authentification
-            /*
-            if (!validateAccess(projectId)) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied");
-            }
-             */
 
             // Reconstruct file from Multipart file
             String filePath = sourceService.reconstructFile(attach_file);

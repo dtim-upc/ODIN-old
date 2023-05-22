@@ -55,11 +55,11 @@ public class JpaOrmImplementation implements ORMStoreInterface {
         EntityManager em = emf.createEntityManager();
         List<T> objects = null;
         try {
-            //Safe way to pass a query to avoid SQL injections in the system
-            //Avoiding SQL injections
             String queryString = "SELECT d FROM " + entityClass.getSimpleName() + " d";
+            em.getTransaction().begin();
             TypedQuery<T> query = em.createQuery(queryString, entityClass);
             objects = query.getResultList();
+            em.getTransaction().commit();
         } catch (Exception e) {
             logger.error("Error retrieving all objects {}: {}", entityClass.getSimpleName(), e.getMessage(), e);
         } finally {
@@ -69,6 +69,7 @@ public class JpaOrmImplementation implements ORMStoreInterface {
         }
         return objects;
     }
+
 
     @Override
     public <T> boolean deleteOne(Class<T> entityClass, String id) {

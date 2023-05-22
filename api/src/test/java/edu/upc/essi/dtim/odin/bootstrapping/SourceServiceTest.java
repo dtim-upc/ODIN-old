@@ -70,7 +70,7 @@ class SourceServiceTest {
     @Test
     void testExtractData_csv() {
         // Prepare the input data
-        String filePath = "..\\ODINwhiteboard\\odin\\src\\test\\resources\\csvTestFile.csv";
+        String filePath = "..\\api\\src\\test\\resources\\csvTestFile.csv";
         String datasetName = "test csv dataset";
         String datasetDescription = "test csv description";
 

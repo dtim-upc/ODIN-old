@@ -24,11 +24,7 @@ public class NextiaGraphy {
 
     public String generateVisualGraphNew(Model model){
 
-        HashMap<String, String> nodesId = new HashMap<String, String>();
-        HashMap<String, String> propertiesId= new HashMap<String, String>();
-
-        //Graph graph = new Graph();
-        //graph.setModel(model);
+        HashMap<String, String> nodesId = new HashMap<>();
 
         List<Nodes> nodes = new ArrayList<>();
 
@@ -63,14 +59,8 @@ public class NextiaGraphy {
                 property.setIri(statement.getPredicate().getURI());
                 property.setType(statement.getPredicate().getURI());
                 property.setDomain(n.getIri());
-                property.setRange(statement.getObject().toString());
-                    property.setLabel(getLastElem(property.getIri()));
-                    property.setId("Property"+nodeId);
-                    nodesId.put(property.getIri(), property.getId());
-                    nodeId += 1 ;
-                    property.computeType();
-                    nodes.add(property);
-            } else if(statement.getPredicate().equals(RDFS.subClassOf)  || statement.getPredicate().equals(RDFS.subPropertyOf)
+                    nodeId = getNodeId(nodesId, nodes, nodeId, statement, property);
+                } else if(statement.getPredicate().equals(RDFS.subClassOf)  || statement.getPredicate().equals(RDFS.subPropertyOf)
 
             ) {
 
@@ -78,14 +68,8 @@ public class NextiaGraphy {
                 property.setIri(statement.getPredicate().getURI());
                 property.setType(statement.getPredicate().getURI());
                 property.setDomain(statement.getSubject().toString());
-                property.setRange(statement.getObject().toString());
-                    property.setLabel(getLastElem(property.getIri()));
-                    property.setId("Property"+nodeId);
-                    nodesId.put(property.getIri(), property.getId());
-                    nodeId += 1 ;
-                    property.computeType();
-                    nodes.add(property);
-            } else if(statement.getPredicate().equals(RDFS.member)){
+                    nodeId = getNodeId(nodesId, nodes, nodeId, statement, property);
+                } else if(statement.getPredicate().equals(RDFS.member)){
 
 
                     memberProperty.setIri(statement.getPredicate().getURI()+"."+conterMember);
@@ -122,21 +106,13 @@ public class NextiaGraphy {
                     } else {
                         nodes.add(memberProperty);
                     }
-                } else {
+                }  //                    nodes.add(memberProperty);
 
-//                    nodes.add(memberProperty);
-
-                }
             }
 
             // for J:document
             if(n.getIriType() != null)
                 nodes.add(n);
-//            if(n.getType() == null) {
-//                LOGGER.info("SOMETHING IS WRONG IN THE MODEL. No type definition for resource "+n.getIri());
-//            } else {
-//
-//            }
 
         }
 
@@ -201,18 +177,23 @@ public class NextiaGraphy {
                 links.add(l);
         }
 
-//        System.out.println("NODES:");
-//        nodesReady.forEach(System.out::println);
-//        links.forEach(System.out::println);
-//        System.out.println("---");
-//        nodes.forEach(System.out::println);
-
 
         Graphy gr = new Graphy();
         gr.setNodes(nodesReady);
         gr.setLinks(links);
 
         return new Gson().toJson(gr);
+    }
+
+    private int getNodeId(HashMap<String, String> nodesId, List<Nodes> nodes, int nodeId, Statement statement, Nodes property) {
+        property.setRange(statement.getObject().toString());
+        property.setLabel(getLastElem(property.getIri()));
+        property.setId("Property"+nodeId);
+        nodesId.put(property.getIri(), property.getId());
+        nodeId += 1 ;
+        property.computeType();
+        nodes.add(property);
+        return nodeId;
     }
 
 
