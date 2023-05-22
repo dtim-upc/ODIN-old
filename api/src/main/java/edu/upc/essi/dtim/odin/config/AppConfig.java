@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AppConfig {
     public AppConfig() {
+        // Constructor implementation is empty.
+        // No additional logic is required at the moment.
     }
 
     @Value("${dataStorage.DataBaseType}")
