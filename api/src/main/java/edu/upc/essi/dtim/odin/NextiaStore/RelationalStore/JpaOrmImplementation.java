@@ -57,9 +57,9 @@ public class JpaOrmImplementation implements ORMStoreInterface {
     public <T> List<T> getAll(Class<T> entityClass) {
         EntityManager em = emf.createEntityManager();
         List<T> objects = null;
-        String queryText = "SELECT d FROM " + entityClass.getSimpleName() + " d";
         try {
-            Query query = em.createQuery(queryText);
+            Query query = em.createQuery("SELECT d FROM " + entityClass.getSimpleName() + " d");
+            query = query.setParameter(0, entityClass.getSimpleName());
             objects = query.getResultList();
         } catch (Exception e) {
             logger.error("Error retrieving all objects {}: {}", entityClass.getSimpleName(), e.getMessage(), e);
