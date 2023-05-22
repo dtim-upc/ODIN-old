@@ -54,9 +54,12 @@ public class SourceController {
         try{
             logger.info("POST DATASOURCE RECEIVED FOR BOOTSTRAP");
             // Validate and authenticate access here
+            //TODO: future check when adding authentification
+            /*
             if (!validateAccess(projectId)) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied");
             }
+             */
 
             // Reconstruct file from Multipart file
             String filePath = sourceService.reconstructFile(attach_file);
@@ -239,22 +242,6 @@ public class SourceController {
         }
 
         return graphStore.getGraph(new URI(graphId));
-    }
-
-
-
-
-    /**
-     * Validates access for the bootstrapping process.
-     *
-     * @param authentication the authentication object representing the authenticated user
-     * @throws ResponseStatusException if the user does not have permission to perform the bootstrapping process
-     */
-    private boolean validateAccess(String authentication) {
-        logger.info(authentication);
-        //TODO: IMPLEMENTATION
-        return true;
-
     }
 }
 
