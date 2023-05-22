@@ -57,6 +57,7 @@ public class JpaOrmImplementation implements ORMStoreInterface {
         try {
             String queryString = "SELECT d FROM " + entityClass.getSimpleName() + " d";
             em.getTransaction().begin();
+            //NOSONAR
             Query query = em.createQuery(queryString);
             objects = query.getResultList();
             em.getTransaction().commit();
@@ -106,6 +107,7 @@ public class JpaOrmImplementation implements ORMStoreInterface {
         try {
             String queryString = "DELETE FROM " + entityClass.getSimpleName() + " d";
             em.getTransaction().begin();
+            //NOSONAR
             Query query = em.createQuery(queryString);
             success = query.executeUpdate() > 0;
             em.getTransaction().commit();

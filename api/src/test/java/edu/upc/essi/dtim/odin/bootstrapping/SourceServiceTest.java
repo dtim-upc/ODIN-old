@@ -17,13 +17,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class SourceServiceTest {
+class SourceServiceTest {
 
     @Autowired
     private SourceService sourceService;
 
     @Test
-    public void testReconstructFile() {
+    void testReconstructFile() {
         MockMultipartFile multipartFile = new MockMultipartFile(
                 "file",
                 "test.csv",
@@ -37,7 +37,7 @@ public class SourceServiceTest {
     }
 
     @Test
-    public void testExtractData() {
+    void testExtractData() {
         String filePath = "api/src/test/resources/csvTestFile.csv";
         String datasetName = "Test Dataset";
         String datasetDescription = "Description of the test dataset";
@@ -51,7 +51,7 @@ public class SourceServiceTest {
     }
 
     @Test
-    public void testTransformToGraph() {
+    void testTransformToGraph() {
         // Create a dataset object
         Dataset dataset = new CsvDataset("test", "Test Dataset", "Description", "../api/src/test/resources/csvTestFile.csv".replace("/", "\\"));
 
@@ -65,7 +65,7 @@ public class SourceServiceTest {
     }
 
     @Test
-    public void testGenerateVisualSchema() {
+    void testGenerateVisualSchema() {
         // Create a graph object
         Graph graph = new LocalGraph(null, new URI("Test Dataset"), new HashSet<>());
 
@@ -79,7 +79,7 @@ public class SourceServiceTest {
     }
 
     @Test
-    public void testSaveGraphToDatabase() {
+    void testSaveGraphToDatabase() {
         // Create a graph object
         Graph graph = new LocalGraph(null, new URI("Test Dataset"), new HashSet<>());
 
@@ -91,7 +91,7 @@ public class SourceServiceTest {
     }
 
     @Test
-    public void testAddDatasetIdToProject() {
+    void testAddDatasetIdToProject() {
         String projectId = "1";
         Dataset dataset = new CsvDataset(null, "Test Dataset", "Description", "path/to/file.csv");
 
@@ -102,7 +102,7 @@ public class SourceServiceTest {
     }
 
     @Test
-    public void testDeleteDatasetFromProject() {
+    void testDeleteDatasetFromProject() {
         String projectId = "1";
         String datasetId = "dataset-id";
 

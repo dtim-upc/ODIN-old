@@ -5,6 +5,7 @@ plugins {
 	id 'org.graalvm.buildtools.native' version '0.9.20'
 
 	id 'org.sonarqube' version '4.0.0.2929'
+	id 'jacoco'
 }
 
 group = 'edu.upc.essi.dtim.odin'
@@ -78,6 +79,16 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+	finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+	reports {
+		xml.required = true
+		csv.required = true
+		html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+	}
+	dependsOn test
 }
 
 task generateDocs(type: Javadoc) {

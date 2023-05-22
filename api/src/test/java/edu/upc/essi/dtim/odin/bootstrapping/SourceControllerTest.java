@@ -16,7 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class SourceControllerTest {
+class SourceControllerTest {
     @Mock
     private SourceService sourceService;
 
