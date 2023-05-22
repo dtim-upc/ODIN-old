@@ -35,12 +35,4 @@ public interface ORMStoreInterface {
      * @return true if the object was successfully deleted, false otherwise.
      */
     <T> boolean deleteOne(Class<T> entityClass, String id);
-
-    /**
-     * Deletes all objects of the specified class from the relational store.
-     *
-     * @param entityClass The class of the objects to delete.
-     * @return true if all objects were successfully deleted, false otherwise.
-     */
-    boolean deleteAll(Class<?> entityClass);
 }

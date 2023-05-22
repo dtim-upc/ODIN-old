@@ -8,23 +8,23 @@ import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest
 @TestPropertySource("classpath:application.properties")
-public class AppConfigTest {
+class AppConfigTest {
 
     @Autowired
     private AppConfig config;
 
     @Test
-    public void testGetDBTypeProperty() {
+    void testGetDBTypeProperty() {
         Assertions.assertEquals("JENA", config.getDBTypeProperty());
     }
 
     @Test
-    public void testGetDiskPath() {
+    void testGetDiskPath() {
         Assertions.assertEquals("..\\api\\dbFiles\\diskFiles", config.getDiskPath());
     }
 
     @Test
-    public void testGetJenaPath() {
+    void testGetJenaPath() {
         Assertions.assertEquals("..\\api\\dbFiles\\jenaFiles", config.getJenaPath());
     }
 }

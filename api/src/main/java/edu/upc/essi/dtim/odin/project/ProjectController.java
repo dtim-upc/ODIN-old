@@ -90,21 +90,4 @@ public class ProjectController {
             return ResponseEntity.notFound().build();
         }
     }
-
-    /**
-     * Deletes all projects.
-     *
-     * @return A ResponseEntity with HTTP status 200 (OK) and the boolean value true if all projects were deleted,
-     *         or HTTP status 404 (Not Found) if no projects were found.
-     */
-    @DeleteMapping("/projects/delete")
-    public ResponseEntity<Boolean> deleteAllProjects() {
-        logger.info("DELETE request received for deleting all projects");
-        boolean deleted = projectService.deleteAllProjects();
-        if (deleted) {
-            return ResponseEntity.ok(true);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
 }

@@ -25,6 +25,7 @@ public class GraphStoreFactory {
                 case "DUMMY":
                     //OTHER IMPLEMENTATIONS
                     logger.warn("DUMMY IS NOT A REAL DB TYPE");
+                    break;
                 default:
                     throw new Exception("Error with DB type");
             }
@@ -32,5 +33,6 @@ public class GraphStoreFactory {
             logger.error("The AppConfig is null, so instance of GraphStoreFactory is not working");
             throw new IllegalArgumentException("AppConfig is null");
         }
+        return null;
     }
 }

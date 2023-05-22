@@ -99,25 +99,4 @@ public class JpaOrmImplementation implements ORMStoreInterface {
         }
         return success;
     }
-
-    @Override
-    public boolean deleteAll(Class<?> entityClass) {
-        EntityManager em = emf.createEntityManager();
-        boolean success = false;
-        try {
-            String queryString = "DELETE FROM " + entityClass.getSimpleName() + " d";
-            em.getTransaction().begin();
-            @SuppressWarnings("squid:S2077")
-            Query query = em.createQuery(queryString);
-            success = query.executeUpdate() > 0;
-            em.getTransaction().commit();
-        } catch (Exception e) {
-            logger.error("Error deleting all {}: {}", entityClass.getSimpleName(), e.getMessage(), e);
-        } finally {
-            if (em != null) {
-                em.close();
-            }
-        }
-        return success;
-    }
 }

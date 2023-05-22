@@ -210,6 +210,7 @@ public class SourceService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        assert graphStore != null;
         graphStore.saveGraph(graph);
         return true;
     }

@@ -11,7 +11,6 @@ import java.util.List;
 
 @Service
 public class ProjectService {
-    private static final Logger logger = LoggerFactory.getLogger(ProjectService.class);
     ORMStoreInterface ormProject;
 
     /**
@@ -62,7 +61,15 @@ public class ProjectService {
             throw new IllegalArgumentException("Project not found");
         }
 
-        project.getDatasets().removeIf(dataset -> datasetId.equals(dataset.getDatasetId()));
+        List<Dataset> datasetsOfProjectToUpload = project.getDatasets();
+        for (Dataset datasetInProject : datasetsOfProjectToUpload) {
+            if (datasetId.equals(datasetInProject.getDatasetId())) {
+                datasetsOfProjectToUpload.remove(datasetInProject);
+                project.setDatasets(datasetsOfProjectToUpload);
+                break; // Rompemos el bucle después de eliminar el objeto
+            }
+        }
+
         saveProject(project);
     }
 
@@ -103,15 +110,6 @@ public class ProjectService {
      */
     public boolean deleteProject(String id) {
         return ormProject.deleteOne(Project.class, id);
-    }
-
-    /**
-     * Deletes all projects.
-     *
-     * @return true if all projects were deleted successfully, false otherwise.
-     */
-    public boolean deleteAllProjects() {
-        return ormProject.deleteAll(Project.class);
     }
 
     /**
