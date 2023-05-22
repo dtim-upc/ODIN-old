@@ -3,10 +3,7 @@ package edu.upc.essi.dtim.odin.NextiaStore.RelationalStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
+import javax.persistence.*;
 import java.util.List;
 
 public class JpaOrmImplementation implements ORMStoreInterface {
@@ -58,8 +55,10 @@ public class JpaOrmImplementation implements ORMStoreInterface {
         EntityManager em = emf.createEntityManager();
         List<T> objects = null;
         try {
-            Query query = em.createQuery("SELECT d FROM " + entityClass.getSimpleName() + " d");
-            query = query.setParameter(0, entityClass.getSimpleName());
+            //Safe way to pass a query to avoid SQL injections in the system
+            //Avoiding SQL injections
+            String queryString = "SELECT d FROM " + entityClass.getSimpleName() + " d";
+            TypedQuery<T> query = em.createQuery(queryString, entityClass);
             objects = query.getResultList();
         } catch (Exception e) {
             logger.error("Error retrieving all objects {}: {}", entityClass.getSimpleName(), e.getMessage(), e);
