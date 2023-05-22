@@ -57,8 +57,9 @@ public class JpaOrmImplementation implements ORMStoreInterface {
     public <T> List<T> getAll(Class<T> entityClass) {
         EntityManager em = emf.createEntityManager();
         List<T> objects = null;
+        String queryText = "SELECT d FROM " + entityClass.getSimpleName() + " d";
         try {
-            Query query = em.createQuery("SELECT d FROM " + entityClass.getSimpleName() + " d");
+            Query query = em.createQuery(queryText);
             objects = query.getResultList();
         } catch (Exception e) {
             logger.error("Error retrieving all objects {}: {}", entityClass.getSimpleName(), e.getMessage(), e);
@@ -102,9 +103,10 @@ public class JpaOrmImplementation implements ORMStoreInterface {
     public boolean deleteAll(Class<?> entityClass) {
         EntityManager em = emf.createEntityManager();
         boolean success = false;
+        String queryText = "DELETE FROM " + entityClass.getSimpleName();
         try {
             em.getTransaction().begin();
-            Query query = em.createQuery("DELETE FROM " + entityClass.getSimpleName());
+            Query query = em.createQuery(queryText);
             int deletedCount = query.executeUpdate();
             em.getTransaction().commit();
             success = deletedCount > 0;

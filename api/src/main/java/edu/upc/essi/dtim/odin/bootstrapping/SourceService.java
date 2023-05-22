@@ -16,7 +16,6 @@ import edu.upc.essi.dtim.odin.NextiaStore.RelationalStore.ORMStoreFactory;
 import edu.upc.essi.dtim.odin.NextiaStore.RelationalStore.ORMStoreInterface;
 import edu.upc.essi.dtim.odin.config.AppConfig;
 import edu.upc.essi.dtim.odin.project.ProjectService;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Statement;
@@ -32,6 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.security.SecureRandom;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -81,7 +81,16 @@ public class SourceService {
             if (multipartFile.isEmpty()) {
                 throw new RuntimeException("Failed to store empty file.");
             }
-            String filename = RandomStringUtils.randomAlphanumeric(16) +"_"+ multipartFile.getOriginalFilename();
+
+            final String characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            StringBuilder sb = new StringBuilder(16);
+            SecureRandom random = new SecureRandom();
+            for (int i = 0; i < 16; i++) {
+                int randomIndex = random.nextInt(characters.length());
+                sb.append(characters.charAt(randomIndex));
+            }
+
+            String filename = sb +"_"+ multipartFile.getOriginalFilename();
 
             // Get the disk path from the app configuration
             Path diskPath = Path.of(appConfig.getDiskPath());
@@ -99,11 +108,6 @@ public class SourceService {
                 Files.copy(inputStream, destinationFile,StandardCopyOption.REPLACE_EXISTING);
             }
 
-            // Return the absolute path of the destination file as a string
-            //return destinationFile.toString();
-
-            // Construct a relative path from the disk path and the generated filename
-            //Path relativePath = diskPath.relativize(destinationFile);
             return destinationFile.toString();
         } catch (IOException e) {
             throw new RuntimeException("Failed to store file.", e);
