@@ -11,6 +11,8 @@ import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.XSD;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,6 +23,7 @@ import static edu.upc.essi.dtim.odin.NextiaGraphy.vocabulary.Namespaces.GLOBALSC
 import static edu.upc.essi.dtim.odin.NextiaGraphy.vocabulary.Namespaces.SCHEMAINTEGRATION;
 
 public class NextiaGraphy {
+    private static final Logger logger = LoggerFactory.getLogger(NextiaGraphy.class);
 
     public String generateVisualGraphNew(Model model){
 
@@ -35,7 +38,7 @@ public class NextiaGraphy {
 
             Nodes n = new Nodes();
             if(r.getURI().contains("pop")) {
-                System.out.println("here");
+                logger.info("here");
             }
             n.setIri(r.getURI());
             n.setId("Class"+nodeId);
@@ -48,7 +51,6 @@ public class NextiaGraphy {
 
                 if (statement.getPredicate().equals(RDF.type)) {
                     n.setIriType(statement.getObject().toString());
-//                    n.setType(statement.getObject().toString());
                 } else if (statement.getPredicate().equals(RDFS.domain)) {
                     n.setDomain(statement.getObject().toString());
                 } else if (statement.getPredicate().equals(RDFS.range)) {
@@ -86,8 +88,6 @@ public class NextiaGraphy {
 
                     conterMember = conterMember+1;
 
-                    // do nothing. Probably statement not useful for graphical graph
-//                    LOGGER.debug("NOT USEFUL: "+ statement.getSubject() +","+statement.getPredicate()+", "+statement.getObject() );
                 } else if( statement.getPredicate().equals(RDFS.label) ){
                     n.setLabel( statement.getObject().toString() );
                 }
@@ -106,11 +106,10 @@ public class NextiaGraphy {
                     } else {
                         nodes.add(memberProperty);
                     }
-                }  //                    nodes.add(memberProperty);
+                }
 
             }
 
-            // for J:document
             if(n.getIriType() != null)
                 nodes.add(n);
 
@@ -131,7 +130,6 @@ public class NextiaGraphy {
                 .filter( s -> !s.getIri().contains(GLOBALSCHEMA.val()) && !s.getIri().contains(SCHEMAINTEGRATION.val())
                         && !s.getIri().contains(RDFS.subPropertyOf.toString()) && !s.getRange().equals("http://schema.org/identifier") )
                 .collect(Collectors.toList());
-//        List<Nodes> nodesProperties = nodes.stream().filter(n -> !n.getType().equals("class")).collect(Collectors.toList());
         List<Nodes> nodesProperties = nodes.stream()
                 .filter(n -> !excludedForProperties.contains(n.getType()) && !n.getIri().contains(RDFS.subPropertyOf.toString())  ).collect(Collectors.toList());
 
@@ -151,7 +149,6 @@ public class NextiaGraphy {
             l.setSource(nodesId.get(n.getDomain()));
 
             if(n.getRange().contains(XSD.getURI() )) {
-                // create node for datatype,
                 Nodes datatype = new Nodes();
                 datatype.setIri(n.getRange());
                 String id2 = "Datatype"+nodeId;
@@ -168,9 +165,7 @@ public class NextiaGraphy {
             }
             l.setLabel(n.getLabel());
             if( (l.getSource() == null || l.getTarget() == null  ) && !n.getRange().equals("http://schema.org/identifier") ){
-
-                System.out.println("ERROR......");
-                System.out.println(l.getLabel()+"-------------------------------------");
+                logger.error("ERROR " + l.getLabel()+"-------------------------------------");
             }
             // TODO: support to see subproperty of....it implies to connect to properties visually
             if(!n.getRange().equals("http://schema.org/identifier"))
@@ -196,7 +191,6 @@ public class NextiaGraphy {
         return nodeId;
     }
 
-
     public String getLastElem(String iri) {
         String regex = "/";
         if(iri.contains("#")){
@@ -212,8 +206,4 @@ public class NextiaGraphy {
 
         return label;
     }
-
-
-
-
 }

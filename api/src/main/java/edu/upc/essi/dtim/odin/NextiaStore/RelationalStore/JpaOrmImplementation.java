@@ -57,7 +57,7 @@ public class JpaOrmImplementation implements ORMStoreInterface {
         try {
             String queryString = "SELECT d FROM " + entityClass.getSimpleName() + " d";
             em.getTransaction().begin();
-            TypedQuery<T> query = em.createQuery(queryString, entityClass);
+            Query query = em.createQuery(queryString);
             objects = query.getResultList();
             em.getTransaction().commit();
         } catch (Exception e) {
