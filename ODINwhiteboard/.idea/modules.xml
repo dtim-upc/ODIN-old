@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/ODINwhiteboard.iml" filepath="$PROJECT_DIR$/.idea/ODINwhiteboard.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ODINwhiteboard.odin.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ODINwhiteboard.odin.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/edu.upc.essi.dtim.odin.odin.main.iml" filepath="$PROJECT_DIR$/.idea/modules/edu.upc.essi.dtim.odin.odin.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/odin.main.iml" filepath="$PROJECT_DIR$/.idea/modules/odin.main.iml" />
     </modules>

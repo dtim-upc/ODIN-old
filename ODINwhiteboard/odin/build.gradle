@@ -3,6 +3,9 @@ plugins {
 	id 'org.springframework.boot' version '2.5.0'
 	id 'io.spring.dependency-management' version '1.1.0'
 	id 'org.graalvm.buildtools.native' version '0.9.20'
+
+	id 'org.sonarqube' version '3.3'
+
 }
 
 group = 'edu.upc.essi.dtim.odin'
@@ -83,4 +86,13 @@ task generateDocs(type: Javadoc) {
 	destinationDir = file("${buildDir}/docs")
 	options.links("https://docs.oracle.com/javase/8/docs/api/")
 	failOnError false
+}
+
+sonarqube {
+	properties {
+		property "sonar.projectKey", "dtim-upc_newODIN"
+		property "sonar.organization", "dtim"
+		property "sonar.host.url", "https://sonarcloud.io"
+		property "sonar.exclusions", "src/main/java/edu/upc/essi/dtim/ODINBackend/config/Namespaces.java"
+	}
 }
