@@ -305,6 +305,7 @@ public class SourceService {
                     new URI(stmt.getObject().isLiteral() ? stmt.getObject().asLiteral().toString():stmt.getObject().asResource().getURI())
             ));
         }
+
         return new LocalGraph(null, name, triples);
     }
 }

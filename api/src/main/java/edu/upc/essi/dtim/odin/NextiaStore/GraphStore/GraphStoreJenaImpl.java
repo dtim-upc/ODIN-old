@@ -107,16 +107,6 @@ public class GraphStoreJenaImpl implements GraphStoreInterface {
                     new URI(stmt.getObject().asResource().getURI())
             ));
         }
-
-        /* JUST FOR DEBUG
-        for(Triple t : triples){
-            System.out.println();
-            System.out.println(t.getSubject().getURI());
-            System.out.println(t.getPredicate().getURI());
-            System.out.println(t.getObject());
-            System.out.println();
-        }
-        */
         
         return new LocalGraph(null, name, triples);
     }

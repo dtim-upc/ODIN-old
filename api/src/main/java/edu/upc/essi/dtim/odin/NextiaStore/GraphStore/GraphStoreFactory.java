@@ -24,7 +24,7 @@ public class GraphStoreFactory {
                     return new GraphStoreJenaImpl(appConfig);
                 case "DUMMY":
                     //OTHER IMPLEMENTATIONS
-                    throw new Exception("DUMMY IS JUST A DEMO TYPE");
+                    logger.warn("DUMMY IS NOT A REAL DB TYPE");
                 default:
                     throw new Exception("Error with DB type");
             }
