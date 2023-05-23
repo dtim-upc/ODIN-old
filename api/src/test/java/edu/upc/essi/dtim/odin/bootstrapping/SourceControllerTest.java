@@ -50,7 +50,7 @@ class SourceControllerTest {
         when(sourceService.transformToGraph(savedDataset)).thenReturn(graph);
         when(sourceService.generateVisualSchema(graph)).thenReturn(visualSchema);
         when(graph.getGraph()).thenReturn(savedGraph);
-        //when(sourceService.addDatasetIdToProject(projectId, savedDataset)).thenReturn(true);
+        when(sourceService.saveGraphToDatabase(graph)).thenReturn(true);
 
         // Perform the bootstrap operation
         ResponseEntity<?> response = sourceController.bootstrap(projectId, datasetName, datasetDescription, attach_file);
@@ -63,7 +63,7 @@ class SourceControllerTest {
         verify(sourceService).saveDataset(extractedData);
         verify(sourceService).transformToGraph(savedDataset);
         verify(sourceService).generateVisualSchema(graph);
-        verify(savedGraph).setGraphicalSchema(visualSchema);
+        verify(sourceService).saveGraphToDatabase(graph);
         verify(sourceService).addDatasetIdToProject(projectId, savedDataset);
         verifyNoMoreInteractions(sourceService);
     }
