@@ -50,7 +50,7 @@ class SourceServiceTest {
     @Test
     void testReconstructFile() {
         // Create a mock MultipartFile
-        String originalFilename = "test.txt";
+        String originalFilename = "test.csv";
         byte[] content = "Test file content".getBytes();
         MultipartFile multipartFile = new MockMultipartFile("file", originalFilename, null, content);
 
