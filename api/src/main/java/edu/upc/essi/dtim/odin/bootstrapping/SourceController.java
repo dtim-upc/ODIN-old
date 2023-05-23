@@ -161,9 +161,9 @@ public class SourceController {
             // Delete the relation with project
             sourceService.deleteDatasetFromProject(projectId, id);
 
-            // Call the projectService to delete the project and get the result
-            //this is not necessary since we have the cascade all call in relation one-to-many
-            //deleted = sourceService.deleteDatasource(id);
+            // Is not necessary to call the projectService to delete the project and get the result
+            // since we have the cascade all call in relation one-to-many Project 1-* Dataset
+
             deleted = true;
         }
 
