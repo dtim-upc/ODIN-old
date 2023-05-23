@@ -2,6 +2,7 @@ package edu.upc.essi.dtim.odin.NextiaStore.RelationalStore;
 
 import edu.upc.essi.dtim.odin.project.Project;
 import org.junit.jupiter.api.*;
+import org.mockito.Mockito;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -97,5 +98,41 @@ class JpaOrmImplementationTest {
 
         // Verify if the object is not found after deletion
         Assertions.assertNull(deletedEntity);
+    }
+
+    @Test
+    void testSave_Exception() {
+        // Create a mock entity object
+        Project entity = Mockito.mock(Project.class);
+
+        // Mock the EntityManagerFactory to throw an exception when creating the EntityManager
+        EntityManagerFactory emf = Mockito.mock(EntityManagerFactory.class);
+        Mockito.when(emf.createEntityManager()).thenThrow(new RuntimeException("Error creating EntityManager"));
+
+        // Create the ORM implementation with the mocked EntityManagerFactory
+        JpaOrmImplementation ormImplementation = new JpaOrmImplementation();
+
+        // Call the save method and verify the exception
+        Assertions.assertThrows(RuntimeException.class, () -> ormImplementation.save(entity));
+    }
+
+    @Test
+    void testFindById_Exception() {
+        // Mock the EntityManagerFactory to throw an exception when creating the EntityManager
+        JpaOrmImplementation ormImplementation = Mockito.mock(JpaOrmImplementation.class);
+        Mockito.when(ormImplementation.findById(Project.class, "random")).thenThrow(new RuntimeException("Error creating EntityManager"));
+
+        // Call the findById method and verify the exception
+        Assertions.assertThrows(RuntimeException.class, () -> ormImplementation.findById(Project.class, "random"));
+    }
+
+    @Test
+    void testDeleteOne_Exception() {
+        // Mock the EntityManagerFactory to throw an exception when creating the EntityManager
+        JpaOrmImplementation ormImplementation = Mockito.mock(JpaOrmImplementation.class);
+        Mockito.when(ormImplementation.deleteOne(Project.class, "random")).thenThrow(new RuntimeException("Error creating EntityManager"));
+
+        // Call the deleteOne method and verify the exception
+        Assertions.assertThrows(RuntimeException.class, () -> ormImplementation.deleteOne(Project.class, "random"));
     }
 }

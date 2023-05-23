@@ -26,6 +26,7 @@ public class JpaOrmImplementation implements ORMStoreInterface {
             logger.info("Object {} saved successfully", object.getClass());
         } catch (Exception e) {
             logger.error("Error saving object {}: {}", object.getClass(), e.getMessage(), e);
+            throw new RuntimeException(e);
         } finally {
             em.close();
         }
@@ -40,6 +41,7 @@ public class JpaOrmImplementation implements ORMStoreInterface {
             object = em.find(entityClass, id);
         } catch (Exception e) {
             logger.error("Error finding object {}: {}", entityClass.getSimpleName(), e.getMessage(), e);
+            throw new RuntimeException(e);
         } finally {
             em.close();
         }
@@ -59,6 +61,7 @@ public class JpaOrmImplementation implements ORMStoreInterface {
             em.getTransaction().commit();
         } catch (Exception e) {
             logger.error("Error retrieving all objects {}: {}", entityClass.getSimpleName(), e.getMessage(), e);
+            throw new RuntimeException(e);
         } finally {
             em.close();
         }
@@ -86,6 +89,7 @@ public class JpaOrmImplementation implements ORMStoreInterface {
             }
         } catch (Exception e) {
             logger.error("Error deleting {}: {}", entityClass.getSimpleName(), e.getMessage(), e);
+            throw new RuntimeException(e);
         } finally {
             em.close();
         }
