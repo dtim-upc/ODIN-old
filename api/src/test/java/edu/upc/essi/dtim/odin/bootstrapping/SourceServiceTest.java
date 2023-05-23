@@ -87,9 +87,6 @@ class SourceServiceTest {
         Assertions.assertTrue(Files.exists(reconstructedPath));
         Assertions.assertEquals(originalFilename, reconstructedPath.getFileName().toString().substring(17));
         Assertions.assertArrayEquals(content, Files.readAllBytes(reconstructedPath));
-
-        // Clean up: delete the reconstructed file
-        Files.deleteIfExists(reconstructedPath);
     }
 
     @Test
@@ -168,9 +165,7 @@ class SourceServiceTest {
         csvDataset.setPath("path/to/csv");
 
         // Call the convertDatasetToModel method and expect an exception
-        Assertions.assertThrows(RuntimeException.class, () -> {
-            sourceService.convertDatasetToModel(csvDataset);
-        });
+        Assertions.assertThrows(RuntimeException.class, () -> sourceService.convertDatasetToModel(csvDataset));
     }
 
     @Test
@@ -182,9 +177,7 @@ class SourceServiceTest {
         jsonDataset.setPath("path/to/json");
 
         // Call the convertDatasetToModel method and expect an exception
-        Assertions.assertThrows(RuntimeException.class, () -> {
-            sourceService.convertDatasetToModel(jsonDataset);
-        });
+        Assertions.assertThrows(RuntimeException.class, () -> sourceService.convertDatasetToModel(jsonDataset));
     }
 
     @Test
