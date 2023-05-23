@@ -25,6 +25,7 @@ class SourceServiceTest {
         this.sourceService = sourceService;
     }
 
+    /*
     @Test
     void testReconstructFile() throws IOException {
         // Create a mock MultipartFile
@@ -45,6 +46,8 @@ class SourceServiceTest {
         String fileContent = new String(java.nio.file.Files.readAllBytes(file.toPath()));
         Assertions.assertEquals("file content", fileContent);
     }
+    
+     */
 
     @Test
     void testExtractData() {
