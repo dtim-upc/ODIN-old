@@ -1,16 +1,14 @@
 package edu.upc.essi.dtim.odin.NextiaStore.GraphStore;
 
-import edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreFactory;
-import edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreInterface;
 import edu.upc.essi.dtim.odin.config.AppConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-public class GraphStoreFactoryTest {
+class GraphStoreFactoryTest {
 
     @Test
-    public void testGetInstance_Jena() throws Exception {
+    void testGetInstance_Jena() throws Exception {
         // Create a mock AppConfig
         AppConfig appConfig = Mockito.mock(AppConfig.class);
         Mockito.when(appConfig.getDBTypeProperty()).thenReturn("JENA");
@@ -24,7 +22,7 @@ public class GraphStoreFactoryTest {
     }
 
     @Test
-    public void testGetInstance_Dummy() throws Exception {
+    void testGetInstance_Dummy() throws Exception {
         // Create a mock AppConfig
         AppConfig appConfig = Mockito.mock(AppConfig.class);
         Mockito.when(appConfig.getDBTypeProperty()).thenReturn("DUMMY");
@@ -38,7 +36,7 @@ public class GraphStoreFactoryTest {
     }
 
     @Test
-    public void testGetInstance_UnknownDBType() {
+    void testGetInstance_UnknownDBType() {
         // Create a mock AppConfig
         AppConfig appConfig = Mockito.mock(AppConfig.class);
         Mockito.when(appConfig.getDBTypeProperty()).thenReturn("UNKNOWN");
@@ -50,7 +48,7 @@ public class GraphStoreFactoryTest {
     }
 
     @Test
-    public void testGetInstance_NullAppConfig() {
+    void testGetInstance_NullAppConfig() {
         // Call the getInstance method with a null AppConfig and assert that it throws an exception
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             GraphStoreInterface graphStore = GraphStoreFactory.getInstance(null);

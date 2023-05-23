@@ -29,7 +29,7 @@ class SourceControllerTest {
     }
 
     @Test
-    void testBootstrap_Success() throws Exception {
+    void testBootstrap_Success() {
         // Mock input parameters
         String projectId = "123";
         String datasetName = "Test Dataset";
@@ -69,7 +69,7 @@ class SourceControllerTest {
     }
 
     @Test
-    void testBootstrap_UnsupportedOperationException() throws Exception {
+    void testBootstrap_UnsupportedOperationException() {
         // Mock input parameters
         String projectId = "123";
         String datasetName = "Test Dataset";
@@ -91,7 +91,7 @@ class SourceControllerTest {
     }
 
     @Test
-    void testBootstrap_Exception() throws Exception {
+    void testBootstrap_Exception() {
         // Mock input parameters
         String projectId = "123";
         String datasetName = "Test Dataset";
