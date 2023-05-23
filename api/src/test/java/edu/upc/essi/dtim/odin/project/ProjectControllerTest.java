@@ -13,7 +13,8 @@ import org.springframework.http.ResponseEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProjectControllerTest {
+
+class ProjectControllerTest {
 
     @Mock
     private ProjectService projectService;
@@ -22,12 +23,12 @@ public class ProjectControllerTest {
     private ProjectController projectController;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void testSaveProject() {
+    void testSaveProject() {
         // Create a sample project
         Project project = new Project();
         project.setProjectId("testProject");
@@ -48,7 +49,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void testGetProject_ExistingProject() {
+    void testGetProject_ExistingProject() {
         // Create a sample project
         Project project = new Project();
         project.setProjectId("testProject");
@@ -69,7 +70,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void testGetProject_NonExistingProject() {
+    void testGetProject_NonExistingProject() {
         // Mock the projectService.findById method to return null
         Mockito.when(projectService.findById("1")).thenReturn(null);
 
@@ -85,7 +86,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void testGetAllProjects() {
+    void testGetAllProjects() {
         // Create a list of sample projects
         List<Project> projects = new ArrayList<>();
         Project project1 = new Project();
@@ -112,7 +113,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void testDeleteProject_ExistingProject() {
+    void testDeleteProject_ExistingProject() {
         // Mock the projectService.deleteProject method to return true
         Mockito.when(projectService.deleteProject("1")).thenReturn(true);
 
@@ -128,7 +129,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void testDeleteProject_NonExistingProject() {
+    void testDeleteProject_NonExistingProject() {
         // Mock the projectService.deleteProject method to return false
         Mockito.when(projectService.deleteProject("1")).thenReturn(false);
 
