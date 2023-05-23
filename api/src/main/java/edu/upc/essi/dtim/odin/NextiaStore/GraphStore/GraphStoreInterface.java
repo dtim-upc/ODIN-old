@@ -2,6 +2,7 @@ package edu.upc.essi.dtim.odin.NextiaStore.GraphStore;
 
 import edu.upc.essi.dtim.NextiaCore.graph.Graph;
 import edu.upc.essi.dtim.NextiaCore.graph.URI;
+import edu.upc.essi.dtim.odin.bootstrapping.GraphModelPair;
 
 /**
  * Interface for a Graph Store that handles the storage and retrieval of graphs.
@@ -12,7 +13,7 @@ public interface GraphStoreInterface {
      *
      * @param graph The graph to save.
      */
-    void saveGraph(Graph graph);
+    void saveGraph(GraphModelPair graph);
 
     /**
      * Deletes the graph with the given name from the store.

@@ -203,7 +203,7 @@ public class SourceService {
      * @param graph The Graph object to save.
      * @return A boolean indicating whether the saving operation was successful.
      */
-    public boolean saveGraphToDatabase(Graph graph) {
+    public boolean saveGraphToDatabase(GraphModelPair graph) {
         GraphStoreInterface graphStore;
         try {
             graphStore = GraphStoreFactory.getInstance(appConfig);

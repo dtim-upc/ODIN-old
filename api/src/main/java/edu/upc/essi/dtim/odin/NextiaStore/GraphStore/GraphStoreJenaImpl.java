@@ -5,6 +5,7 @@ import edu.upc.essi.dtim.NextiaCore.graph.Graph;
 import edu.upc.essi.dtim.NextiaCore.graph.LocalGraph;
 import edu.upc.essi.dtim.NextiaCore.graph.Triple;
 import edu.upc.essi.dtim.NextiaCore.graph.URI;
+import edu.upc.essi.dtim.odin.bootstrapping.GraphModelPair;
 import edu.upc.essi.dtim.odin.config.AppConfig;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.ReadWrite;
@@ -36,11 +37,11 @@ public class GraphStoreJenaImpl implements GraphStoreInterface {
      * @param graph the graph to save
      */
     @Override
-    public void saveGraph(Graph graph) {
-        Model modelToSave = adapt(graph);
+    public void saveGraph(GraphModelPair graph) {
+        Model modelToSave = graph.getModel();
         dataset.begin(ReadWrite.WRITE);
         try {
-            String modelName = graph.getName().getURI();
+            String modelName = graph.getGraph().getName().getURI();
             dataset.addNamedModel(modelName, modelToSave);
             dataset.commit();
         } catch (final Exception ex) {

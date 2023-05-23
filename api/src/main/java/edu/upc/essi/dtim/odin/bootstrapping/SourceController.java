@@ -72,8 +72,7 @@ public class SourceController {
             String visualSchema = sourceService.generateVisualSchema(graph);
 
             // Save graph into database
-            boolean isSaved = true;
-                    //sourceService.saveGraphToDatabase(graph.getGraph());
+            boolean isSaved = sourceService.saveGraphToDatabase(graph);
 
             if (isSaved) {
                 graph.getGraph().setGraphicalSchema(visualSchema);
