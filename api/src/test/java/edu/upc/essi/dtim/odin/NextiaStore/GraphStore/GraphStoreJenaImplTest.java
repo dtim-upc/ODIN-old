@@ -96,6 +96,7 @@ class GraphStoreJenaImplTest {
 
     @Test
     void testDeleteGraph() {
+        graphStore.saveGraph(graphModelPair);
         // Call the deleteGraph method
         graphStore.deleteGraph(graphName);
 
