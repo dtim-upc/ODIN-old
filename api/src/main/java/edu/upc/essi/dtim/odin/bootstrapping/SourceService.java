@@ -150,41 +150,46 @@ public class SourceService {
      * @return A GraphModelPair object containing the transformed Graph and the corresponding Model.
      */
     public GraphModelPair transformToGraph(Dataset dataset) {
-        String datasetName = dataset.getDatasetName();
-        if (datasetName == null) datasetName = "DatasetNameIsEmpty";
         try {
-            // Try to convert the dataset to a graph BY BOOTSTRAP CALL
-            Model bootstrapM = ModelFactory.createDefaultModel();
-
-            if (dataset.getClass().equals(CsvDataset.class)) {
-                CSVBootstrap bootstrap = new CSVBootstrap();
-                try {
-                    bootstrapM = bootstrap.bootstrapSchema(dataset.getDatasetId(), dataset.getDatasetName(), ((CsvDataset) dataset).getPath());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            } else if (dataset.getClass().equals(JsonDataset.class)) {
-                JSONBootstrapSWJ j = new JSONBootstrapSWJ();
-                try {
-                    bootstrapM = j.bootstrapSchema(dataset.getDatasetName(), dataset.getDatasetId(), ((JsonDataset) dataset).getPath());
-                } catch (FileNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+            Model bootstrapM = convertDatasetToModel(dataset);
             Graph bootstrappedGraph = adapt(bootstrapM, new URI(dataset.getDatasetName()));
             return new GraphModelPair(bootstrappedGraph, bootstrapM);
         } catch (UnsupportedOperationException e) {
-            // If the dataset format is not supported, return an error graph
-            Graph errorGraph = new LocalGraph(null, new URI(datasetName), new HashSet<>());
-            errorGraph.addTriple(new Triple(
-                    new URI(dataset.getDatasetId()),
-                    new URI("https://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
-                    new URI("https://example.org/error#UnsupportedDatasetFormat")
-            ));
-
-            return new GraphModelPair(errorGraph, null);
+            return handleUnsupportedDatasetFormat(dataset);
         }
     }
+
+    private Model convertDatasetToModel(Dataset dataset) {
+        Model bootstrapM = ModelFactory.createDefaultModel();
+        if (dataset.getClass().equals(CsvDataset.class)) {
+            CSVBootstrap bootstrap = new CSVBootstrap();
+            try {
+                bootstrapM = bootstrap.bootstrapSchema(dataset.getDatasetId(), dataset.getDatasetName(), ((CsvDataset) dataset).getPath());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else if (dataset.getClass().equals(JsonDataset.class)) {
+            JSONBootstrapSWJ j = new JSONBootstrapSWJ();
+            try {
+                bootstrapM = j.bootstrapSchema(dataset.getDatasetName(), dataset.getDatasetId(), ((JsonDataset) dataset).getPath());
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return bootstrapM;
+    }
+
+    private GraphModelPair handleUnsupportedDatasetFormat(Dataset dataset) {
+        Graph errorGraph = new LocalGraph(null, new URI("ERROR"), new HashSet<>());
+        errorGraph.addTriple(new Triple(
+                new URI(dataset.getDatasetId()),
+                new URI("https://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
+                new URI("https://example.org/error#UnsupportedDatasetFormat")
+        ));
+
+        return new GraphModelPair(errorGraph, null);
+    }
+
 
     /**
      * Generates a visual representation of a Graph using NextiaGraphy library.
