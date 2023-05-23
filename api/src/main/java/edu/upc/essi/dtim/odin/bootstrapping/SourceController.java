@@ -108,7 +108,7 @@ public class SourceController {
             @RequestParam("datasetPath") String path,
             @PathVariable String projectId) {
         try {
-            logger.info("POST A DATASOURCE RECEIVED: "+projectId);
+            logger.info("POST A DATASOURCE RECEIVED: {}",projectId);
             Dataset dataset;
 
             String extension = "";
@@ -152,8 +152,8 @@ public class SourceController {
     public ResponseEntity<Boolean> deleteDatasource(@PathVariable("projectId") String projectId,
                                                  @PathVariable("id") String id) {
         // Print a message to indicate that the delete request was received
-        logger.info("DELETE A DATASOURCE from project: " +projectId);
-        logger.info("DELETE A DATASOURCE RECEIVED: " +id);
+        logger.info("DELETE A DATASOURCE from project: {}" ,projectId);
+        logger.info("DELETE A DATASOURCE RECEIVED: {}" ,id);
 
         boolean deleted = false;
 
@@ -187,7 +187,7 @@ public class SourceController {
     @GetMapping("/project/{id}/datasources")
     public ResponseEntity<Object> getDatasourcesFromProject(@PathVariable String id) {
         try {
-            logger.info("GET ALL DATASOURCE FROM PROJECT " + id);
+            logger.info("GET ALL DATASOURCE FROM PROJECT {}" , id);
             List<Dataset> datasets = sourceService.getDatasetsOfProject(id);
 
             if (datasets.isEmpty()) {
