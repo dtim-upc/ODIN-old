@@ -2,114 +2,110 @@ package edu.upc.essi.dtim.odin.bootstrapping;
 
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.CsvDataset;
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.Dataset;
-import edu.upc.essi.dtim.NextiaCore.graph.Graph;
 import edu.upc.essi.dtim.NextiaCore.graph.LocalGraph;
-import edu.upc.essi.dtim.NextiaCore.graph.URI;
+import org.apache.jena.rdf.model.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashSet;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.io.IOException;
 
 @SpringBootTest
-@ActiveProfiles("test")
 class SourceServiceTest {
-/*
-    @Autowired
+
     private SourceService sourceService;
 
-    @Test
-    void testReconstructFile() {
-        MockMultipartFile multipartFile = new MockMultipartFile(
-                "file",
-                "test.csv",
-                "text/plain",
-                "test file content".getBytes()
-        );
+    @BeforeEach
+    void setUp(@Autowired SourceService sourceService) {
+        // Initialize SourceService instance
+        this.sourceService = sourceService;
+    }
 
+    @Test
+    void testReconstructFile() throws IOException {
+        // Create a mock MultipartFile
+        MultipartFile multipartFile = new MockMultipartFile("file", "test.csv", "text/csv", "file content".getBytes());
+
+        // Call the method to reconstruct the file
         String filePath = sourceService.reconstructFile(multipartFile);
 
-        assertEquals("..\\api\\dbFiles\\diskFiles\\", filePath.substring(0,25));
+        // Assert that the returned file path is not null or empty
+        Assertions.assertNotNull(filePath);
+        Assertions.assertFalse(filePath.isEmpty());
+
+        // Assert that the file exists at the specified path
+        java.io.File file = new java.io.File(filePath);
+        Assertions.assertTrue(file.exists());
+
+        // Assert that the file content matches the original content
+        String fileContent = new String(java.nio.file.Files.readAllBytes(file.toPath()));
+        Assertions.assertEquals("file content", fileContent);
     }
 
     @Test
     void testExtractData() {
-        String filePath = "api/src/test/resources/csvTestFile.csv";
+        // Prepare test data
+        String filePath = "path/to/dataset.csv";
         String datasetName = "Test Dataset";
-        String datasetDescription = "Description of the test dataset";
+        String datasetDescription = "This is a test dataset";
 
+        // Call the method to extract data
         Dataset dataset = sourceService.extractData(filePath, datasetName, datasetDescription);
 
-        assertEquals(datasetName, dataset.getDatasetName());
-        assertEquals(datasetDescription, dataset.getDatasetDescription());
-        assertEquals(CsvDataset.class, dataset.getClass());
-        assertEquals(filePath, ((CsvDataset) dataset).getPath());
+        // Assert that the dataset is not null
+        Assertions.assertNotNull(dataset);
+
+        // Assert that the dataset properties are set correctly
+        Assertions.assertEquals(datasetName, dataset.getDatasetName());
+        Assertions.assertEquals(datasetDescription, dataset.getDatasetDescription());
     }
 
     @Test
     void testTransformToGraph() {
-        // Create a dataset object
-        Dataset dataset = new CsvDataset("test", "Test Dataset", "Description", "../api/src/test/resources/csvTestFile.csv".replace("/", "\\"));
+        // Prepare test data
+        Dataset dataset = new CsvDataset("datasetId", "Test Dataset", "This is a test dataset", "../api/src/test/resources/csvTestFile.csv");
 
-        // Call the transformToGraph method
+        // Call the method to transform the dataset to a graph
         GraphModelPair graphModelPair = sourceService.transformToGraph(dataset);
 
-        // Add assertions to check the result
-        assertEquals(LocalGraph.class, graphModelPair.getGraph().getClass());
-        assertEquals(URI.class, graphModelPair.getGraph().getName().getClass());
-        assertEquals(dataset.getDatasetName(), graphModelPair.getGraph().getName().getURI());
+        // Assert that the returned GraphModelPair is not null
+        Assertions.assertNotNull(graphModelPair);
+
+        // Assert that the graph and model in the GraphModelPair are not null
+        Assertions.assertNotNull(graphModelPair.getGraph());
+        Assertions.assertNotNull(graphModelPair.getModel());
     }
 
     @Test
     void testGenerateVisualSchema() {
-        // Create a graph object
-        Graph graph = new LocalGraph(null, new URI("Test Dataset"), new HashSet<>());
+        // Prepare test data
+        GraphModelPair graphModelPair = new GraphModelPair(new LocalGraph(), getHardcodedModel());
 
-        //TODO:
-        // Call the generateVisualSchema method
-        //String visualSchema = sourceService.generateVisualSchema(graph);
-        String visualSchema = "Expected visual schema";
+        // Call the method to generate the visual schema
+        String visualSchema = sourceService.generateVisualSchema(graphModelPair);
 
-        // Add assertions to check the result
-        assertEquals("Expected visual schema", visualSchema);
+        // Assert that the returned visual schema is not null or empty
+        Assertions.assertNotNull(visualSchema);
+        Assertions.assertFalse(visualSchema.isEmpty());
     }
 
-    @Test
-    void testSaveGraphToDatabase() {
-        // Create a graph object
-        Graph graph = new LocalGraph(null, new URI("Test Dataset"), new HashSet<>());
+    private Model getHardcodedModel() {
+        // Create a new Jena model
+        Model model = ModelFactory.createDefaultModel();
 
-        // Call the saveGraphToDatabase method
-        boolean result = sourceService.saveGraphToDatabase(graph);
+        // Create resources and statements
+        Resource subject = model.createResource("http://example.org/subject");
+        Resource object = model.createResource("http://example.org/object");
+        Property predicate = model.createProperty("http://example.org/predicate");
+        Statement statement = model.createStatement(subject, predicate, object);
 
-        // Add assertions to check the result
-        assertEquals(true, result);
+        // Add the statement to the model
+        model.add(statement);
+
+        return model;
     }
-
-    @Test
-    void testAddDatasetIdToProject() {
-        String projectId = "1";
-        Dataset dataset = new CsvDataset(null, "Test Dataset", "Description", "path/to/file.csv");
-
-        // Call the addDatasetIdToProject method
-        sourceService.addDatasetIdToProject(projectId, dataset);
-
-        // Add assertions or perform necessary checks
-    }
-
-    @Test
-    void testDeleteDatasetFromProject() {
-        String projectId = "1";
-        String datasetId = "dataset-id";
-
-        // Call the deleteDatasetFromProject method
-        sourceService.deleteDatasetFromProject(projectId, datasetId);
-
-        // Add assertions or perform necessary checks
-    }
-    */
 }
