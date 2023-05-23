@@ -54,7 +54,7 @@ public class SourceController {
         try{
             logger.info("POST DATASOURCE RECEIVED FOR BOOTSTRAP");
             // Validate and authenticate access here
-            //TODO: future check when adding authentification
+            //future check when adding authentification
 
             // Reconstruct file from Multipart file
             String filePath = sourceService.reconstructFile(attach_file);
@@ -185,9 +185,9 @@ public class SourceController {
      * @return A ResponseEntity object containing the list of datasets or an error message.
      */
     @GetMapping("/project/{id}/datasources")
-    public ResponseEntity<?> getDatasourcesFromProject(@PathVariable String id) {
+    public ResponseEntity<Object> getDatasourcesFromProject(@PathVariable String id) {
         try {
-            logger.info("GET ALL DATASOURCE FROM PROJECT " +id);
+            logger.info("GET ALL DATASOURCE FROM PROJECT " + id);
             List<Dataset> datasets = sourceService.getDatasetsOfProject(id);
 
             if (datasets.isEmpty()) {
@@ -206,7 +206,7 @@ public class SourceController {
      * @return A ResponseEntity object containing the list of datasets or an error message.
      */
     @GetMapping("/datasources")
-    public ResponseEntity<?> getAllDatasource() {
+    public ResponseEntity<Object> getAllDatasource() {
         try {
             logger.info("GET ALL DATASOURCE RECEIVED");
             List<Dataset> datasets = sourceService.getDatasets();

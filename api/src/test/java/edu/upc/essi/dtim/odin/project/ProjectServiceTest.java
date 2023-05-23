@@ -15,7 +15,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 
-public class ProjectServiceTest {
+class ProjectServiceTest {
 
     private ORMStoreInterface ormProject;
 

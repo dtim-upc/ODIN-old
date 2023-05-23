@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-public class GraphModelPairTest {
+class GraphModelPairTest {
 
     @Test
     void testGetGraph() {
