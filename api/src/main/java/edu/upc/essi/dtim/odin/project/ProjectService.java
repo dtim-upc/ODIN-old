@@ -60,12 +60,17 @@ public class ProjectService {
         }
 
         List<Dataset> datasetsOfProjectToUpload = project.getDatasets();
+        boolean datasetFound = false;
         for (Dataset datasetInProject : datasetsOfProjectToUpload) {
             if (datasetId.equals(datasetInProject.getDatasetId())) {
+                datasetFound = true;
                 datasetsOfProjectToUpload.remove(datasetInProject);
                 project.setDatasets(datasetsOfProjectToUpload);
                 break; // Rompemos el bucle después de eliminar el objeto
             }
+        }
+        if(!datasetFound) {
+            throw new IllegalArgumentException("Dataset not found");
         }
 
         saveProject(project);

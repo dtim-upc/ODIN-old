@@ -7,13 +7,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.mockito.Mockito.*;
 
 class ProjectServiceTest {
 
@@ -90,7 +86,7 @@ class ProjectServiceTest {
     }
 
     @Test
-    void testDeleteDatasetFromProject() {
+    void testDeleteDatasetFromProject_success() {
         String datasetId = "dataset1";
 
         List<Dataset> datasets = new ArrayList<>();
@@ -112,6 +108,20 @@ class ProjectServiceTest {
         Assertions.assertEquals(1, projectService.getDatasetsOfProject(testProject.getProjectId()).size());
 
         projectService.deleteProject(testProject.getProjectId());
+    }
+
+    @Test
+    void testDeleteDatasetFromProject_projectNotFound() {
+        projectService.saveProject(testProject);
+
+        // Call the reconstructFile method and expect a RuntimeException
+        Assertions.assertThrows(IllegalArgumentException.class, () -> projectService.deleteDatasetFromProject(testProject.getProjectId(), "inventedDatasetId"));
+    }
+
+    @Test
+    void testDeleteDatasetFromProject_datasetNotFound() {
+        // Call the reconstructFile method and expect a RuntimeException
+        Assertions.assertThrows(IllegalArgumentException.class, () -> projectService.deleteDatasetFromProject("invented", "datasetId"));
     }
 
     @Test
