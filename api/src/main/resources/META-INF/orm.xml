@@ -61,29 +61,25 @@
         <attributes>
             <id name="id"><generated-value strategy="AUTO" /></id>
             <basic name="graphicalSchema"/>
-            <transient name="name"/>
-            <transient name="triples"/>
-        </attributes>
-    </entity>
-    <entity name="LocalGraph" class="edu.upc.essi.dtim.NextiaCore.graph.LocalGraph">
-        <table name="LocalGraph"/>
-        <attributes>
-            <transient name="name"/>
+            <one-to-one name="name">
+                <cascade><cascade-all/></cascade>
+            </one-to-one>
+
             <transient name="triples"/>
         </attributes>
     </entity>
 
-    <!--> JUST FOR ONE-TO-ONE EXAMPLE<-->
-    <entity class="edu.upc.essi.dtim.NextiaCore.datasources.Tuple" name="Tuple">
-        <table name="Tuple"/>
+    <entity name="LocalGraph" class="edu.upc.essi.dtim.NextiaCore.graph.LocalGraph">
+        <table name="LocalGraph"/>
         <attributes>
-            <id name="tupleId">
-                <generated-value strategy="AUTO"/>
-            </id>
-            <basic name="tupleName">
-                <column name="TUPLE_NAME"/>
-            </basic>
-            <transient name="tupleDescription"/>
+            <transient name="triples"/>
+        </attributes>
+    </entity>
+
+    <entity name="URI" class="edu.upc.essi.dtim.NextiaCore.graph.URI">
+        <table name="URI"/>
+        <attributes>
+            <id name="URI"/>
         </attributes>
     </entity>
 
