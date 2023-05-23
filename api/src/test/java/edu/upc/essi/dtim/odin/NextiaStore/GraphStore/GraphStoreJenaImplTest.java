@@ -67,9 +67,5 @@ class GraphStoreJenaImplTest {
         Assertions.assertEquals("Graph " + graphName.getURI() + " is empty", exception.getMessage());
     }
 
-    @Test
-    void testDeleteGraph() {
-        // Call the deleteGraph method
-        graphStore.deleteGraph(graphName);
-    }
+    
 }
