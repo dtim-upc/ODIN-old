@@ -18,6 +18,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -123,12 +125,32 @@ class SourceControllerTest {
     }
 
     @Test
-    void testSavingDatasetObject_Success() {
+    void testSavingDatasetObject_SuccessCsv() {
         // Mock the dependencies
         String projectId = "123";
         String datasetName = "Test Dataset";
         String datasetDescription = "Description";
         String path = "../api/src/test/resources/csvTestFile.csv";
+        Dataset savedDataset = Mockito.mock(Dataset.class);
+
+        Mockito.when(sourceService.saveDataset(Mockito.any())).thenReturn(savedDataset);
+        Mockito.doNothing().when(sourceService).addDatasetIdToProject(projectId, savedDataset);
+
+        // Call the savingDatasetObject method
+        ResponseEntity<Dataset> response = sourceController.savingDatasetObject(datasetName, datasetDescription, path, projectId);
+
+        // Verify the response
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals(savedDataset, response.getBody());
+    }
+
+    @Test
+    void testSavingDatasetObject_SuccessJson() {
+        // Mock the dependencies
+        String projectId = "123";
+        String datasetName = "Test Dataset";
+        String datasetDescription = "Description";
+        String path = "../api/src/test/resources/jsonTestFile.json";
         Dataset savedDataset = Mockito.mock(Dataset.class);
 
         Mockito.when(sourceService.saveDataset(Mockito.any())).thenReturn(savedDataset);
@@ -216,9 +238,21 @@ class SourceControllerTest {
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Assertions.assertEquals(datasets, response.getBody());
     }
-
     @Test
     void testGetDatasourcesFromProject_NotFound() {
+        // Mock the dependencies
+        String projectId = "123";
+
+        Mockito.when(sourceService.getDatasetsOfProject(projectId)).thenReturn(new ArrayList<>());
+
+        // Call the getDatasourcesFromProject method and verify the response
+        ResponseEntity<Object> response = sourceController.getDatasourcesFromProject(projectId);
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        Assertions.assertEquals("No datasets found",response.getBody());
+    }
+
+    @Test
+    void testGetDatasourcesFromProject_InternalError() {
         // Mock the dependencies
         String projectId = "123";
 
