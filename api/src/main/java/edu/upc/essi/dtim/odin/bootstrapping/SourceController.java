@@ -33,7 +33,7 @@ public class SourceController {
      *
      * @param sourceService the SourceService dependency for performing datasource operations
      */
-    private SourceController( @Autowired SourceService sourceService) {
+    SourceController(@Autowired SourceService sourceService) {
         this.sourceService = sourceService;
     }
 

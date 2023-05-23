@@ -3,10 +3,13 @@ package edu.upc.essi.dtim.odin.bootstrapping;
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.Dataset;
 import edu.upc.essi.dtim.NextiaCore.graph.Graph;
 import edu.upc.essi.dtim.NextiaCore.graph.LocalGraph;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.slf4j.Logger;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +18,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
+import java.util.List;
+
 
 class SourceControllerTest {
     @Mock
@@ -23,9 +28,14 @@ class SourceControllerTest {
     @InjectMocks
     private SourceController sourceController;
 
+    private Logger logger;
+
     @BeforeEach
-    public void setup() {
+    void setup() {
         MockitoAnnotations.openMocks(this);
+        sourceService = Mockito.mock(SourceService.class);
+        this.logger = Mockito.mock(Logger.class);
+        sourceController = new SourceController(sourceService);
     }
 
     @Test
@@ -110,5 +120,113 @@ class SourceControllerTest {
 
         verify(sourceService).reconstructFile(attach_file);
         verifyNoMoreInteractions(sourceService);
+    }
+
+    @Test
+    void testSavingDatasetObject_Success() {
+        // Mock the dependencies
+        String projectId = "123";
+        String datasetName = "Test Dataset";
+        String datasetDescription = "Description";
+        String path = "../api/src/test/resources/csvTestFile.csv";
+        Dataset savedDataset = Mockito.mock(Dataset.class);
+
+        Mockito.when(sourceService.saveDataset(Mockito.any())).thenReturn(savedDataset);
+        Mockito.doNothing().when(sourceService).addDatasetIdToProject(projectId, savedDataset);
+
+        // Call the savingDatasetObject method
+        ResponseEntity<Dataset> response = sourceController.savingDatasetObject(datasetName, datasetDescription, path, projectId);
+
+        // Verify the response
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals(savedDataset, response.getBody());
+    }
+
+    @Test
+    void testSavingDatasetObject_UnsupportedOperationException() {
+        // Mock the dependencies
+        String projectId = "123";
+        String datasetName = "Test Dataset";
+        String datasetDescription = "Description";
+        String path = "file/path";
+
+        // Call the savingDatasetObject method and verify the exception
+        Assertions.assertThrows(ResponseStatusException.class, () ->
+                sourceController.savingDatasetObject(datasetName, datasetDescription, path, projectId));
+    }
+
+    @Test
+    void testSavingDatasetObject_Exception() {
+        // Mock the dependencies
+        String projectId = "123";
+        String datasetName = "Test Dataset";
+        String datasetDescription = "Description";
+        String path = "file/path";
+
+        Mockito.when(sourceService.saveDataset(Mockito.any())).thenThrow(new RuntimeException("Error"));
+
+        // Call the savingDatasetObject method and verify the exception
+        Assertions.assertThrows(ResponseStatusException.class, () ->
+                sourceController.savingDatasetObject(datasetName, datasetDescription, path, projectId));
+    }
+
+    @Test
+    void testDeleteDatasource_Success() {
+        // Mock the dependencies
+        String projectId = "123";
+        String datasourceId = "456";
+
+        Mockito.when(sourceService.projectContains(projectId, datasourceId)).thenReturn(true);
+        Mockito.doNothing().when(sourceService).deleteDatasetFromProject(projectId, datasourceId);
+
+        // Call the deleteDatasource method
+        ResponseEntity<Boolean> response = sourceController.deleteDatasource(projectId, datasourceId);
+
+        // Verify the response
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertTrue(response.getBody());
+    }
+
+    @Test
+    void testDeleteDatasource_NotFound() {
+        // Mock the dependencies
+        String projectId = "123";
+        String datasourceId = "456";
+
+        Mockito.when(sourceService.projectContains(projectId, datasourceId)).thenReturn(false);
+
+        // Call the deleteDatasource method and verify the response
+        ResponseEntity<Boolean> response = sourceController.deleteDatasource(projectId, datasourceId);
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        Assertions.assertNull(response.getBody());
+    }
+
+    @Test
+    void testGetDatasourcesFromProject_Success() {
+        // Mock the dependencies
+        String projectId = "123";
+        List<Dataset> datasets = List.of(Mockito.mock(Dataset.class), Mockito.mock(Dataset.class));
+
+        Mockito.when(sourceService.getDatasetsOfProject(projectId)).thenReturn(datasets);
+
+        // Call the getDatasourcesFromProject method
+        ResponseEntity<Object> response = sourceController.getDatasourcesFromProject(projectId);
+
+        // Verify the response
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals(datasets, response.getBody());
+    }
+
+    @Test
+    void testGetDatasourcesFromProject_NotFound() {
+        // Mock the dependencies
+        String projectId = "123";
+
+        Mockito.when(sourceService.getDatasetsOfProject(projectId)).thenReturn(null);
+
+        // Call the getDatasourcesFromProject method and verify the response
+        ResponseEntity<Object> response = sourceController.getDatasourcesFromProject(projectId);
+        Assertions.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        Assertions.assertEquals("An error occurred",response.getBody());
     }
 }

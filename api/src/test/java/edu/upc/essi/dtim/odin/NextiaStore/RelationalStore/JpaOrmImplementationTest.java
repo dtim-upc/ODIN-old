@@ -8,7 +8,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
-public class JpaOrmImplementationTest {
+class JpaOrmImplementationTest {
 
     private EntityManagerFactory emf;
     private JpaOrmImplementation ormImplementation;
