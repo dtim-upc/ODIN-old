@@ -15,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+import static edu.upc.essi.dtim.odin.bootstrapping.GraphModelPairTest.getHardcodedModel;
+
 @SpringBootTest
 class SourceServiceTest {
 
@@ -172,21 +174,5 @@ class SourceServiceTest {
         // Assert that the returned visual schema is not null or empty
         Assertions.assertNotNull(visualSchema);
         Assertions.assertFalse(visualSchema.isEmpty());
-    }
-
-    private Model getHardcodedModel() {
-        // Create a new Jena model
-        Model model = ModelFactory.createDefaultModel();
-
-        // Create resources and statements
-        Resource subject = model.createResource("http://example.org/subject");
-        Resource object = model.createResource("http://example.org/object");
-        Property predicate = model.createProperty("http://example.org/predicate");
-        Statement statement = model.createStatement(subject, predicate, object);
-
-        // Add the statement to the model
-        model.add(statement);
-
-        return model;
     }
 }

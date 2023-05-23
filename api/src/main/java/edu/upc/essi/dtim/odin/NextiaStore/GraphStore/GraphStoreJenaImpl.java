@@ -60,7 +60,7 @@ public class GraphStoreJenaImpl implements GraphStoreInterface {
     public void deleteGraph(URI name) {
         dataset.begin(ReadWrite.WRITE);
         try {
-            String modelName = name.toString();
+            String modelName = name.getURI();
             if (dataset.containsNamedModel(modelName)) {
                 dataset.removeNamedModel(modelName);
             } else {
@@ -87,7 +87,7 @@ public class GraphStoreJenaImpl implements GraphStoreInterface {
             String modelName = name.getURI();
             Model model = dataset.getNamedModel(modelName);
             if (model.isEmpty()) {
-                throw new IllegalArgumentException("Graph " + name + " is empty");
+                throw new IllegalArgumentException("Graph " + name.getURI() + " is empty");
             } else {
                 return adapt(model, name);
             }
@@ -96,7 +96,7 @@ public class GraphStoreJenaImpl implements GraphStoreInterface {
         }
     }
 
-    private Graph adapt(Model model, URI name) {
+    Graph adapt(Model model, URI name) {
         Set<Triple> triples = new HashSet<>();
 
         StmtIterator iter = model.listStatements();
