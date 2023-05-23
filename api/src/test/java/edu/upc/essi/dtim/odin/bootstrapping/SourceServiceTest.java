@@ -13,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -29,30 +28,6 @@ class SourceServiceTest {
         // Initialize SourceService instance
         this.sourceService = sourceService;
     }
-
-    /*
-    @Test
-    void testReconstructFile() throws IOException {
-        // Create a mock MultipartFile
-        MultipartFile multipartFile = new MockMultipartFile("file", "test.csv", "text/csv", "file content".getBytes());
-
-        // Call the method to reconstruct the file
-        String filePath = sourceService.reconstructFile(multipartFile);
-
-        // Assert that the returned file path is not null or empty
-        Assertions.assertNotNull(filePath);
-        Assertions.assertFalse(filePath.isEmpty());
-
-        // Assert that the file exists at the specified path
-        java.io.File file = new java.io.File(filePath);
-        Assertions.assertTrue(file.exists());
-
-        // Assert that the file content matches the original content
-        String fileContent = new String(java.nio.file.Files.readAllBytes(file.toPath()));
-        Assertions.assertEquals("file content", fileContent);
-    }
-
-     */
 
     @Test
     void testExtractData() {
