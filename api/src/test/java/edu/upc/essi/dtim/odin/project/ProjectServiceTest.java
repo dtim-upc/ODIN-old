@@ -87,7 +87,6 @@ class ProjectServiceTest {
         projectService.saveProject(testProject);
 
         Assertions.assertEquals(2, projectService.getDatasetsOfProject(testProject.getProjectId()).size());
-
     }
 
     @Test
@@ -153,7 +152,7 @@ class ProjectServiceTest {
     }
 
     @Test
-    void testProjectContains() {
+    void testProjectContains_true() {
         String datasetId = "dataset1";
 
         List<Dataset> datasets = new ArrayList<>();
@@ -166,6 +165,24 @@ class ProjectServiceTest {
         boolean containsDataset = projectService.projectContains(testProject.getProjectId(), datasetId);
 
         Assertions.assertTrue(containsDataset);
+
+        ormProject.deleteOne(Project.class, testProject.getProjectId());
+    }
+
+    @Test
+    void testProjectContains_false() {
+        String datasetId = "dataset1";
+        String datasetId2 = "dataset2";
+        List<Dataset> datasets = new ArrayList<>();
+        Dataset dataset1 = new Dataset();
+        dataset1.setDatasetId(datasetId);
+        datasets.add(dataset1);
+        testProject.setDatasets(datasets);
+        ormProject = ORMStoreFactory.getInstance();
+        ormProject.save(testProject);
+        boolean containsDataset = projectService.projectContains(testProject.getProjectId(), datasetId2);
+
+        Assertions.assertFalse(containsDataset);
 
         ormProject.deleteOne(Project.class, testProject.getProjectId());
     }
