@@ -10,3 +10,6 @@ ODINwhiteboard/odin/src/main/resources/credentials.properties
 *.lock
 *.db
 *.json
+!jsonTestFile.json
+!corruptJsonTestFile.json
+

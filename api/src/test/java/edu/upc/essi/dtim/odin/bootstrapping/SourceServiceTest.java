@@ -2,6 +2,7 @@ package edu.upc.essi.dtim.odin.bootstrapping;
 
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.CsvDataset;
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.Dataset;
+import edu.upc.essi.dtim.NextiaCore.datasources.dataset.JsonDataset;
 import edu.upc.essi.dtim.NextiaCore.graph.LocalGraph;
 import org.apache.jena.rdf.model.*;
 import org.junit.jupiter.api.Assertions;
@@ -81,6 +82,83 @@ class SourceServiceTest {
         // Assert that the graph and model in the GraphModelPair are not null
         Assertions.assertNotNull(graphModelPair.getGraph());
         Assertions.assertNotNull(graphModelPair.getModel());
+    }
+
+    @Test
+    void testConvertDatasetToModelWithCsvDataset() {
+        // Create a CsvDataset object for testing
+        CsvDataset csvDataset = new CsvDataset();
+        csvDataset.setDatasetId("123");
+        csvDataset.setDatasetName("Test Dataset");
+        csvDataset.setPath("../api/src/test/resources/csvTestFile.csv");
+
+        // Call the convertDatasetToModel method
+        Model model = sourceService.convertDatasetToModel(csvDataset);
+
+        // Perform assertions
+        Assertions.assertNotNull(model);
+        // Add more assertions based on your expected behavior
+    }
+
+    @Test
+    void testConvertDatasetToModelWithJsonDataset() {
+        // Create a JsonDataset object for testing
+        JsonDataset jsonDataset = new JsonDataset();
+        jsonDataset.setDatasetId("456");
+        jsonDataset.setDatasetName("Test Dataset");
+        jsonDataset.setPath("../api/src/test/resources/jsonTestFile.json");
+
+        // Call the convertDatasetToModel method
+        Model model = sourceService.convertDatasetToModel(jsonDataset);
+
+        // Perform assertions
+        Assertions.assertNotNull(model);
+    }
+
+    @Test
+    void testConvertDatasetToModelWithIOException() {
+        // Create a CsvDataset object for testing
+        CsvDataset csvDataset = new CsvDataset();
+        csvDataset.setDatasetId("123");
+        csvDataset.setDatasetName("Test Dataset");
+        csvDataset.setPath("path/to/csv");
+
+        // Call the convertDatasetToModel method and expect an exception
+        Assertions.assertThrows(RuntimeException.class, () -> {
+            sourceService.convertDatasetToModel(csvDataset);
+        });
+    }
+
+    @Test
+    void testConvertDatasetToModelWithFileNotFoundException() {
+        // Create a JsonDataset object for testing
+        JsonDataset jsonDataset = new JsonDataset();
+        jsonDataset.setDatasetId("456");
+        jsonDataset.setDatasetName("Test Dataset");
+        jsonDataset.setPath("path/to/json");
+
+        // Call the convertDatasetToModel method and expect an exception
+        Assertions.assertThrows(RuntimeException.class, () -> {
+            sourceService.convertDatasetToModel(jsonDataset);
+        });
+    }
+
+    @Test
+    void testHandleUnsupportedDatasetFormat() {
+        // Create a Dataset object for testing
+        Dataset dataset = new Dataset();
+        dataset.setDatasetId("789");
+        dataset.setDatasetName("Test Dataset");
+
+
+        // Call the handleUnsupportedDatasetFormat method
+        GraphModelPair result = sourceService.handleUnsupportedDatasetFormat(dataset);
+
+        // Perform assertions
+        Assertions.assertNotNull(result);
+        Assertions.assertNotNull(result.getGraph());
+        Assertions.assertNull(result.getModel());
+        // Add more assertions based on your expected behavior
     }
 
     @Test

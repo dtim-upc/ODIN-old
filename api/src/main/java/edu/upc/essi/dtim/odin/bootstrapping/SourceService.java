@@ -159,7 +159,7 @@ public class SourceService {
         }
     }
 
-    private Model convertDatasetToModel(Dataset dataset) {
+    Model convertDatasetToModel(Dataset dataset) {
         Model bootstrapM = ModelFactory.createDefaultModel();
         if (dataset.getClass().equals(CsvDataset.class)) {
             CSVBootstrap bootstrap = new CSVBootstrap();
@@ -179,7 +179,7 @@ public class SourceService {
         return bootstrapM;
     }
 
-    private GraphModelPair handleUnsupportedDatasetFormat(Dataset dataset) {
+    GraphModelPair handleUnsupportedDatasetFormat(Dataset dataset) {
         Graph errorGraph = new LocalGraph(null, new URI("ERROR"), new HashSet<>());
         errorGraph.addTriple(new Triple(
                 new URI(dataset.getDatasetId()),
