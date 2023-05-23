@@ -30,7 +30,7 @@ class SourceServiceTest {
     }
 
     @Test
-    void testExtractData() {
+    void testExtractData_csv() {
         // Prepare test data
         String filePath = "path/to/dataset.csv";
         String datasetName = "Test Dataset";
@@ -45,6 +45,35 @@ class SourceServiceTest {
         // Assert that the dataset properties are set correctly
         Assertions.assertEquals(datasetName, dataset.getDatasetName());
         Assertions.assertEquals(datasetDescription, dataset.getDatasetDescription());
+    }
+
+    @Test
+    void testExtractData_json() {
+        // Prepare test data
+        String filePath = "path/to/dataset.json";
+        String datasetName = "Test Dataset";
+        String datasetDescription = "This is a test dataset";
+
+        // Call the method to extract data
+        Dataset dataset = sourceService.extractData(filePath, datasetName, datasetDescription);
+
+        // Assert that the dataset is not null
+        Assertions.assertNotNull(dataset);
+
+        // Assert that the dataset properties are set correctly
+        Assertions.assertEquals(datasetName, dataset.getDatasetName());
+        Assertions.assertEquals(datasetDescription, dataset.getDatasetDescription());
+    }
+
+    @Test
+    void testExtractData_unsupportedFileFormat() {
+        // Prepare test data
+        String filePath = "path/to/dataset.txt";
+        String datasetName = "Test Dataset";
+        String datasetDescription = "This is a test dataset";
+
+        // Call the method to extract data
+        Assertions.assertThrows(IllegalArgumentException.class, () -> sourceService.extractData(filePath, datasetName, datasetDescription));
     }
 /*
     @Test
