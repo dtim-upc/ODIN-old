@@ -236,6 +236,7 @@ public class SourceController {
             throw new RuntimeException(e);
         }
 
+        assert graphStore != null;
         return graphStore.getGraph(new URI(graphId));
     }
 }
