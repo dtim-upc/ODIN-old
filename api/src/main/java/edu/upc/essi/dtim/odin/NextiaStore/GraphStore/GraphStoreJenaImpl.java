@@ -50,6 +50,35 @@ public class GraphStoreJenaImpl implements GraphStoreInterface {
         }
     }
 
+    /**
+     * Retrieves the graph with the given name.
+     *
+     * @param name the URI of the graph to retrieve
+     * @return the retrieved graph
+     */
+    @Override
+    public Graph getGraph(URI name) {
+        dataset.begin(ReadWrite.READ);
+        try {
+            //Retrieve Named Graph from Dataset, or use Default Graph.
+            String modelName = name.getURI();
+            if (dataset.containsNamedModel(modelName)) {
+                Model model = dataset.getNamedModel(modelName);
+                if (model.isEmpty()) {
+                    throw new IllegalArgumentException("Graph " + name.getURI() + " is empty");
+                } else {
+                    return adapt(model, name);
+                }
+            } else {
+                throw new IllegalArgumentException("Graph " + name.getURI() + " not found");
+            }
+        } catch (final Exception ex) {
+            dataset.abort();
+            throw ex;
+        } finally {
+            dataset.end();
+        }
+    }
 
     /**
      * Deletes the graph with the given name.
@@ -64,35 +93,12 @@ public class GraphStoreJenaImpl implements GraphStoreInterface {
             if (dataset.containsNamedModel(modelName)) {
                 dataset.removeNamedModel(modelName);
             } else {
-                throw new IllegalArgumentException("Graph " + name + " not found");
+                throw new IllegalArgumentException("Graph " + name.getURI() + " not found");
             }
             dataset.commit();
         } catch (final Exception ex) {
             dataset.abort();
             throw ex;
-        }
-    }
-
-    /**
-     * Retrieves the graph with the given name.
-     *
-     * @param name the URI of the graph to retrieve
-     * @return the retrieved graph
-     */
-    @Override
-    public Graph getGraph(URI name) {
-        dataset.begin(ReadWrite.READ);
-        try {
-            //Retrieve Named Graph from Dataset, or use Default Graph.
-            String modelName = name.getURI();
-            Model model = dataset.getNamedModel(modelName);
-            if (model.isEmpty()) {
-                throw new IllegalArgumentException("Graph " + name.getURI() + " is empty");
-            } else {
-                return adapt(model, name);
-            }
-        } finally {
-            dataset.end();
         }
     }
 
@@ -112,7 +118,7 @@ public class GraphStoreJenaImpl implements GraphStoreInterface {
         return new LocalGraph(null, name, triples);
     }
 
-    private Model adapt(Graph graph) {
+    Model adapt(Graph graph) {
         Model model = ModelFactory.createDefaultModel();
         for (Triple triple : graph.getTriples()) {
             Resource subject = ResourceFactory.createResource(triple.getSubject().getURI());

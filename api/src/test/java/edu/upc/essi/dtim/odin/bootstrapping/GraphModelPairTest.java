@@ -53,4 +53,11 @@ public class GraphModelPairTest {
 
         return model;
     }
+
+    public static Model getEmptyModel() {
+        // Create a new Jena model
+        Model model = ModelFactory.createDefaultModel();
+
+        return model;
+    }
 }

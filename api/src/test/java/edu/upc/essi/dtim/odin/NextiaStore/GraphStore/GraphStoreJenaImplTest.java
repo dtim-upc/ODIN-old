@@ -12,8 +12,10 @@ import org.apache.jena.query.ReadWrite;
 import org.apache.jena.rdf.model.*;
 import org.mockito.Mockito;
 
+import java.util.HashSet;
 import java.util.Set;
 
+import static edu.upc.essi.dtim.odin.bootstrapping.GraphModelPairTest.getEmptyModel;
 import static edu.upc.essi.dtim.odin.bootstrapping.GraphModelPairTest.getHardcodedModel;
 
 class GraphStoreJenaImplTest {
@@ -58,14 +60,105 @@ class GraphStoreJenaImplTest {
 
     @Test
     void testGetGraph() {
+        graphStore.saveGraph(graphModelPair);
+        // Call the getGraph method
+        Graph g = graphStore.getGraph(graphName);
+        // Verify the retrieved graph is not null
+        Assertions.assertNotNull(g);
+    }
+
+    @Test
+    void testGetGraph_exception_notFound() {
+        URI notFoundName = new URI("random");
+
+        // Call the getGraph method and handle the exception
+        Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> graphStore.getGraph(notFoundName));
+
+        // Verify the exception message
+        Assertions.assertEquals("Graph " + notFoundName.getURI() + " not found", exception.getMessage());
+    }
+
+    @Test
+    void testGetGraph_exception_empty() {
+        GraphModelPair graphModelPair1 = new GraphModelPair(new LocalGraph(), getEmptyModel());
+        URI graphName1 = new URI("http://test.com/EMPTY");
+        graphModelPair1.getGraph().setName(graphName1);
+
         // Call the getGraph method and handle the exception
         Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            graphStore.getGraph(graphName);
+            graphStore.saveGraph(graphModelPair1);
+            graphStore.getGraph(graphName1);
         });
 
         // Verify the exception message
-        Assertions.assertEquals("Graph " + graphName.getURI() + " is empty", exception.getMessage());
+        Assertions.assertEquals("Graph " + graphName1.getURI() + " not found", exception.getMessage());
     }
 
-    
+    @Test
+    void testDeleteGraph() {
+        // Call the deleteGraph method
+        graphStore.deleteGraph(graphName);
+
+        // Call the getGraph method and handle the exception
+        Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> graphStore.getGraph(graphName));
+
+        // Verify graph is deleted
+        Assertions.assertEquals("Graph " + graphName.getURI() + " not found", exception.getMessage());
+    }
+
+    @Test
+    void testDeleteGraph_exception() {
+        URI notFoundName = new URI("random");
+        // Call the deleteGraph method and handle the exception
+        Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> graphStore.deleteGraph(notFoundName));
+
+        // Verify the exception message
+        Assertions.assertEquals("Graph " + notFoundName.getURI() + " not found", exception.getMessage());
+    }
+
+    @Test
+    void testAdaptModel() {
+        // Create a mock Model
+        Model model = ModelFactory.createDefaultModel();
+
+        // Add some statements to the model
+        Resource subject = model.createResource("http://example.com/subject");
+        Property predicate = model.createProperty("http://example.com/predicate");
+        Resource object = model.createResource("http://example.com/object");
+        model.add(subject, predicate, object);
+
+        // Call the adapt method
+        URI graphName = new URI("http://example.com/graph");
+        Graph adaptedGraph = graphStore.adapt(model, graphName);
+
+        // Verify the adapted graph
+        Assertions.assertEquals(graphName, adaptedGraph.getName());
+        Assertions.assertEquals(1, adaptedGraph.getTriples().size());
+        Triple triple = adaptedGraph.getTriples().iterator().next();
+        Assertions.assertEquals(subject.getURI(), triple.getSubject().getURI());
+        Assertions.assertEquals(predicate.getURI(), triple.getPredicate().getURI());
+        Assertions.assertEquals(object.getURI(), triple.getObject().getURI());
+    }
+
+    @Test
+    void testAdaptGraph() {
+        // Create a mock Graph
+        Set<Triple> triples = new HashSet<>();
+        URI subjectURI = new URI("http://example.com/subject");
+        URI predicateURI = new URI("http://example.com/predicate");
+        URI objectURI = new URI("http://example.com/object");
+        triples.add(new Triple(subjectURI, predicateURI, objectURI));
+        Graph graph = new LocalGraph(null, new URI("http://example.com/graph"), triples);
+
+        // Call the adapt method
+        Model adaptedModel = graphStore.adapt(graph);
+
+        // Verify the adapted model
+        Assertions.assertEquals(1, adaptedModel.size());
+        StmtIterator iter = adaptedModel.listStatements();
+        Statement statement = iter.next();
+        Assertions.assertEquals(subjectURI.getURI(), statement.getSubject().getURI());
+        Assertions.assertEquals(predicateURI.getURI(), statement.getPredicate().getURI());
+        Assertions.assertTrue(statement.getObject().isResource());
+    }
 }
