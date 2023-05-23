@@ -64,13 +64,9 @@ public class GraphStoreJenaImpl implements GraphStoreInterface {
             String modelName = name.getURI();
             if (dataset.containsNamedModel(modelName)) {
                 Model model = dataset.getNamedModel(modelName);
-                if (model.isEmpty()) {
-                    throw new IllegalArgumentException("Graph " + name.getURI() + " is empty");
-                } else {
-                    return adapt(model, name);
-                }
+                return adapt(model, name);
             } else {
-                throw new IllegalArgumentException("Graph " + name.getURI() + " not found");
+                throw getIllegalArgumentException(name);
             }
         } catch (final Exception ex) {
             dataset.abort();
@@ -78,6 +74,10 @@ public class GraphStoreJenaImpl implements GraphStoreInterface {
         } finally {
             dataset.end();
         }
+    }
+
+    private static IllegalArgumentException getIllegalArgumentException(URI name) {
+        return new IllegalArgumentException("Graph " + name.getURI() + " not found");
     }
 
     /**
@@ -93,7 +93,7 @@ public class GraphStoreJenaImpl implements GraphStoreInterface {
             if (dataset.containsNamedModel(modelName)) {
                 dataset.removeNamedModel(modelName);
             } else {
-                throw new IllegalArgumentException("Graph " + name.getURI() + " not found");
+                throw getIllegalArgumentException(name);
             }
             dataset.commit();
         } catch (final Exception ex) {

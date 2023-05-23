@@ -79,22 +79,6 @@ class GraphStoreJenaImplTest {
     }
 
     @Test
-    void testGetGraph_exception_empty() {
-        GraphModelPair graphModelPair1 = new GraphModelPair(new LocalGraph(), getEmptyModel());
-        URI graphName1 = new URI("http://test.com/EMPTY");
-        graphModelPair1.getGraph().setName(graphName1);
-
-        // Call the getGraph method and handle the exception
-        Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            graphStore.saveGraph(graphModelPair1);
-            graphStore.getGraph(graphName1);
-        });
-
-        // Verify the exception message
-        Assertions.assertEquals("Graph " + graphName1.getURI() + " not found", exception.getMessage());
-    }
-
-    @Test
     void testDeleteGraph() {
         graphStore.saveGraph(graphModelPair);
         // Call the deleteGraph method
