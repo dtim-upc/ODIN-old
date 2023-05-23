@@ -13,3 +13,4 @@ ODINwhiteboard/odin/src/main/resources/credentials.properties
 !jsonTestFile.json
 !corruptJsonTestFile.json
 
+*.txt

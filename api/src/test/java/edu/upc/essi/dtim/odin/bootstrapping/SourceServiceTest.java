@@ -14,6 +14,8 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static edu.upc.essi.dtim.odin.bootstrapping.GraphModelPairTest.getHardcodedModel;
 
@@ -68,6 +70,46 @@ class SourceServiceTest {
         // Assert that the dataset properties are set correctly
         Assertions.assertEquals(datasetName, dataset.getDatasetName());
         Assertions.assertEquals(datasetDescription, dataset.getDatasetDescription());
+    }
+
+    @Test
+    void testReconstructFile() throws IOException {
+        // Create a mock MultipartFile
+        String originalFilename = "test.txt";
+        byte[] content = "Test file content".getBytes();
+        MultipartFile multipartFile = new MockMultipartFile("file", originalFilename, null, content);
+
+        // Call the reconstructFile method
+        String reconstructedFilePath = sourceService.reconstructFile(multipartFile);
+
+        // Verify the reconstructed file
+        Path reconstructedPath = Path.of(reconstructedFilePath);
+        Assertions.assertTrue(Files.exists(reconstructedPath));
+        Assertions.assertEquals(originalFilename, reconstructedPath.getFileName().toString().substring(17));
+        Assertions.assertArrayEquals(content, Files.readAllBytes(reconstructedPath));
+
+        // Clean up: delete the reconstructed file
+        Files.deleteIfExists(reconstructedPath);
+    }
+
+    @Test
+    void testReconstructFileEmptyFile() {
+        // Create an empty mock MultipartFile
+        MultipartFile multipartFile = new MockMultipartFile("file", new byte[0]);
+
+        // Call the reconstructFile method and expect a RuntimeException
+        Assertions.assertThrows(RuntimeException.class, () -> sourceService.reconstructFile(multipartFile));
+    }
+
+    @Test
+    void testReconstructFileOutsideDirectory() {
+        // Create a mock MultipartFile
+        String originalFilename = "../file.txt";
+        byte[] content = "Test file content".getBytes();
+        MultipartFile multipartFile = new MockMultipartFile("file", originalFilename, null, content);
+
+        // Call the reconstructFile method and expect a RuntimeException
+        Assertions.assertThrows(RuntimeException.class, () -> sourceService.reconstructFile(multipartFile));
     }
 
     @Test
