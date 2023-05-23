@@ -49,7 +49,7 @@ public class SourceController {
     @PostMapping(value="/project/{id}")//, consumes = {"multipart/form-data"})
     public ResponseEntity<Object> bootstrap(@PathVariable("id") String projectId,
                                             @RequestPart String datasetName,
-                                            @RequestPart String datasetDescription,
+                                            @RequestPart(required = false) String datasetDescription,
                                             @RequestPart MultipartFile attach_file) {
         try{
             logger.info("POST DATASOURCE RECEIVED FOR BOOTSTRAP");
@@ -103,7 +103,7 @@ public class SourceController {
     @PostMapping("/project/{projectId}/datasources")
     public ResponseEntity<Dataset> savingDatasetObject(
             @RequestParam("datasetName") String datasetName,
-            @RequestParam("datasetDescription") String datasetDescription,
+            @RequestParam(value = "datasetDescription", required = false, defaultValue = "") String datasetDescription,
             @RequestParam("datasetPath") String path,
             @PathVariable String projectId) {
         try {
