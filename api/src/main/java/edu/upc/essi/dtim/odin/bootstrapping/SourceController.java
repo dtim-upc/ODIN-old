@@ -47,7 +47,7 @@ public class SourceController {
      * @return A ResponseEntity object containing the saved dataset or an error message.
      */
     @PostMapping(value="/project/{id}")//, consumes = {"multipart/form-data"})
-    public ResponseEntity<?> bootstrap(@PathVariable("id") String projectId,
+    public ResponseEntity<Object> bootstrap(@PathVariable("id") String projectId,
                                             @RequestPart String datasetName,
                                             @RequestPart String datasetDescription,
                                             @RequestPart MultipartFile attach_file) {
