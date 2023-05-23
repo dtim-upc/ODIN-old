@@ -15,8 +15,11 @@ import org.mockito.Mockito;
 import java.util.HashSet;
 import java.util.Set;
 
-import static edu.upc.essi.dtim.odin.bootstrapping.GraphModelPairTest.getEmptyModel;
 import static edu.upc.essi.dtim.odin.bootstrapping.GraphModelPairTest.getHardcodedModel;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
 class GraphStoreJenaImplTest {
 
@@ -29,7 +32,7 @@ class GraphStoreJenaImplTest {
     void setUp() {
         // Mock AppConfig
         AppConfig appConfig = Mockito.mock(AppConfig.class);
-        Mockito.when(appConfig.getJenaPath()).thenReturn("test-directory");
+        when(appConfig.getJenaPath()).thenReturn("test-directory");
 
         // Create the GraphStoreJenaImpl instance
         graphStore = new GraphStoreJenaImpl(appConfig);
@@ -52,11 +55,12 @@ class GraphStoreJenaImplTest {
     }
 
     @Test
-    void testSaveGraph() {
-        // Call the saveGraph method
-        graphStore.saveGraph(graphModelPair);
+    void testSaveGraph_ThrowsException() {
+        // Mock the behavior to throw an exception when adding the named model
+        graphModelPair.getGraph().setName(new URI());
+        // Assert that an exception is thrown
+        Assertions.assertThrows(RuntimeException.class, () -> graphStore.saveGraph(graphModelPair));
     }
-
 
     @Test
     void testGetGraph() {
