@@ -202,7 +202,7 @@ class SourceControllerTest {
 
         // Verify the response
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
-        Assertions.assertTrue(response.getBody());
+        assertEquals(Boolean.TRUE, response.getBody());
     }
 
     @Test
