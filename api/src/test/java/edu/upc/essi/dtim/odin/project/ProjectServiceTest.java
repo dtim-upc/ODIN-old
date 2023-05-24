@@ -115,7 +115,7 @@ class ProjectServiceTest {
         projectService.saveProject(testProject);
 
         // Call the reconstructFile method and expect a RuntimeException
-        Assertions.assertThrows(IllegalArgumentException.class, () -> projectService.deleteDatasetFromProject(testProject.getProjectId(), "inventedDatasetId"));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> projectService.deleteDatasetFromProject("testID", "inventedDatasetId"));
     }
 
     @Test
