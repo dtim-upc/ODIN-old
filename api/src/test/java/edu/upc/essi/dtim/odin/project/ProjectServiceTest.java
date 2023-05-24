@@ -67,6 +67,14 @@ class ProjectServiceTest {
     }
 
     @Test
+    void testAddDatasetIdToProject_runtimeException() {
+        Dataset dataset = new Dataset();
+        dataset.setDatasetId("dataset1");
+
+        Assertions.assertThrows(RuntimeException.class, () -> projectService.addDatasetIdToProject("null", dataset));
+    }
+
+    @Test
     void testGetDatasetsOfProject() {
         String datasetId = "dataset1";
 
