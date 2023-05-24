@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.slf4j.Logger;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,13 +29,10 @@ class SourceControllerTest {
     @InjectMocks
     private SourceController sourceController;
 
-    private Logger logger;
-
     @BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
         sourceService = Mockito.mock(SourceService.class);
-        this.logger = Mockito.mock(Logger.class);
         sourceController = new SourceController(sourceService);
     }
 
@@ -263,4 +259,34 @@ class SourceControllerTest {
         Assertions.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         Assertions.assertEquals("An error occurred",response.getBody());
     }
+
+    @Test
+    void testGetAllDatasource() {
+        // Mock the behavior of the sourceService
+        List<Dataset> mockDatasets = new ArrayList<>();
+        mockDatasets.add(new Dataset());
+        mockDatasets.add(new Dataset());
+        when(sourceService.getDatasets()).thenReturn(mockDatasets);
+
+        // Test when datasets are found
+        ResponseEntity<Object> response = sourceController.getAllDatasource();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(mockDatasets, response.getBody());
+
+        // Test when no datasets are found
+        mockDatasets.clear();
+        response = sourceController.getAllDatasource();
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("No datasets found", response.getBody());
+
+        // Test when an exception occurs
+        when(sourceService.getDatasets()).thenAnswer(invocation -> {
+            throw new Exception("Some exception");
+        });
+        response = sourceController.getAllDatasource();
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals("An error occurred", response.getBody());
+    }
+
+
 }

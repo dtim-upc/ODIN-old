@@ -219,24 +219,5 @@ public class SourceController {
             return new ResponseEntity<>("An error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    /**
-     * Retrieves a graph based on the given graph ID.
-     *
-     * @param graphId The ID of the graph to retrieve.
-     * @return The graph corresponding to the provided ID.
-     */
-    @GetMapping("/getGraph")
-    public Graph getGraph(@RequestParam("graphId") String graphId) {
-        GraphStoreInterface graphStore;
-        try {
-            graphStore = GraphStoreFactory.getInstance(new AppConfig());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        assert graphStore != null;
-        return graphStore.getGraph(new URI(graphId));
-    }
 }
 
