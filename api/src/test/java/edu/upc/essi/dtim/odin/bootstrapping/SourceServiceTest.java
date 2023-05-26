@@ -4,6 +4,8 @@ import edu.upc.essi.dtim.NextiaCore.datasources.dataset.CsvDataset;
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.Dataset;
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.JsonDataset;
 import edu.upc.essi.dtim.NextiaCore.graph.LocalGraph;
+import edu.upc.essi.dtim.odin.project.Project;
+import edu.upc.essi.dtim.odin.project.ProjectService;
 import org.apache.jena.rdf.model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,8 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.List;
 
 import static edu.upc.essi.dtim.odin.bootstrapping.GraphModelPairTest.getHardcodedModel;
 
@@ -214,5 +215,135 @@ class SourceServiceTest {
         // Assert that the returned visual schema is not null or empty
         Assertions.assertNotNull(visualSchema);
         Assertions.assertFalse(visualSchema.isEmpty());
+    }
+
+    @Test
+    void testSaveGraphToDatabase() {
+        // Prepare test data
+        Dataset dataset = new CsvDataset("datasetId", "Test Dataset", "This is a test dataset", "../api/src/test/resources/csvTestFile.csv");
+
+        // Call the method to transform the dataset to a graph
+        GraphModelPair graphModelPair = sourceService.transformToGraph(dataset);
+
+        // Call the method to save the graph to the database
+        boolean result = sourceService.saveGraphToDatabase(graphModelPair);
+
+        // Assert that the result is true, indicating successful saving
+        Assertions.assertTrue(result);
+    }
+
+    @Test
+    void testAddDatasetIdToProject() {
+        // Prepare test data
+        String projectId = "123";
+        Dataset dataset = new Dataset();
+
+        // Create a project with the specified ID
+        Project project = new Project();
+        project.setProjectId(projectId);
+        project.setProjectName("TestProject");
+        ProjectService projectService = new ProjectService();
+        projectService.saveProject(project);
+
+        Assertions.assertEquals(0,project.getDatasets().size());
+
+        // Call the method to add the dataset ID to the project
+        sourceService.addDatasetIdToProject(projectId, dataset);
+
+        Assertions.assertEquals(1,projectService.getDatasetsOfProject(projectId).size());
+
+        //clean de DB from test samples
+        projectService.deleteProject(projectId);
+    }
+
+    @Test
+    void testDeleteDatasetFromProject() {
+        // Prepare test data
+        String projectId = "123";
+        String datasetId = "1234";
+        Dataset dataset = new Dataset();
+        dataset.setDatasetId(datasetId);
+
+        // Create a project with the specified ID
+        Project project = new Project();
+        project.setProjectId(projectId);
+        project.setProjectName("TestProject");
+        ProjectService projectService = new ProjectService();
+        projectService.saveProject(project);
+
+        Assertions.assertEquals(0,project.getDatasets().size());
+
+        // Call the method to add the dataset ID to the project
+        sourceService.addDatasetIdToProject(projectId, dataset);
+
+        Assertions.assertEquals(1,projectService.getDatasetsOfProject(projectId).size());
+
+        // Call the method to delete the dataset from the project
+        sourceService.deleteDatasetFromProject(projectId, datasetId);
+
+        Assertions.assertEquals(0,projectService.getDatasetsOfProject(projectId).size());
+
+        //clean de DB from test samples
+        projectService.deleteProject(projectId);
+    }
+
+    @Test
+    void testSaveAndDeleteDataset() {
+        // Prepare test data
+        Dataset dataset = new Dataset();
+
+        // Call the method to save the dataset
+        Dataset savedDataset = sourceService.saveDataset(dataset);
+
+        Assertions.assertNotNull(savedDataset.getDatasetId());
+
+        // Call the method to delete the datasource
+        boolean result = sourceService.deleteDatasource(savedDataset.getDatasetId());
+
+        // Assert the result of the deletion
+        Assertions.assertTrue(result);
+    }
+
+    @Test
+    void testProjectContains() {
+        // Prepare test data
+        String projectId = "123";
+        String datasetId = "1234";
+        Dataset dataset = new Dataset();
+        dataset.setDatasetId(datasetId);
+
+        // Create a project with the specified ID
+        Project project = new Project();
+        project.setProjectId(projectId);
+        project.setProjectName("TestProject");
+        ProjectService projectService = new ProjectService();
+        projectService.saveProject(project);
+
+        Assertions.assertEquals(0,project.getDatasets().size());
+
+        // Call the method to add the dataset ID to the project
+        sourceService.addDatasetIdToProject(projectId, dataset);
+
+        Assertions.assertEquals(1,projectService.getDatasetsOfProject(projectId).size());
+
+        // Call the method to check if the project contains the dataset
+        boolean containsDataset = sourceService.projectContains(projectId, datasetId);
+
+        // Assert the result of the containment check
+        Assertions.assertTrue(containsDataset);
+
+        // Call the method to delete the dataset from the project
+        sourceService.deleteDatasetFromProject(projectId, datasetId);
+
+        Assertions.assertEquals(0,projectService.getDatasetsOfProject(projectId).size());
+
+        // Call the method to check if the project contains the dataset
+        containsDataset = sourceService.projectContains(projectId, datasetId);
+
+        // Assert the result of the containment check
+        Assertions.assertFalse(containsDataset);
+
+        //clean de DB from test samples
+        projectService.deleteProject(projectId);
     }
 }
