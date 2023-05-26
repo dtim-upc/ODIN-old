@@ -346,4 +346,47 @@ class SourceServiceTest {
         //clean de DB from test samples
         projectService.deleteProject(projectId);
     }
+
+    @Test
+    void testGetDatasetsOfProject(){
+        // Prepare test data
+        String projectId = "123";
+        String datasetId = "1234";
+        Dataset dataset = new Dataset();
+        dataset.setDatasetId(datasetId);
+
+        // Create a project with the specified ID
+        Project project = new Project();
+        project.setProjectId(projectId);
+        project.setProjectName("TestProject");
+        ProjectService projectService = new ProjectService();
+        projectService.saveProject(project);
+
+        Assertions.assertEquals(0,project.getDatasets().size());
+
+        // Call the method to add the dataset ID to the project
+        sourceService.addDatasetIdToProject(projectId, dataset);
+
+        Assertions.assertEquals(1,sourceService.getDatasetsOfProject(projectId).size());
+
+        // Call the method to check if the project contains the dataset
+        boolean containsDataset = sourceService.projectContains(projectId, datasetId);
+
+        // Assert the result of the containment check
+        Assertions.assertTrue(containsDataset);
+
+        // Call the method to delete the dataset from the project
+        sourceService.deleteDatasetFromProject(projectId, datasetId);
+
+        Assertions.assertEquals(0,sourceService.getDatasetsOfProject(projectId).size());
+
+        // Call the method to check if the project contains the dataset
+        containsDataset = sourceService.projectContains(projectId, datasetId);
+
+        // Assert the result of the containment check
+        Assertions.assertFalse(containsDataset);
+
+        //clean de DB from test samples
+        projectService.deleteProject(projectId);
+    }
 }
