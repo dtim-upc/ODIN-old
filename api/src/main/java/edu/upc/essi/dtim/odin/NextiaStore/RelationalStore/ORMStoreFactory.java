@@ -17,7 +17,7 @@ public class ORMStoreFactory {
     public static ORMStoreInterface getInstance() {
         if (ormStoreInterfaceInstance == null) {
             logger.info("Creating new instance of JpaOrmImplementation");
-            ormStoreInterfaceInstance = new JpaOrmImplementation();
+            ormStoreInterfaceInstance = new OrmStoreJpaImpl();
         }
         return ormStoreInterfaceInstance;
     }

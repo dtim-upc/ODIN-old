@@ -6,12 +6,12 @@ import org.slf4j.LoggerFactory;
 import javax.persistence.*;
 import java.util.List;
 
-public class JpaOrmImplementation implements ORMStoreInterface {
+public class OrmStoreJpaImpl implements ORMStoreInterface {
 
-    private static final Logger logger = LoggerFactory.getLogger(JpaOrmImplementation.class);
+    private static final Logger logger = LoggerFactory.getLogger(OrmStoreJpaImpl.class);
     private final EntityManagerFactory emf;
 
-    public JpaOrmImplementation() {
+    public OrmStoreJpaImpl() {
         emf = Persistence.createEntityManagerFactory("ORMPersistenceUnit");
     }
 
