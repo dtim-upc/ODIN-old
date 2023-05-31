@@ -28,6 +28,7 @@ public class GraphStoreFactory {
                     case "JENA":
                         instance = new GraphStoreJenaImpl(appConfig);
                         break;
+                    case "NEO4J":
                     //OTHER IMPLEMENTATIONS
                     default:
                         throw new Exception("Error with DB type");
