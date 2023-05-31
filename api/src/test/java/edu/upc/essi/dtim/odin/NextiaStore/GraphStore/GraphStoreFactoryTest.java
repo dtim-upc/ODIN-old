@@ -25,7 +25,7 @@ class GraphStoreFactoryTest {
     void testGetInstance_Dummy() throws Exception {
         // Create a mock AppConfig
         AppConfig appConfig = Mockito.mock(AppConfig.class);
-        Mockito.when(appConfig.getDBTypeProperty()).thenReturn("DUMMY");
+        Mockito.when(appConfig.getDBTypeProperty()).thenReturn("Neo4J");
 
         // Call the getInstance method
         GraphStoreInterface graphStore = GraphStoreFactory.getInstance(appConfig);
