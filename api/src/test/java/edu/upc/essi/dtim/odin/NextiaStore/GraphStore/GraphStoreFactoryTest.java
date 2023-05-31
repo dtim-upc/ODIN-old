@@ -2,56 +2,68 @@ package edu.upc.essi.dtim.odin.NextiaStore.GraphStore;
 
 import edu.upc.essi.dtim.odin.config.AppConfig;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.function.Executable;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class GraphStoreFactoryTest {
 
-    @Test
-    void testGetInstance_Jena() throws Exception {
-        // Create a mock AppConfig
-        AppConfig appConfig = Mockito.mock(AppConfig.class);
-        Mockito.when(appConfig.getDBTypeProperty()).thenReturn("JENA");
+    @Mock
+    private AppConfig appConfig;
 
-        // Call the getInstance method
-        GraphStoreInterface graphStore = GraphStoreFactory.getInstance(appConfig);
-
-        // Assertions
-        Assertions.assertNotNull(graphStore);
-        Assertions.assertTrue(graphStore instanceof GraphStoreJenaImpl);
+    @BeforeEach
+    void setup() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void testGetInstance_Dummy() throws Exception {
-        // Create a mock AppConfig
-        AppConfig appConfig = Mockito.mock(AppConfig.class);
-        Mockito.when(appConfig.getDBTypeProperty()).thenReturn("Neo4J");
+    void testGetInstance_Jena() {
+        // Call the getInstance() method
+        try {
+            // Mock the AppConfig to return "JENA" as the DB type property
+            when(appConfig.getDBTypeProperty()).thenReturn("JENA");
 
-        // Call the getInstance method
-        GraphStoreInterface graphStore = GraphStoreFactory.getInstance(appConfig);
+            GraphStoreInterface instance = GraphStoreFactory.getInstance(appConfig);
 
-        // Assertions
-        Assertions.assertNull(graphStore);
-        // Add assertions specific to the Dummy implementation if available
+            // Assert that the instance is not null and is of type GraphStoreJenaImpl
+            assertNotNull(instance);
+            assertTrue(instance instanceof GraphStoreJenaImpl);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Exception occurred: " + e.getMessage());
+        }
     }
 
     @Test
-    void testGetInstance_UnknownDBType() {
-        // Create a mock AppConfig
-        AppConfig appConfig = Mockito.mock(AppConfig.class);
-        Mockito.when(appConfig.getDBTypeProperty()).thenReturn("UNKNOWN");
+    void testGetInstance_UnknownDBType() throws Exception {
+        // Mock the AppConfig to return an unknown DB type property
+        when(appConfig.getDBTypeProperty()).thenReturn("UnknownDB");
 
-        // Call the getInstance method and assert that it throws an exception
-        Assertions.assertThrows(Exception.class, () -> {
-            GraphStoreInterface graphStore = GraphStoreFactory.getInstance(appConfig);
-        });
+        // Call the getInstance() method
+        Assertions.assertThrows(Exception.class, () -> GraphStoreFactory.getInstance(appConfig));
     }
 
     @Test
-    void testGetInstance_NullAppConfig() {
-        // Call the getInstance method with a null AppConfig and assert that it throws an exception
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            GraphStoreInterface graphStore = GraphStoreFactory.getInstance(null);
-        });
+    void testGetInstance_NullAppCOnfig() {
+        GraphStoreInterface instance = null;
+        Exception exception = null;
+        // Test with null appConfig
+        AppConfig nullAppConfig = null;
+
+            try {
+            instance = GraphStoreFactory.getInstance(nullAppConfig);
+        } catch (Exception e) {
+            exception = e;
+        }
+
+        assertNotNull(exception);
+        assertTrue(exception instanceof IllegalArgumentException);
+        assertEquals("appConfig cannot be null", exception.getMessage());
+        assertNull(instance);
     }
 }

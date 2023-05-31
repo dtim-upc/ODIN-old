@@ -1,9 +1,9 @@
 package edu.upc.essi.dtim.odin.NextiaStore.GraphStore;
 
-import edu.upc.essi.dtim.odin.NextiaStore.RelationalStore.ORMStoreInterface;
 import edu.upc.essi.dtim.odin.config.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,24 +17,26 @@ public class GraphStoreFactory {
     }
 
     public static GraphStoreInterface getInstance(AppConfig appConfig) throws Exception {
-        if (instance == null && appConfig != null) {
-            String dbType = appConfig.getDBTypeProperty();
-            if(instance == null) logger.info("Creating new instance of GraphStoreFactory with DB type: {}", dbType);
-
-            switch (dbType) {
-                case "JENA":
-                    return instance = new GraphStoreJenaImpl(appConfig);
-                case "Neo4J":
-                    //OTHER IMPLEMENTATIONS
-                    logger.warn("There is no implementation for Neo4J");
-                    break;
-                default:
-                    throw new Exception("Error with DB type");
-            }
-        } else {
-            logger.error("The AppConfig is null, so instance of GraphStoreFactory is not working");
-            throw new IllegalArgumentException("AppConfig is null");
+        if (appConfig == null) {
+            throw new IllegalArgumentException("appConfig cannot be null");
         }
-        return instance;
+
+        String dbType = appConfig.getDBTypeProperty();
+            if (instance == null) {
+                logger.info("Creating new instance of GraphStoreFactory with DB type: {}", dbType);
+
+                switch (dbType) {
+                    case "JENA":
+                        instance = new GraphStoreJenaImpl(appConfig);
+                        break;
+                    case "Neo4J":
+                        //OTHER IMPLEMENTATIONS
+                        logger.warn("There is no implementation for Neo4J");
+                        break;
+                    default:
+                        throw new Exception("Error with DB type");
+                }
+            }
+            return instance;
     }
 }
