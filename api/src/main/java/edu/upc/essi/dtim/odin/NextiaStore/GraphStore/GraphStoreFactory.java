@@ -3,7 +3,6 @@ package edu.upc.essi.dtim.odin.NextiaStore.GraphStore;
 import edu.upc.essi.dtim.odin.config.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -29,9 +28,7 @@ public class GraphStoreFactory {
                     case "JENA":
                         instance = new GraphStoreJenaImpl(appConfig);
                         break;
-                    case "Neo4J":
-                        //OTHER IMPLEMENTATIONS
-                        break;
+                    //OTHER IMPLEMENTATIONS
                     default:
                         throw new Exception("Error with DB type");
                 }
