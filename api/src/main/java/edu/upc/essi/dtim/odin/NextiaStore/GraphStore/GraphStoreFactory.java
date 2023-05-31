@@ -31,7 +31,6 @@ public class GraphStoreFactory {
                         break;
                     case "Neo4J":
                         //OTHER IMPLEMENTATIONS
-                        logger.warn("There is no implementation for Neo4J");
                         break;
                     default:
                         throw new Exception("Error with DB type");
