@@ -1,11 +1,11 @@
 package edu.upc.essi.dtim.odin.NextiaGraphy;
 
 import com.google.gson.Gson;
+import edu.upc.essi.dtim.NextiaCore.graph.Graph;
 import edu.upc.essi.dtim.odin.NextiaGraphy.graphy.Graphy;
 import edu.upc.essi.dtim.odin.NextiaGraphy.graphy.Links;
 import edu.upc.essi.dtim.odin.NextiaGraphy.graphy.Nodes;
 import edu.upc.essi.dtim.odin.NextiaGraphy.vocabulary.SourceGraph;
-import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.vocabulary.RDF;
@@ -25,7 +25,7 @@ import static edu.upc.essi.dtim.odin.NextiaGraphy.vocabulary.Namespaces.SCHEMAIN
 public class NextiaGraphy {
     private static final Logger logger = LoggerFactory.getLogger(NextiaGraphy.class);
 
-    public String generateVisualGraphNew(Model model){
+    public String generateVisualGraphNew(Graph model){
 
         HashMap<String, String> nodesId = new HashMap<>();
 
@@ -37,9 +37,6 @@ public class NextiaGraphy {
         for( Resource r : model.listSubjects().toList() ) {
 
             Nodes n = new Nodes();
-            if(r.getURI().contains("pop")) {
-                logger.info("here");
-            }
             n.setIri(r.getURI());
             n.setId("Class"+nodeId);
             nodeId += 1 ;

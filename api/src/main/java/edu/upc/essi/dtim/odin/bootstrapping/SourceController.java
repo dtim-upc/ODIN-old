@@ -3,6 +3,7 @@ package edu.upc.essi.dtim.odin.bootstrapping;
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.CsvDataset;
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.Dataset;
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.JsonDataset;
+import edu.upc.essi.dtim.NextiaCore.graph.Graph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +62,7 @@ public class SourceController {
             Dataset savedDataset = sourceService.saveDataset(datasource);
 
             // Transform datasource into graph
-            GraphModelPair graph = sourceService.transformToGraph(savedDataset);
+            Graph graph = sourceService.transformToGraph(savedDataset);
 
             //Generating visual schema for frontend
             String visualSchema = sourceService.generateVisualSchema(graph);
@@ -70,8 +71,9 @@ public class SourceController {
             boolean isSaved = sourceService.saveGraphToDatabase(graph);
 
             if (isSaved) {
-                graph.getGraph().setGraphicalSchema(visualSchema);
-                savedDataset.setLocalGraph(graph.getGraph());
+                graph.setGraphicalSchema(visualSchema);
+                //TODO: SEE WHAT HAPPENS WITH ORM
+                //savedDataset.setLocalGraph(graph);
 
                 //Create the relation with project adding the datasetId
                 sourceService.addDatasetIdToProject(projectId, savedDataset);

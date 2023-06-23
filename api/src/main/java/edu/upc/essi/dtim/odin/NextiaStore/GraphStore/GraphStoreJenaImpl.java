@@ -1,23 +1,14 @@
 package edu.upc.essi.dtim.odin.NextiaStore.GraphStore;
 
 
-import edu.upc.essi.dtim.NextiaCore.graph.Graph;
-import edu.upc.essi.dtim.NextiaCore.graph.LocalGraph;
-import edu.upc.essi.dtim.NextiaCore.graph.Triple;
-import edu.upc.essi.dtim.NextiaCore.graph.URI;
-import edu.upc.essi.dtim.odin.bootstrapping.GraphModelPair;
+import edu.upc.essi.dtim.NextiaCore.graph.*;
 import edu.upc.essi.dtim.odin.config.AppConfig;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.rdf.model.impl.ModelCom;
-import org.apache.jena.rdf.model.impl.StatementImpl;
 import org.apache.jena.tdb.TDBFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Component
 public class GraphStoreJenaImpl implements GraphStoreInterface {
@@ -37,8 +28,8 @@ public class GraphStoreJenaImpl implements GraphStoreInterface {
      * @param graph the graph to save
      */
     @Override
-    public void saveGraph(GraphModelPair graph) {
-        Model modelToSave = graph.getModel();
+    public void saveGraph(Graph graph) {
+        /*Model modelToSave = graph.;
         dataset.begin(ReadWrite.WRITE);
         try {
             String modelName = graph.getGraph().getName().getURI();
@@ -47,7 +38,7 @@ public class GraphStoreJenaImpl implements GraphStoreInterface {
         } catch (final Exception ex) {
             dataset.abort();
             throw ex;
-        }
+        }*/
     }
 
     /**
@@ -64,7 +55,8 @@ public class GraphStoreJenaImpl implements GraphStoreInterface {
             String modelName = name.getURI();
             if (dataset.containsNamedModel(modelName)) {
                 Model model = dataset.getNamedModel(modelName);
-                return adapt(model, name);
+                //TODO
+                return CoreGraphFactory.createGraphInstance("normal");
             } else {
                 throw getIllegalArgumentException(name);
             }
@@ -100,43 +92,6 @@ public class GraphStoreJenaImpl implements GraphStoreInterface {
             dataset.abort();
             throw ex;
         }
-    }
-
-    Graph adapt(Model model, URI name) {
-        Set<Triple> triples = new HashSet<>();
-
-        StmtIterator iter = model.listStatements();
-        while (iter.hasNext()) {
-            Statement stmt = iter.next();
-            triples.add(new Triple(
-                    new URI(stmt.getSubject().getURI()),
-                    new URI(stmt.getPredicate().getURI()),
-                    new URI(stmt.getObject().asResource().getURI())
-            ));
-        }
-        
-        return new LocalGraph(null, name, triples);
-    }
-
-    Model adapt(Graph graph) {
-        Model model = ModelFactory.createDefaultModel();
-        for (Triple triple : graph.getTriples()) {
-            Resource subject = ResourceFactory.createResource(triple.getSubject().getURI());
-            Property predicate = ResourceFactory.createProperty(triple.getPredicate().getURI());
-            Statement statement;
-            if (true /*triple.getObject().isURI()*/) {
-                Resource object = ResourceFactory.createResource(triple.getObject().toString());
-                statement = new StatementImpl(subject, predicate, object);
-            } else {
-                org.apache.jena.datatypes.RDFDatatype datatype = null;
-                if (true /*triple.getObject().getLiteralDatatypeURI() != null*/) {
-                    datatype = org.apache.jena.datatypes.TypeMapper.getInstance().getSafeTypeByName(triple.getObject().toString());
-                }
-                statement = new StatementImpl(subject, predicate, (RDFNode) triple.getObject(), (ModelCom) datatype);
-            }
-            model.add(statement);
-        }
-        return model;
     }
 }
 

@@ -3,12 +3,8 @@ package edu.upc.essi.dtim.odin.bootstrapping;
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.CsvDataset;
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.Dataset;
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.JsonDataset;
-import edu.upc.essi.dtim.NextiaCore.graph.Graph;
-import edu.upc.essi.dtim.NextiaCore.graph.LocalGraph;
-import edu.upc.essi.dtim.NextiaCore.graph.Triple;
-import edu.upc.essi.dtim.NextiaCore.graph.URI;
-import edu.upc.essi.dtim.nextiadi.bootstraping.CSVBootstrap;
-import edu.upc.essi.dtim.nextiadi.bootstraping.JSONBootstrapSWJ;
+import edu.upc.essi.dtim.NextiaCore.graph.*;
+import edu.upc.essi.dtim.nextiabs2.*;
 import edu.upc.essi.dtim.odin.NextiaGraphy.NextiaGraphy;
 import edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreFactory;
 import edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreInterface;
@@ -16,15 +12,10 @@ import edu.upc.essi.dtim.odin.NextiaStore.RelationalStore.ORMStoreFactory;
 import edu.upc.essi.dtim.odin.NextiaStore.RelationalStore.ORMStoreInterface;
 import edu.upc.essi.dtim.odin.config.AppConfig;
 import edu.upc.essi.dtim.odin.project.ProjectService;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.StmtIterator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -32,9 +23,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.SecureRandom;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
 
 /**
  * The service class for managing datasources in a project.
@@ -149,45 +139,32 @@ public class SourceService {
      * @param dataset The Dataset object to transform.
      * @return A GraphModelPair object containing the transformed Graph and the corresponding Model.
      */
-    public GraphModelPair transformToGraph(Dataset dataset) {
+    public Graph transformToGraph(Dataset dataset) {
         try {
-            Model bootstrapM = convertDatasetToModel(dataset);
-            Graph bootstrappedGraph = adapt(bootstrapM, new URI(dataset.getDatasetName()));
-            return new GraphModelPair(bootstrappedGraph, bootstrapM);
+            return convertDatasetToGraph(dataset);
         } catch (UnsupportedOperationException e) {
-            return handleUnsupportedDatasetFormat(dataset);
+            throw new UnsupportedOperationException("Dataset type not supported. Something went wrong during bootstrap process generating the schema.");
         }
     }
 
-    Model convertDatasetToModel(Dataset dataset) {
-        Model bootstrapM = ModelFactory.createDefaultModel();
+    Graph convertDatasetToGraph(Dataset dataset) {
+        Graph bootstrapG = CoreGraphFactory.createGraphInstance("local");
         if (dataset.getClass().equals(CsvDataset.class)) {
-            CSVBootstrap bootstrap = new CSVBootstrap();
+            CSVBootstrap_with_DataFrame_MM_without_Jena bootstrap = new CSVBootstrap_with_DataFrame_MM_without_Jena(dataset.getDatasetId(), dataset.getDatasetName(), ((CsvDataset) dataset).getPath());
             try {
-                bootstrapM = bootstrap.bootstrapSchema(dataset.getDatasetId(), dataset.getDatasetName(), ((CsvDataset) dataset).getPath());
+                bootstrapG = bootstrap.bootstrapSchema();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         } else if (dataset.getClass().equals(JsonDataset.class)) {
-            JSONBootstrapSWJ j = new JSONBootstrapSWJ();
+            JSONBootstrap_with_DataFrame_MM_without_Jena j = new JSONBootstrap_with_DataFrame_MM_without_Jena(dataset.getDatasetName(), dataset.getDatasetId(), ((JsonDataset) dataset).getPath());
             try {
-                bootstrapM = j.bootstrapSchema(dataset.getDatasetName(), dataset.getDatasetId(), ((JsonDataset) dataset).getPath());
-            } catch (FileNotFoundException e) {
+                bootstrapG = j.bootstrapSchema();
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
-        return bootstrapM;
-    }
-
-    GraphModelPair handleUnsupportedDatasetFormat(Dataset dataset) {
-        Graph errorGraph = new LocalGraph(null, new URI("ERROR"), new HashSet<>());
-        errorGraph.addTriple(new Triple(
-                new URI(dataset.getDatasetId()),
-                new URI("https://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
-                new URI("https://example.org/error#UnsupportedDatasetFormat")
-        ));
-
-        return new GraphModelPair(errorGraph, null);
+        return bootstrapG;
     }
 
 
@@ -197,9 +174,9 @@ public class SourceService {
      * @param graph The GraphModelPair object containing the Graph.
      * @return A String representing the visual schema of the Graph.
      */
-    public String generateVisualSchema(GraphModelPair graph) {
+    public String generateVisualSchema(Graph graph) {
         NextiaGraphy visualLib = new NextiaGraphy();
-        return visualLib.generateVisualGraphNew(graph.getModel());
+        return visualLib.generateVisualGraphNew(graph);
     }
 
     /**
@@ -208,7 +185,7 @@ public class SourceService {
      * @param graph The Graph object to save.
      * @return A boolean indicating whether the saving operation was successful.
      */
-    public boolean saveGraphToDatabase(GraphModelPair graph) {
+    public boolean saveGraphToDatabase(Graph graph) {
         GraphStoreInterface graphStore;
         try {
             graphStore = GraphStoreFactory.getInstance(appConfig);
@@ -289,30 +266,6 @@ public class SourceService {
     public List<Dataset> getDatasetsOfProject(String id) {
         // Returning the list of datasets associated with the project
         return projectService.getDatasetsOfProject(id);
-    }
-
-
-    /**
-     * Adapts a Model object into a Graph object with Triples.
-     *
-     * @param model The Model object to adapt.
-     * @param name  The name of the Graph.
-     * @return The adapted Graph object.
-     */
-    private Graph adapt(Model model, URI name) {
-        Set<Triple> triples = new HashSet<>();
-
-        StmtIterator iter = model.listStatements();
-        while (iter.hasNext()) {
-            Statement stmt = iter.next();
-            triples.add(new Triple(
-                    new URI(stmt.getSubject().getURI()),
-                    new URI(stmt.getPredicate().getURI()),
-                    new URI(stmt.getObject().isLiteral() ? stmt.getObject().asLiteral().toString():stmt.getObject().asResource().getURI())
-            ));
-        }
-
-        return new LocalGraph(null, name, triples);
     }
 }
 

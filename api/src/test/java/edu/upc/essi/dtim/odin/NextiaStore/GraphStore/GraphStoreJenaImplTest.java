@@ -4,7 +4,6 @@ import edu.upc.essi.dtim.NextiaCore.graph.Graph;
 import edu.upc.essi.dtim.NextiaCore.graph.LocalGraph;
 import edu.upc.essi.dtim.NextiaCore.graph.Triple;
 import edu.upc.essi.dtim.NextiaCore.graph.URI;
-import edu.upc.essi.dtim.odin.bootstrapping.GraphModelPair;
 import edu.upc.essi.dtim.odin.config.AppConfig;
 import org.junit.jupiter.api.*;
 import org.apache.jena.query.Dataset;
