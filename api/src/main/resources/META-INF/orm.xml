@@ -50,7 +50,8 @@
 
     </entity>
 
-    <!--> MAPPING CLASS GRAPH <-->
+    <!--> MAPPING CLASS GRAPH
+
     <entity class="edu.upc.essi.dtim.NextiaCore.graph.Graph">
         <table name="Graph">
             <unique-constraint>
@@ -59,20 +60,18 @@
         </table>
         <inheritance strategy="JOINED"/>
         <attributes>
-            <id name="id"><generated-value strategy="AUTO" /></id>
+            <id name="graphName"><generated-value strategy="AUTO" /></id>
             <basic name="graphicalSchema"/>
-            <one-to-one name="name">
+            <one-to-one name="graphName">
                 <cascade><cascade-all/></cascade>
             </one-to-one>
 
-            <transient name="triples"/>
         </attributes>
     </entity>
 
     <entity name="LocalGraph" class="edu.upc.essi.dtim.NextiaCore.graph.LocalGraph">
         <table name="LocalGraph"/>
         <attributes>
-            <transient name="triples"/>
         </attributes>
     </entity>
 
@@ -82,6 +81,7 @@
             <id name="URI"/>
         </attributes>
     </entity>
+     <-->
 
     <!--> MAPPING DATASET CLASS<-->
     <entity class="edu.upc.essi.dtim.NextiaCore.datasources.dataset.Dataset">
@@ -100,28 +100,29 @@
             <basic name="created_at">
                 <temporal>TIMESTAMP</temporal>
             </basic>
+            <!-->
+                        <one-to-one name="localGraph">
+                            <cascade><cascade-all/></cascade>
+                        </one-to-one>
+             <-->
 
-            <one-to-one name="localGraph">
-                <cascade><cascade-all/></cascade>
-            </one-to-one>
+                    </attributes>
+                </entity>
 
-        </attributes>
-    </entity>
+                <entity name="CsvDataset" class="edu.upc.essi.dtim.NextiaCore.datasources.dataset.CsvDataset">
+                    <table name="CsvDataset"/>
+                    <attributes>
+                        <basic name="path"/>
+                    </attributes>
+                </entity>
 
-    <entity name="CsvDataset" class="edu.upc.essi.dtim.NextiaCore.datasources.dataset.CsvDataset">
-        <table name="CsvDataset"/>
-        <attributes>
-            <basic name="path"/>
-        </attributes>
-    </entity>
-
-    <entity name="JsonDataset" class="edu.upc.essi.dtim.NextiaCore.datasources.dataset.JsonDataset">
-        <table name="JsonDataset"/>
-        <attributes>
-            <basic name="path"/>
-        </attributes>
-    </entity>
+                <entity name="JsonDataset" class="edu.upc.essi.dtim.NextiaCore.datasources.dataset.JsonDataset">
+                    <table name="JsonDataset"/>
+                    <attributes>
+                        <basic name="path"/>
+                    </attributes>
+                </entity>
 
 
 
-</entity-mappings>
+            </entity-mappings>

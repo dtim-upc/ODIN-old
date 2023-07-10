@@ -54,18 +54,21 @@ public class SourceController {
 
             // Reconstruct file from Multipart file
             String filePath = sourceService.reconstructFile(attach_file);
-
+            System.out.println("-----------------filePath "+filePath);
             // Extract data from datasource file
             Dataset datasource = sourceService.extractData(filePath, datasetName, datasetDescription);
+            System.out.println("-----------------datasource "+datasource);
 
             //Saving dataset to assign an id
             Dataset savedDataset = sourceService.saveDataset(datasource);
-
+            System.out.println("-----------------savedDataset "+savedDataset);
             // Transform datasource into graph
-            Graph graph = sourceService.transformToGraph(savedDataset);
+            Graph graph = sourceService.transformToGraph(datasource);
+            System.out.println("-----------------graph "+graph.toString());
 
             //Generating visual schema for frontend
             String visualSchema = sourceService.generateVisualSchema(graph);
+            System.out.println("-----------------visualSchema "+visualSchema);
 
             // Save graph into database
             boolean isSaved = sourceService.saveGraphToDatabase(graph);

@@ -38,7 +38,6 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-
 	/////////////////////////////////////// ORM DEPENDENCIES ///////////////////////////////////////
 	// https://mvnrepository.com/artifact/org.hibernate.orm/hibernate-core
 	implementation group: 'org.hibernate.orm', name: 'hibernate-core', version: '6.2.2.Final'
@@ -56,14 +55,12 @@ dependencies {
 	/////////////////////////////////////// JENA DEPENDENCIES ///////////////////////////////////////
 	implementation group: 'org.apache.jena', name: 'apache-jena-libs', version: '4.1.0', ext: 'pom'
 	implementation group: 'org.apache.jena', name: 'jena-querybuilder', version: '4.1.0'
-
 	////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 	////////////////////////////////////////// NextiaCore //////////////////////////////////////////
-	//implementation name: 'nextiacore-0.0.1-SNAPSHOT-uber', ext: 'jar'
-	implementation fileTree(dir: 'lib', include: ['*.jar'])
-	runtimeOnly(fileTree(dir: 'lib', include: ['*.jar']))
+	implementation fileTree(dir: 'lib', include: ['nextiacore-0.0.2-SNAPSHOT-uber.jar'])
+	runtimeOnly(fileTree(dir: 'lib', include: ['nextiacore-0.0.2-SNAPSHOT-uber.jar']))
 	////////////////////////////////////////////////////////////////////////////////////////////////
 
 	////////////////////////////////////////// NextiaGraphy //////////////////////////////////////////
@@ -73,9 +70,13 @@ dependencies {
 
 	////////////////////////////////////////// OLD BOOTSTRAPPING LIB //////////////////////////////////////////
 	implementation 'edu.upc.essi.dtim:nextiadi:0.1.0-SNAPSHOT'
+
+	implementation fileTree(dir: 'lib', include: ['NextiaBS-1.0-SNAPSHOT-uber.jar'])
+	runtimeOnly(fileTree(dir: 'lib', include: ['NextiaBS-1.0-SNAPSHOT-uber.jar']))
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 }
+
 
 tasks.named('test') {
 	useJUnitPlatform()
