@@ -63,7 +63,7 @@ public class SourceController {
             Dataset savedDataset = sourceService.saveDataset(datasource);
             System.out.println("-----------------savedDataset "+savedDataset);
             // Transform datasource into graph
-            Graph graph = sourceService.transformToGraph(datasource);
+            Graph graph = sourceService.transformToGraph(savedDataset);
             System.out.println("-----------------graph "+graph.toString());
 
             //Generating visual schema for frontend

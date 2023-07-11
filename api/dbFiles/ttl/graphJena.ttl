@@ -1,0 +1,67 @@
+<http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/901/>
+        <https://www.essi.upc.edu/dtim/dataframe-metamodel#hasDataType>
+                <http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/901/Object_1> .
+
+<http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/901/nombre>
+        <http://www.w3.org/1999/02/22-rdf-syntax-ns#Type>
+                <https://www.essi.upc.edu/dtim/dataframe-metamodel#Data> ;
+        <http://www.w3.org/2000/01/rdf-schema#Label>
+                "nombre" ;
+        <https://www.essi.upc.edu/dtim/dataframe-metamodel#hasDataType>
+                <https://www.essi.upc.edu/dtim/dataframe-metamodel#String> .
+
+<http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/901/carros>
+        <http://www.w3.org/1999/02/22-rdf-syntax-ns#Type>
+                <https://www.essi.upc.edu/dtim/dataframe-metamodel#DataSource> .
+
+<http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/901/Array_1>
+        <http://www.w3.org/1999/02/22-rdf-syntax-ns#Type>
+                <https://www.essi.upc.edu/dtim/dataframe-metamodel#Array> ;
+        <http://www.w3.org/2000/01/rdf-schema#Label>
+                "marcas" .
+
+<http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/901/Object_1>
+        <http://www.w3.org/1999/02/22-rdf-syntax-ns#Type>
+                <https://www.essi.upc.edu/dtim/dataframe-metamodel#DataFrame> ;
+        <http://www.w3.org/2000/01/rdf-schema#Label>
+                "carros" ;
+        <https://www.essi.upc.edu/dtim/dataframe-metamodel#hasData>
+                <http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/901/marcas> .
+
+<http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/901/id>
+        <http://www.w3.org/1999/02/22-rdf-syntax-ns#Type>
+                <https://www.essi.upc.edu/dtim/dataframe-metamodel#Data> ;
+        <http://www.w3.org/2000/01/rdf-schema#Label>
+                "id" ;
+        <https://www.essi.upc.edu/dtim/dataframe-metamodel#hasData>
+                <https://www.essi.upc.edu/dtim/dataframe-metamodel#Number> .
+
+<http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/901/Array_2>
+        <http://www.w3.org/1999/02/22-rdf-syntax-ns#Type>
+                <https://www.essi.upc.edu/dtim/dataframe-metamodel#Array> ;
+        <http://www.w3.org/2000/01/rdf-schema#Label>
+                "modelos" .
+
+<http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/901/Object_2>
+        <http://www.w3.org/1999/02/22-rdf-syntax-ns#Type>
+                <https://www.essi.upc.edu/dtim/dataframe-metamodel#DataFrame> ;
+        <http://www.w3.org/2000/01/rdf-schema#Label>
+                "Array_1" ;
+        <https://www.essi.upc.edu/dtim/dataframe-metamodel#hasData>
+                <http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/901/modelos> , <http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/901/nombre> , <http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/901/id> .
+
+<http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/901/marcas>
+        <http://www.w3.org/1999/02/22-rdf-syntax-ns#Type>
+                <https://www.essi.upc.edu/dtim/dataframe-metamodel#Data> ;
+        <http://www.w3.org/2000/01/rdf-schema#Label>
+                "has marcas" ;
+        <https://www.essi.upc.edu/dtim/dataframe-metamodel#hasDataType>
+                <http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/901/Array_1> , <http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/901/Object_2> .
+
+<http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/901/modelos>
+        <http://www.w3.org/1999/02/22-rdf-syntax-ns#Type>
+                <https://www.essi.upc.edu/dtim/dataframe-metamodel#Data> ;
+        <http://www.w3.org/2000/01/rdf-schema#Label>
+                "has modelos" ;
+        <https://www.essi.upc.edu/dtim/dataframe-metamodel#hasDataType>
+                <http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/901/Array_2> , <https://www.essi.upc.edu/dtim/dataframe-metamodel#String> .

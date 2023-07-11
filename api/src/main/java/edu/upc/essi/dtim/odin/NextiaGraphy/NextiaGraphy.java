@@ -6,6 +6,7 @@ import edu.upc.essi.dtim.odin.NextiaGraphy.graphy.Graphy;
 import edu.upc.essi.dtim.odin.NextiaGraphy.graphy.Links;
 import edu.upc.essi.dtim.odin.NextiaGraphy.graphy.Nodes;
 import edu.upc.essi.dtim.odin.NextiaGraphy.vocabulary.SourceGraph;
+import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
@@ -27,21 +28,28 @@ public class NextiaGraphy {
     //cars json ----------------- {"nodes":[{"id":"Class1","iri":"http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1653/Object_1","iriType":"http://www.w3.org/2000/01/rdf-schema#Class","shortType":"rdfs:Class","type":"class","label":"json d","domain":"","range":"","isIntegrated":false},{"id":"Class3","iri":"http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1653/Object_2","iriType":"http://www.w3.org/2000/01/rdf-schema#Class","shortType":"rdfs:Class","type":"class","label":"Array_1","domain":"","range":"","isIntegrated":false},{"id":"Class4","iri":"http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1653/nombre","iriType":"http://www.w3.org/1999/02/22-rdf-syntax-ns#Property","shortType":"rdf:Property","type":"datatype","label":"nombre","domain":"http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1653/Object_2","range":"http://www.w3.org/2001/XMLSchema#string","isIntegrated":false,"linkId":"Link1"},{"id":"Class5","iri":"http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1653/modelos","iriType":"http://www.w3.org/1999/02/22-rdf-syntax-ns#Property","shortType":"rdf:Property","type":"datatype","label":"has modelos","domain":"http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1653/Object_2","range":"http://www.w3.org/2001/XMLSchema#string","isIntegrated":false,"linkId":"Link2"},{"id":"Class6","iri":"http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1653/marcas","iriType":"http://www.w3.org/1999/02/22-rdf-syntax-ns#Property","shortType":"rdf:Property","type":"object","label":"has marcas","domain":"http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1653/Object_1","range":"http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1653/Object_2","isIntegrated":false,"linkId":"Link3"},{"id":"Class7","iri":"http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1653/id","iriType":"http://www.w3.org/1999/02/22-rdf-syntax-ns#Property","shortType":"rdf:Property","type":"datatype","label":"id","domain":"http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1653/Object_2","range":"http://www.w3.org/2001/XMLSchema#int","isIntegrated":false,"linkId":"Link4"},{"id":"Datatype8","iri":"http://www.w3.org/2001/XMLSchema#string","shortType":"xsd:String","type":"xsdType","label":"string","domain":"","range":"","isIntegrated":false},{"id":"Datatype9","iri":"http://www.w3.org/2001/XMLSchema#string","shortType":"xsd:String","type":"xsdType","label":"string","domain":"","range":"","isIntegrated":false},{"id":"Datatype10","iri":"http://www.w3.org/2001/XMLSchema#int","shortType":"xsd:String","type":"xsdType","label":"int","domain":"","range":"","isIntegrated":false}],"links":[{"id":"Link1","nodeId":"Class4","source":"Class3","target":"Datatype8","label":"nombre"},{"id":"Link2","nodeId":"Class5","source":"Class3","target":"Datatype9","label":"has modelos"},{"id":"Link3","nodeId":"Class6","source":"Class1","target":"Class3","label":"has marcas"},{"id":"Link4","nodeId":"Class7","source":"Class3","target":"Datatype10","label":"id"}]}
 
     public String generateVisualGraphNew(Graph model){
+        model.write("C:\\Users\\victo\\Documents\\GitHub\\newODIN\\api\\dbFiles\\ttl"+"/graphJena.ttl");
 
         HashMap<String, String> nodesId = new HashMap<>();
+
         List<Nodes> nodes = new ArrayList<>();
 
         int conterMember = 1;
+        // create nodes
         int nodeId = 1;
+        System.out.println(model.getSubjects().toList());
+        System.out.println("ggggggggggggggggg "+"[http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/dataset.getDatasetId()/carros deportivos, http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/dataset.getDatasetId()/nombre, http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/dataset.getDatasetId()/Object_2, http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/dataset.getDatasetId()/Object_1, http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/dataset.getDatasetId()/marcas, http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/dataset.getDatasetId()/, http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/dataset.getDatasetId()/Array_1, http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/dataset.getDatasetId()/id, http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/dataset.getDatasetId()/modelos, http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/dataset.getDatasetId()/Array_2]\n".equals(model.getSubjects().toList().toString()));
+        for( Resource r : model.getSubjects().toList() ) {
 
-        for( String r : model.getSubjects() ) {
-            System.out.println(model.getSubjects()+"------------------subject "+nodeId);
             Nodes n = new Nodes();
-            n.setIri(r);
+            if(r.getURI().contains("pop")) {
+                logger.info("here");
+            }
+            n.setIri(r.getURI());
             n.setId("Class"+nodeId);
+            nodeId += 1 ;
 
             nodesId.put(n.getIri(), n.getId());
-            nodeId += 1;
 
             Nodes memberProperty = new Nodes();
             for (Statement statement : r.listProperties().toList()) {
@@ -54,19 +62,19 @@ public class NextiaGraphy {
                     n.setRange(statement.getObject().toString());
                 } else if (statement.getPredicate().getURI().equals(SourceGraph.HAS_ATTRIBUTE.val()) || statement.getPredicate().getURI().equals(SourceGraph.HAS_WRAPPER.val())) {
 
-                Nodes property = new Nodes();
-                property.setIri(statement.getPredicate().getURI());
-                property.setType(statement.getPredicate().getURI());
-                property.setDomain(n.getIri());
+                    Nodes property = new Nodes();
+                    property.setIri(statement.getPredicate().getURI());
+                    property.setType(statement.getPredicate().getURI());
+                    property.setDomain(n.getIri());
                     nodeId = getNodeId(nodesId, nodes, nodeId, statement, property);
                 } else if(statement.getPredicate().equals(RDFS.subClassOf)  || statement.getPredicate().equals(RDFS.subPropertyOf)
 
-            ) {
+                ) {
 
-                Nodes property = new Nodes();
-                property.setIri(statement.getPredicate().getURI());
-                property.setType(statement.getPredicate().getURI());
-                property.setDomain(statement.getSubject().toString());
+                    Nodes property = new Nodes();
+                    property.setIri(statement.getPredicate().getURI());
+                    property.setType(statement.getPredicate().getURI());
+                    property.setDomain(statement.getSubject().toString());
                     nodeId = getNodeId(nodesId, nodes, nodeId, statement, property);
                 } else if(statement.getPredicate().equals(RDFS.member)){
 
@@ -173,7 +181,7 @@ public class NextiaGraphy {
         Graphy gr = new Graphy();
         gr.setNodes(nodesReady);
         gr.setLinks(links);
-
+        System.out.println("----------------- " + new Gson().toJson(gr));
         return new Gson().toJson(gr);
     }
 
