@@ -14,3 +14,5 @@ ODINwhiteboard/odin/src/main/resources/credentials.properties
 !corruptJsonTestFile.json
 
 *.txt
+api/lib/NextiaBS-1.0-SNAPSHOT-uber.jar
+*.ttl
