@@ -141,6 +141,14 @@ export const useDataSourceStore = defineStore('datasource',{
 
         },
 
+      finishPreview(){
+        this.updateProjectInfo()
+
+
+        // we use go since the user can come from home or table sources pages
+        this.router.go(-1)
+      },
+
         persistDataSource(datasource){
           // const router2 = useRouter();
           const notify  = useNotify()
