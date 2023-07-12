@@ -34,21 +34,21 @@
         <!-- </div> -->
 
 
-        <q-step v-if="integrationStore.project.numberOfDS != '0'" :name="3" title="Integrate with project" icon="create_new_folder" :done="step > 2" style="min-height: 70vh">
+        <q-step v-if="integrationStore.project.datasets.length != 0" :name="3" title="Integrate with project" icon="create_new_folder" :done="step > 2" style="min-height: 70vh">
           <!-- <q-input outlined v-model="integratedName" label="Integrated datasource name" placeholder="Type a name for the integrated source" /> -->
 
           <TableAligments :no_shadow="true" />
           <!-- :alignments.sync="alignments" -->
         </q-step>
 
-        <q-step v-if="integrationStore.project.numberOfDS != '0'" :name="4" title="Review alignments" icon="create_new_folder" :done="step > 3" style="min-height: 70vh">
+        <q-step v-if="integrationStore.project.datasets.length != 0" :name="4" title="Review alignments" icon="create_new_folder" :done="step > 3" style="min-height: 70vh">
 
           The following alignments cannot be integrated as their entity domains are not integrated. Delete them or indicate the relationships of their entity domains to integrate them.
           <TableJoinAlignments :no_shadow="true"></TableJoinAlignments>
         </q-step>
 
 
-        <q-step v-if="integrationStore.project.numberOfDS != '0'" :name="5" title="Preview integration" icon="settings" style="min-height: 70vh;height: 1px" id="previewIntegration">
+        <q-step v-if="integrationStore.project.datasets.length != 0" :name="5" title="Preview integration" icon="settings" style="min-height: 70vh;height: 1px" id="previewIntegration">
           <div class="row" style="height: 92%;" >
             <div class="col-12">
              <!-- hola {{integrationStore.getGlobalSchema}} -->
