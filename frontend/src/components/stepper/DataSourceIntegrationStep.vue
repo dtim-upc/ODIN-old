@@ -1,8 +1,8 @@
 <template>
   <q-stepper style="width:100%;margin-top:15px" v-model="step" ref="stepper" color="primary" animated class="no-padding-stepper">
-        
+
         <q-step :name="1" title="Uploaded data sources" icon="settings" :done="step > 1" style="min-height: 70vh">
-          Here are the uploaded data sources that have not yet been integrated into the project 
+          Here are the uploaded data sources that have not yet been integrated into the project
           <TableTemporalDataSources :no_shadow="true" ></TableTemporalDataSources>
         </q-step>
 
@@ -12,37 +12,37 @@
           <!-- For each ad campaign that you create, you can control how much you're willing to -->
           <!-- spend on clicks and conversions, which networks and geographical locations you want -->
           <!-- your ads to show on, and more. -->
-          
-        
+
+
           <div class="column items-center " style="height: 100%;">
             <!-- <div class="col-6">
               <div>
-               <json-viewer :value="jsonData"></json-viewer> 
+               <json-viewer :value="jsonData"></json-viewer>
               </div>
-              
+
             </div> -->
             <div class="col-8" style="height: 100%;min-width: 75vw;">
               <Graph :graphical="integrationStore.getGraphicalB"></Graph>
             </div>
-         </div>    
+         </div>
 
-         
 
-          
+
+
           <!-- <CSVPreview></CSVPreview> -->
         </q-step>
         <!-- </div> -->
-        
+
 
         <q-step v-if="integrationStore.project.numberOfDS != '0'" :name="3" title="Integrate with project" icon="create_new_folder" :done="step > 2" style="min-height: 70vh">
           <!-- <q-input outlined v-model="integratedName" label="Integrated datasource name" placeholder="Type a name for the integrated source" /> -->
-          
+
           <TableAligments :no_shadow="true" />
           <!-- :alignments.sync="alignments" -->
         </q-step>
 
         <q-step v-if="integrationStore.project.numberOfDS != '0'" :name="4" title="Review alignments" icon="create_new_folder" :done="step > 3" style="min-height: 70vh">
-          
+
           The following alignments cannot be integrated as their entity domains are not integrated. Delete them or indicate the relationships of their entity domains to integrate them.
           <TableJoinAlignments :no_shadow="true"></TableJoinAlignments>
         </q-step>
@@ -52,12 +52,12 @@
           <div class="row" style="height: 92%;" >
             <div class="col-12">
              <!-- hola {{integrationStore.getGlobalSchema}} -->
-             This is a preview of the global schema generated. Note that green elements are integrated resources. If you would like to see the schema integrated, use the toggle to visualize how source schemas are connected. 
+             This is a preview of the global schema generated. Note that green elements are integrated resources. If you would like to see the schema integrated, use the toggle to visualize how source schemas are connected.
              <q-toggle :label="previewGS" false-value="Schema integrated" true-value="Global schema" v-model="previewGS"/>
-          
+
               <Graph :graphical="previewGS == 'Global schema' ? integrationStore.getGlobalSchema: integrationStore.getGraphicalSchemaIntegration"></Graph>
             </div>
-         </div>   
+         </div>
         </q-step>
 
         <template v-slot:navigation>
@@ -85,7 +85,7 @@ import { useIntegrationStore } from 'src/stores/integration.store.js'
 
 
 // -------------------------------------------------------------
-//                         PROPS & EMITS 
+//                         PROPS & EMITS
 // -------------------------------------------------------------
 
 // -------------------------------------------------------------
@@ -148,7 +148,7 @@ const previewGS = ref('Global schema')
  const stepLabel = () =>{
       switch (step.value) {
         case 2:
-          if(integrationStore.project.numberOfDS < '1')
+          if(integrationStore.project.datasets.length <= 1)
             return "Finish"
           return "Continue"
         case 4:
@@ -179,10 +179,10 @@ const previewGS = ref('Global schema')
             step.value++
           break;
         case 2:
-        if(integrationStore.project.numberOfDS == '0'  ){ 
+        if(integrationStore.project.datasets.length == 1  ){
           // we persist data source
-          console.log("persist ds...")
-          dataSourceStore.persistDataSource(integrationStore.selectedDS[0])
+          console.log("finish preview...")
+         dataSourceStore.finishPreview()
 
         } else {
           console.log("moving to integrate with project")
@@ -190,18 +190,18 @@ const previewGS = ref('Global schema')
         }
           break;
         case 3:
-       
+
         console.log("integrate with project. Step value", step.value)
         integrationStore.integrateTemporal( function () {
 
           if( integrationStore.joinAlignments.length == 0 ) {
             step.value = 5
           } else {
-            step.value++ 
+            step.value++
           }
         } )
         // step.value++
-        // 
+        //
           // emit("finished")
           // return false;
           break;
@@ -210,13 +210,13 @@ const previewGS = ref('Global schema')
 
           console.log("step 4 review alignments")
           integrationStore.integrateJoins( function () { step.value++ } )
-            
-          break;  
+
+          break;
         default:
           //last step
           console.log("step 4 save integration")
             integrationStore.saveIntegration(dataSourceStore.persistDataSource)
-      }  
+      }
    }
 
 
