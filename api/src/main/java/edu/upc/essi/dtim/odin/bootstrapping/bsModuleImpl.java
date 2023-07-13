@@ -23,7 +23,7 @@ public class bsModuleImpl implements bsModuleInterface{
 
         //bloque de código deprecado
         Model bootstrapM = convertDatasetToModel(dataset);
-        bootstrapG.setModel(bootstrapM);
+        bootstrapG.setGraph(bootstrapM);
 
         /* todo update when new BS is ready
         if (dataset.getClass().equals(CsvDataset.class)) {

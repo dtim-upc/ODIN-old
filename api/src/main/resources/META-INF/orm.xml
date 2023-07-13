@@ -50,30 +50,28 @@
 
     </entity>
 
-    <!--> MAPPING CLASS GRAPH
+    <!--> MAPPING CLASS GRAPH<-->
     <entity class="edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl">
-        <table name="Graph">
+        <table name="GraphJenaImpl">
             <unique-constraint>
                 <column-name>graphName</column-name>
             </unique-constraint>
         </table>
-        <inheritance strategy="JOINED"/>
         <attributes>
             <id name="graphName"><generated-value strategy="AUTO" /></id>
             <basic name="graphicalSchema"/>
-
+            <transient name="graph"/>
         </attributes>
     </entity>
-    <-->
 
     <entity class="edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.ormPruebaImpl">
         <table name="ormPruebaImpl">
             <unique-constraint>
-                <column-name>id</column-name>
+                <column-name>graphName</column-name>
             </unique-constraint>
         </table>
         <attributes>
-            <id name="id"><generated-value strategy="AUTO" /></id>
+            <id name="graphName"><generated-value strategy="AUTO" /></id>
             <basic name="graphicalSchema">
                 <column name="GRAPHICALSCHEMA"></column>
             </basic>
@@ -99,7 +97,7 @@
                 <temporal>TIMESTAMP</temporal>
             </basic>
 
-            <one-to-one name="localGraph" target-entity="edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.ormPruebaImpl">
+            <one-to-one name="localGraph" target-entity="edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl">
                 <cascade><cascade-all/></cascade>
             </one-to-one>
         </attributes>
