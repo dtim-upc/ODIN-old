@@ -50,7 +50,7 @@
 
     </entity>
 
-    <!--> MAPPING CLASS GRAPH<-->
+    <!--> MAPPING CLASS GRAPH
     <entity class="edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl">
         <table name="GraphJenaImpl">
             <unique-constraint>
@@ -62,7 +62,7 @@
             <basic name="graphicalSchema"/>
             <transient name="graph"/>
         </attributes>
-    </entity>
+    </entity><-->
 
     <entity class="edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.ormPruebaImpl">
         <table name="ormPruebaImpl">
@@ -97,7 +97,7 @@
                 <temporal>TIMESTAMP</temporal>
             </basic>
 
-            <one-to-one name="localGraph" target-entity="edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl">
+            <one-to-one name="localGraph" target-entity="edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.ormPruebaImpl">
                 <cascade><cascade-all/></cascade>
             </one-to-one>
         </attributes>
