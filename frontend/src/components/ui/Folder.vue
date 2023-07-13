@@ -58,7 +58,7 @@
                     <div class="row no-wrap items-center q-mt-md q-pa-sm rounded-borders">
                         <!-- <span> {{ props.row.createdBy }}</span> -->
                         <q-chip :style="folderBackColor" text-color="white" >
-                            {{props.row.numberOfDS}} files
+                            {{props.row.datasets.length}} files
                         </q-chip>
                         <q-space />
                         <span>{{ props.row.privacy }}</span>

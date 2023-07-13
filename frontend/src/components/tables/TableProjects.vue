@@ -136,7 +136,7 @@ const pagination = ref({
     const columns = [
       {name: "id", required: true, label: "ID", align: "center", field: "projectId", sortable: true,},
       {name: "name", required: true, label: "Name", align: "center", field: "projectName", sortable: true,},
-      {name: "numberOfDS", required: true, label: "# Datasources", align: "center", field: "numberOfDS", sortable: true,},
+      {name: "datasets", required: true, label: "# Datasources", align: "center", field: "datasets", sortable: true, format: (value, row) => value.length},
       {name: "createdBy", required: true, label: "Created by", align: "center", field: "createdBy", sortable: true,},
       {name: "privacy", required: true, label: "Privacy", align: "center", field: "projectPrivacy", sortable: true,}
     ];

@@ -94,7 +94,8 @@ public class IntegrationController {
         List<Alignment> alignments  = surveyA.getAlignments(project, Datasets,ds);
 
         return new ResponseEntity(alignments, HttpStatus.OK);
-    }*/
+    }
+*/
 
 /*
     @PostMapping

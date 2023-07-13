@@ -77,6 +77,7 @@
             <basic name="graphicalSchema">
                 <column name="GRAPHICALSCHEMA"></column>
             </basic>
+            <transient name="graphoLoko"/>
         </attributes>
     </entity>
 
