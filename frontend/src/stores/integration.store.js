@@ -138,7 +138,7 @@ export const useIntegrationStore = defineStore('integration',{
         deleteTemporalDS(ds){
           const notify  = useNotify()
           const authStore = useAuthStore()
-            api.deleteTemporal(this.project.id, ds.id, authStore.user.accessToken).then( response => {
+            api.deleteTemporal(this.project.projectId, ds.id, authStore.user.accessToken).then( response => {
 
               console.log("delete ds temporal")
               console.log(response.data)
@@ -185,7 +185,7 @@ export const useIntegrationStore = defineStore('integration',{
           const authStore = useAuthStore()
 
             console.log("Pinia getting temporal data sources...")
-            const res = await api.getAll(this.project.id, authStore.user.accessToken).then(response => {
+            const res = await api.getAll(this.project.projectId, authStore.user.accessToken).then(response => {
 
               console.log("ds temporal received", response)
 
@@ -316,7 +316,7 @@ export const useIntegrationStore = defineStore('integration',{
               alignments: this.alignments
             }
 
-          integrationAPI.integrate( this.project.id, data, authStore.user.accessToken ).then((response) => {
+          integrationAPI.integrate( this.project.projectId, data, authStore.user.accessToken ).then((response) => {
               console.log("integration response...", response)
             //   console.log(response)
               if (response.status == 201 || response.status) {
@@ -340,7 +340,7 @@ export const useIntegrationStore = defineStore('integration',{
 
           if(this.joinAlignments.length > 0 ){
 
-            integrationAPI.integrateJoins(this.project.id, this.joinAlignments, authStore.user.accessToken).then((response) => {
+            integrationAPI.integrateJoins(this.project.projectId, this.joinAlignments, authStore.user.accessToken).then((response) => {
               console.log("join integration response...", response)
 
               if (response.status == 201 || response.status) {
@@ -372,9 +372,9 @@ export const useIntegrationStore = defineStore('integration',{
 
 
           console.log("save intregration store...",authStore.user.accessToken )
-          console.log("project id ", this.project.id )
+          console.log("project id ", this.project.projectId )
           // acceptIntegration
-          integrationAPI.finishIntegration( this.project.id, authStore.user.accessToken ).then((response) => {
+          integrationAPI.finishIntegration( this.project.projectId, authStore.user.accessToken ).then((response) => {
             console.log("integration response...", response)
 
             if (response.status == 200) {
@@ -415,7 +415,7 @@ export const useIntegrationStore = defineStore('integration',{
           const notify = useNotify()
 
 
-          integrationAPI.surveyAlignments(this.project.id, this.selectedDS[0].id ,authStore.user.accessToken).then((response) => {
+          integrationAPI.surveyAlignments(this.project.projectId, this.selectedDS[0].id ,authStore.user.accessToken).then((response) => {
             console.log("survey alignments response...", response)
 
             if (response.status == 200) {
@@ -434,7 +434,7 @@ export const useIntegrationStore = defineStore('integration',{
 
           const authStore = useAuthStore()
           const notify  = useNotify()
-          const response = await integrationAPI.downloadSourceGraph(this.project.id,dsID,authStore.user.accessToken);
+          const response = await integrationAPI.downloadSourceGraph(this.project.projectId,dsID,authStore.user.accessToken);
 
           const content = response.headers['content-type'];
           download(response.data, "source_graph.ttl", content)

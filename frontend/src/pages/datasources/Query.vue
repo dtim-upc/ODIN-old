@@ -201,7 +201,7 @@
   const setGlobalSchema = () => {
     selectedSchema.value = 'project'
     graphical.value = storeDS.getGlobalSchema
-    graphID.value = storeDS.project.id
+    graphID.value = storeDS.project.projectId
     graphType = "global"
   }
 
@@ -211,7 +211,7 @@
     data.graphType = graphType
 
     console.log("dd", data)
-    queryAPI.queryGraph(data,storeDS.project.id ,authStore.user.accessToken).then(response => {
+    queryAPI.queryGraph(data,storeDS.project.projectId ,authStore.user.accessToken).then(response => {
 
       console.log("query success",response)
       // console.log("**", response.data)

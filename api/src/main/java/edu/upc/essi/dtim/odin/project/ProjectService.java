@@ -1,6 +1,8 @@
 package edu.upc.essi.dtim.odin.project;
 
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.Dataset;
+import edu.upc.essi.dtim.NextiaCore.graph.Graph;
+import edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.GraphJenaImpl;
 import edu.upc.essi.dtim.odin.NextiaStore.RelationalStore.ORMStoreFactory;
 import edu.upc.essi.dtim.odin.NextiaStore.RelationalStore.ORMStoreInterface;
 import org.springframework.stereotype.Service;
@@ -40,6 +42,12 @@ public class ProjectService {
 
         // Add the URI of the local graph to the project's list of local graph IDs
         project.getDatasets().add(dataset);
+
+        if(project.getDatasets().size() == 1){
+            Graph globalGraph = new GraphJenaImpl();
+            globalGraph.setGraphicalSchema(dataset.getLocalGraph().getGraphicalSchema());
+            project.setGlobalGraph(((GraphJenaImpl) globalGraph));
+        }
 
         //saving the updated project
         saveProject(project);

@@ -111,11 +111,11 @@ public class IntegrationController {
 
 
     @PostMapping
-    public ResponseEntity<IntegrationTemporalResponse> integrate(@PathVariable("id") String id,
+    public ResponseEntity<IntegrationTemporalResponse> integrate(@PathVariable("id") String projectId,
                                                                  @RequestBody IntegrationData iData) {
-        logger.info("INTEGRATING temporal with project: {}"+id);
-/*
-        Project project = integrationService.getProject(id);
+        logger.info("INTEGRATING temporal with project: "+projectId);
+
+        Project project = integrationService.getProject(projectId);
 
         //miramos si hay datasets suficientes a integrar en el proyecto
         if(project.getDatasets().size() > 1){
@@ -124,7 +124,7 @@ public class IntegrationController {
         //si no hay suficientes ERROR
         else{
 
-        }*/
+        }
         // TODO: all these logic should be in the service class!!!
 
         /*

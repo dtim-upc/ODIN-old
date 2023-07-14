@@ -51,7 +51,7 @@ export const useDataSourceStore = defineStore('datasource',{
           integrationStore.setProject(proj)
 
 
-        } else if(!this.project.name || this.project.id != route.params.id) {
+        } else if(!this.project.name || this.project.projectId != route.params.id) {
           console.log("dfs", route.params.id)
           const response = await projectAPI.getProjectByID(route.params.id, authStore.user.accessToken)
 
@@ -78,7 +78,7 @@ export const useDataSourceStore = defineStore('datasource',{
         // console.log("***")
         // console.log("dfs", route.params.id)
         // console.log("gettriples", route.params.id)
-        let response = await api.getTriples(project.id, dsID ,authStore.user.accessToken)
+        let response = await api.getTriples(project.projectId, dsID ,authStore.user.accessToken)
         return response.data
         // .then((response => {
 
@@ -159,7 +159,7 @@ export const useDataSourceStore = defineStore('datasource',{
 
             console.log("persist data source...", datasource)
 
-            api.createDSPersistent(this.project.id,datasource, authStore.user.accessToken)
+            api.createDSPersistent(this.project.projectId,datasource, authStore.user.accessToken)
             .then((response) => {
               console.log("createPersistentDS()",response)
               if (response.status == 201) {
@@ -230,7 +230,7 @@ export const useDataSourceStore = defineStore('datasource',{
 
           const authStore = useAuthStore()
           const notify  = useNotify()
-          const response = await api.downloadSourceGraph(this.project.id,dsID,authStore.user.accessToken);
+          const response = await api.downloadSourceGraph(this.project.projectId,dsID,authStore.user.accessToken);
 
           const content = response.headers['content-type'];
           download(response.data, "prueba.ttl", content)
@@ -254,7 +254,7 @@ export const useDataSourceStore = defineStore('datasource',{
 
           const authStore = useAuthStore()
           const notify  = useNotify()
-          const response = await api.downloadProjectGraph(this.project.id,authStore.user.accessToken);
+          const response = await api.downloadProjectGraph(this.project.projectId,authStore.user.accessToken);
 
           const content = response.headers['content-type'];
           download(response.data, "source_graph.ttl", content)
