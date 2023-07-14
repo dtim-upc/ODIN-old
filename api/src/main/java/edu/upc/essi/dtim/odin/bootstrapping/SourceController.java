@@ -79,7 +79,7 @@ public class SourceController {
                 //TODO: SEE WHAT HAPPENS WITH ORM
                 ormPruebaImpl graph1 = new ormPruebaImpl();
                 graph1.setGraphicalSchema(graph.getGraphicalSchema());
-                //savedDataset.setLocalGraph(graph1);
+                savedDataset.setLocalGraph(graph1);
 
                 //Create the relation with project adding the datasetId
                 sourceService.addDatasetIdToProject(projectId, savedDataset);

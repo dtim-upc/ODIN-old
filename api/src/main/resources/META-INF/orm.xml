@@ -73,7 +73,7 @@
         <attributes>
             <id name="graphName"><generated-value strategy="AUTO" /></id>
             <basic name="graphicalSchema">
-                <column name="GRAPHICALSCHEMA"></column>
+                <column name="GRAPHICALSCHEMA"/>
             </basic>
             <transient name="graphoLoko"/>
         </attributes>
