@@ -5,6 +5,7 @@ import edu.upc.essi.dtim.NextiaDI;
 import edu.upc.essi.dtim.nextiadi.models.Alignment;
 
 import edu.upc.essi.dtim.odin.NextiaGraphy.NextiaGraphy;
+import edu.upc.essi.dtim.odin.bootstrapping.SourceService;
 import edu.upc.essi.dtim.odin.integration.pojos.IntegrationData;
 import edu.upc.essi.dtim.odin.integration.pojos.IntegrationTemporalResponse;
 import edu.upc.essi.dtim.odin.integration.pojos.JoinAlignment;
@@ -37,7 +38,18 @@ import java.util.stream.Collectors;
 @RequestMapping("/project/{id}/integration")
 public class IntegrationController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(IntegrationController.class);
+    private static final Logger logger = LoggerFactory.getLogger(IntegrationController.class);
+
+    private final IntegrationService integrationService;
+
+    /**
+     * Constructs a new instance of IntegrationController.
+     *
+     * @param integrationService the IntegrationService dependency for performing integration operations
+     */
+    IntegrationController(@Autowired IntegrationService integrationService) {
+        this.integrationService = integrationService;
+    }
 /*
     @Autowired
     private DatasetRepository repository;
@@ -97,14 +109,25 @@ public class IntegrationController {
     }
 */
 
-/*
+
     @PostMapping
     public ResponseEntity<IntegrationTemporalResponse> integrate(@PathVariable("id") String id,
                                                                  @RequestBody IntegrationData iData) {
-        System.out.println("INTEGRATING temporal with project..");
+        logger.info("INTEGRATING temporal with project: {}"+id);
+/*
+        Project project = integrationService.getProject(id);
 
-        NextiaDI n = new NextiaDI();
+        //miramos si hay datasets suficientes a integrar en el proyecto
+        if(project.getDatasets().size() > 1){
+            integrationService.integrateData();
+        }
+        //si no hay suficientes ERROR
+        else{
+
+        }*/
         // TODO: all these logic should be in the service class!!!
+
+        /*
         String dsA = project.getIri();
         Graph graphA = Graph.createDefaultGraph();
         if( project.getNumberOfDS().equals("1") ) {
@@ -210,10 +233,11 @@ public class IntegrationController {
 
             joinProperties.add(j);
 
-        }
+        }*/
 
-        return new ResponseEntity(new IntegrationTemporalResponse(project, joinProperties), HttpStatus.OK);
-    }*/
+        //return new ResponseEntity(new IntegrationTemporalResponse(project, joinProperties), HttpStatus.OK);
+        return null;
+    }
 /*
     @PostMapping("/join")
     public ResponseEntity<Project> integrateJoins(Authentication authentication, @PathVariable("id") String id, @RequestBody List<JoinAlignment> joinA){

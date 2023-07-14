@@ -45,29 +45,20 @@
                     <cascade-all/>
                 </cascade>
             </one-to-many>
+
+            <one-to-one name="globalGraph" target-entity="edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.GraphJenaImpl">
+                <cascade>
+                    <cascade-all/>
+                </cascade>
+            </one-to-one>
             <!--> element-collections, transient and other properties here <-->
         </attributes>
 
     </entity>
 
-    <!--> MAPPING CLASS GRAPH
-    <entity class="edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl">
-        <table name="GraphJenaImpl">
-            <unique-constraint>
-                <column-name>graphName</column-name>
-            </unique-constraint>
-        </table>
-        <attributes>
-            <id name="graphName"><generated-value strategy="AUTO" /></id>
-            <basic name="graphicalSchema"/>
-            <transient name="graph"/>
-        </attributes>
-    </entity>
-    <-->
-
     <!--> MAPPING CLASS GRAPH<-->
     <entity class="edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.GraphJenaImpl">
-        <table name="ormPruebaImpl">
+        <table name="GraphJenaImpl">
             <unique-constraint>
                 <column-name>graphName</column-name>
             </unique-constraint>
