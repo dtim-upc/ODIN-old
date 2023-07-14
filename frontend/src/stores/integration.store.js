@@ -50,7 +50,7 @@ export const useIntegrationStore = defineStore('integration',{
         },
         getGraphicalA(state){
           //todo see if works
-            return state.project.globalGraph.graphicalSchema
+            return state.project.integratedGraph.graphicalSchema
         },
         getGraphicalB(state){
           if(state.selectedDS.length == 1){

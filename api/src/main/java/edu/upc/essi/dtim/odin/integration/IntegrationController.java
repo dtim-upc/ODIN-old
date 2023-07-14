@@ -1,6 +1,7 @@
 package edu.upc.essi.dtim.odin.integration;
 
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.Dataset;
+import edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl;
 import edu.upc.essi.dtim.NextiaDI;
 import edu.upc.essi.dtim.nextiadi.models.Alignment;
 
@@ -119,12 +120,20 @@ public class IntegrationController {
 
         //miramos si hay datasets suficientes a integrar en el proyecto
         if(project.getDatasets().size() > 1){
-            integrationService.integrateData();
+            //integramos la nueva fuente de datos sobre el grafo integrado existente y lo sobreescrivimos
+            project.setIntegratedGraph((edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.GraphJenaImpl) integrationService.integrateData(getIntegratedGraphToJena(project.getIntegratedGraph()), iData.getDsB(), iData.getAlignments()));
+            integrationService.saveProject(project);
+            logger.info("PROJECT SAVED WITH THE NEW INTEGRATED GRAPH");
+
+            List<JoinAlignment> joinProperties =  integrationService.generateJoinAlignments(project.getIntegratedGraph(), iData.getDsB().getLocalGraph(), iData);
+
+            return new ResponseEntity(new IntegrationTemporalResponse(project, joinProperties), HttpStatus.OK);
         }
         //si no hay suficientes ERROR
         else{
-
+            return new ResponseEntity<>(new IntegrationTemporalResponse(null,null), HttpStatus.BAD_REQUEST);
         }
+
         // TODO: all these logic should be in the service class!!!
 
         /*
@@ -236,7 +245,12 @@ public class IntegrationController {
         }*/
 
         //return new ResponseEntity(new IntegrationTemporalResponse(project, joinProperties), HttpStatus.OK);
-        return null;
+    }
+
+    private GraphJenaImpl getIntegratedGraphToJena(edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.GraphJenaImpl integratedGraph) {
+        edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl g = new edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl();
+        g.setGraph(integratedGraph.getGraph());
+        return g;
     }
 /*
     @PostMapping("/join")

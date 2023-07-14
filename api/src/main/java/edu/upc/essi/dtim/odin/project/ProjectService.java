@@ -46,7 +46,7 @@ public class ProjectService {
         if(project.getDatasets().size() == 1){
             Graph globalGraph = new GraphJenaImpl();
             globalGraph.setGraphicalSchema(dataset.getLocalGraph().getGraphicalSchema());
-            project.setGlobalGraph(((GraphJenaImpl) globalGraph));
+            project.setIntegratedGraph(((GraphJenaImpl) globalGraph));
         }
 
         //saving the updated project

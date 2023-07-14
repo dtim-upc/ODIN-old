@@ -46,7 +46,7 @@
                 </cascade>
             </one-to-many>
 
-            <one-to-one name="globalGraph" target-entity="edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.GraphJenaImpl">
+            <one-to-one name="integratedGraph" target-entity="edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.GraphJenaImpl">
                 <cascade>
                     <cascade-all/>
                 </cascade>

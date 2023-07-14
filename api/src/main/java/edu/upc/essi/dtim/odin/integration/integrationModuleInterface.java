@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface integrationModuleInterface {
     Graph integrate(Graph graphA, Graph graphB, List<Alignment> alignments);
+
+    List<Alignment> getUnused();
 }

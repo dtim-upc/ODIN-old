@@ -1,6 +1,7 @@
 package edu.upc.essi.dtim.odin.project;
 
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.Dataset;
+import edu.upc.essi.dtim.NextiaCore.graph.Graph;
 import edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.GraphJenaImpl;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public class Project {
     private String projectColor;
     private String createdBy;
     private List<Dataset> datasets;
-    private GraphJenaImpl globalGraph;
+    private GraphJenaImpl integratedGraph;
 
     public String getProjectId() {
         return projectId;
@@ -71,12 +72,11 @@ public class Project {
     public void setDatasets(List<Dataset> datasets) {
         this.datasets = datasets;
     }
-    public GraphJenaImpl getGlobalGraph() {
-        return globalGraph;
+    public GraphJenaImpl getIntegratedGraph() {
+        return integratedGraph;
     }
 
-    public void setGlobalGraph(GraphJenaImpl globalGraph) {
-        this.globalGraph = globalGraph;
+    public void setIntegratedGraph(GraphJenaImpl globalGraph) {
+        this.integratedGraph = globalGraph;
     }
-
 }
