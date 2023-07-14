@@ -6,6 +6,8 @@ import edu.upc.essi.dtim.NextiaCore.datasources.dataset.JsonDataset;
 import edu.upc.essi.dtim.NextiaCore.graph.*;
 import edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl;
 import edu.upc.essi.dtim.odin.NextiaGraphy.NextiaGraphy;
+import edu.upc.essi.dtim.odin.NextiaGraphy.nextiaGraphyModuleImpl;
+import edu.upc.essi.dtim.odin.NextiaGraphy.nextiaGraphyModuleInterface;
 import edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreFactory;
 import edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreInterface;
 import edu.upc.essi.dtim.odin.NextiaStore.RelationalStore.ORMStoreFactory;
@@ -24,6 +26,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.SecureRandom;
 import java.util.List;
+
+import static org.apache.jena.vocabulary.DCAT.dataset;
 
 
 /**
@@ -156,8 +160,8 @@ public class SourceService {
      * @return A String representing the visual schema of the Graph.
      */
     public String generateVisualSchema(Graph graph) {
-        NextiaGraphy visualLib = new NextiaGraphy();
-        return visualLib.generateVisualGraphNew(graph);
+        nextiaGraphyModuleInterface visualLibInterface = new nextiaGraphyModuleImpl();
+        return visualLibInterface.generateVisualGraph(graph);
     }
 
     /**
