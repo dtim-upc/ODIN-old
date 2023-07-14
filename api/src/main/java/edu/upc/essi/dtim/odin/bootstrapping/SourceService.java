@@ -4,6 +4,7 @@ import edu.upc.essi.dtim.NextiaCore.datasources.dataset.CsvDataset;
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.Dataset;
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.JsonDataset;
 import edu.upc.essi.dtim.NextiaCore.graph.*;
+import edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl;
 import edu.upc.essi.dtim.odin.NextiaGraphy.NextiaGraphy;
 import edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreFactory;
 import edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreInterface;
@@ -246,6 +247,13 @@ public class SourceService {
     public List<Dataset> getDatasetsOfProject(String id) {
         // Returning the list of datasets associated with the project
         return projectService.getDatasetsOfProject(id);
+    }
+
+    public void setLocalGraphToDataset(Dataset savedDataset, Graph graph) {
+        edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.GraphJenaImpl localGraph = new edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.GraphJenaImpl();
+        localGraph.setGraphName(graph.getGraphName());
+        localGraph.setGraphicalSchema(graph.getGraphicalSchema());
+        savedDataset.setLocalGraph(localGraph);
     }
 }
 

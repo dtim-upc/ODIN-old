@@ -62,9 +62,11 @@
             <basic name="graphicalSchema"/>
             <transient name="graph"/>
         </attributes>
-    </entity><-->
+    </entity>
+    <-->
 
-    <entity class="edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.ormPruebaImpl">
+    <!--> MAPPING CLASS GRAPH<-->
+    <entity class="edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.GraphJenaImpl">
         <table name="ormPruebaImpl">
             <unique-constraint>
                 <column-name>graphName</column-name>
@@ -75,9 +77,10 @@
             <basic name="graphicalSchema">
                 <column name="GRAPHICALSCHEMA"/>
             </basic>
-            <transient name="graphoLoko"/>
+            <transient name="graph"/>
         </attributes>
     </entity>
+
 
     <!--> MAPPING DATASET CLASS<-->
     <entity class="edu.upc.essi.dtim.NextiaCore.datasources.dataset.Dataset">
@@ -97,7 +100,7 @@
                 <temporal>TIMESTAMP</temporal>
             </basic>
 
-            <one-to-one name="localGraph" target-entity="edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.ormPruebaImpl">
+            <one-to-one name="localGraph" target-entity="edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.GraphJenaImpl">
                 <cascade><cascade-all/></cascade>
             </one-to-one>
         </attributes>

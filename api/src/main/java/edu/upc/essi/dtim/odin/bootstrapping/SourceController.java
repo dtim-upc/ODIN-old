@@ -4,7 +4,7 @@ import edu.upc.essi.dtim.NextiaCore.datasources.dataset.CsvDataset;
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.Dataset;
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.JsonDataset;
 import edu.upc.essi.dtim.NextiaCore.graph.Graph;
-import edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.ormPruebaImpl;
+import edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.GraphJenaImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,9 +77,8 @@ public class SourceController {
             if (isSaved) {
                 graph.setGraphicalSchema(visualSchema);
                 //TODO: SEE WHAT HAPPENS WITH ORM
-                ormPruebaImpl graph1 = new ormPruebaImpl();
-                graph1.setGraphicalSchema(graph.getGraphicalSchema());
-                savedDataset.setLocalGraph(graph1);
+                //Create the relation with dataset adding the graph generated
+                sourceService.setLocalGraphToDataset(savedDataset, graph);
 
                 //Create the relation with project adding the datasetId
                 sourceService.addDatasetIdToProject(projectId, savedDataset);
