@@ -10,10 +10,12 @@ import edu.upc.essi.dtim.odin.integration.pojos.IntegrationData;
 import edu.upc.essi.dtim.odin.integration.pojos.JoinAlignment;
 import edu.upc.essi.dtim.odin.project.Project;
 import edu.upc.essi.dtim.odin.project.ProjectService;
+import org.apache.jena.vocabulary.RDFS;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -66,11 +68,11 @@ public class IntegrationService {
             JoinAlignment j = new JoinAlignment();
             j.wrap(a);
 
-            String domainA = graphA.getDomainOfProperty( a.getIriA());
-            String domainB = graphB.getDomainOfProperty( a.getIriB());
+            String domainA = getDomainOfProperty(graphA, a.getIriA());
+            String domainB = getDomainOfProperty(graphB, a.getIriB());
 
-            String domainLA = graphA.getRDFSLabel(domainA);
-            String domainLB = graphB.getRDFSLabel( domainB);
+            String domainLA = getRDFSLabel(graphA, domainA);
+            String domainLB = getRDFSLabel(graphB, domainB);
 
             j.setDomainA(domainA);
             j.setDomainB(domainB);
@@ -81,5 +83,23 @@ public class IntegrationService {
 
         }
         return joinProperties;
+    }
+
+    private String getDomainOfProperty(Graph graph, String propertyIRI) {
+        String query = " SELECT ?domain WHERE { <"+propertyIRI+"> <"+ RDFS.domain.toString()+"> ?domain. }";
+        List<Map<String, Object>> res = graph.query(query);
+        if(!res.isEmpty()){
+            return res.get(0).get("domain").toString();
+        }
+        return null;
+    }
+
+    private String getRDFSLabel(Graph graph, String resourceIRI) {
+        String query = " SELECT ?label WHERE { <"+resourceIRI+"> <"+ RDFS.label.toString()+"> ?label. }  ";
+        List<Map<String, Object>> res = graph.query(query);
+        if(!res.isEmpty()){
+            return res.get(0).get("label").toString();
+        }
+        return null;
     }
 }
