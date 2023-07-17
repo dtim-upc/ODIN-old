@@ -1,5 +1,6 @@
 package edu.upc.essi.dtim.odin.integration;
 
+import edu.upc.essi.dtim.NextiaCore.graph.Graph;
 import edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl;
 import edu.upc.essi.dtim.odin.integration.pojos.IntegrationData;
 import edu.upc.essi.dtim.odin.integration.pojos.IntegrationTemporalResponse;
@@ -100,13 +101,19 @@ public class IntegrationController {
         //miramos si hay datasets suficientes a integrar en el proyecto
         if(project.getDatasets().size() > 1){
             //integramos la nueva fuente de datos sobre el grafo integrado existente y lo sobreescrivimos
-            project.setIntegratedGraph((edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl) integrationService.integrateData(getIntegratedGraphToJena(project.getIntegratedGraph()), iData.getDsB(), iData.getAlignments()));
-            integrationService.saveProject(project);
+            Graph integratedGraph = integrationService.integrateData(getIntegratedGraphToJena(project.getIntegratedGraph()), iData.getDsB(), iData.getAlignments());
+
+            GraphJenaImpl integratedImpl = new GraphJenaImpl();
+            integratedImpl.setGraph(integratedGraph.getGraph());
+            project.setIntegratedGraph(integratedImpl);
+            project.getIntegratedGraph().setGraphicalSchema(integratedGraph.getGraphicalSchema());
+
+            Project project1 = integrationService.saveProject(project);
             logger.info("PROJECT SAVED WITH THE NEW INTEGRATED GRAPH");
 
             List<JoinAlignment> joinProperties =  integrationService.generateJoinAlignments(project.getIntegratedGraph(), iData.getDsB().getLocalGraph(), iData);
 
-            return new ResponseEntity<>(new IntegrationTemporalResponse(project, joinProperties), HttpStatus.OK);
+            return new ResponseEntity<>(new IntegrationTemporalResponse(project1, joinProperties), HttpStatus.OK);
         }
         //si no hay suficientes ERROR
         else{
