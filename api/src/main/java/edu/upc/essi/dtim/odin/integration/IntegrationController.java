@@ -121,7 +121,7 @@ public class IntegrationController {
         //miramos si hay datasets suficientes a integrar en el proyecto
         if(project.getDatasets().size() > 1){
             //integramos la nueva fuente de datos sobre el grafo integrado existente y lo sobreescrivimos
-            project.setIntegratedGraph((edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.GraphJenaImpl) integrationService.integrateData(getIntegratedGraphToJena(project.getIntegratedGraph()), iData.getDsB(), iData.getAlignments()));
+            project.setIntegratedGraph((edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl) integrationService.integrateData(getIntegratedGraphToJena(project.getIntegratedGraph()), iData.getDsB(), iData.getAlignments()));
             integrationService.saveProject(project);
             logger.info("PROJECT SAVED WITH THE NEW INTEGRATED GRAPH");
 
@@ -247,7 +247,7 @@ public class IntegrationController {
         //return new ResponseEntity(new IntegrationTemporalResponse(project, joinProperties), HttpStatus.OK);
     }
 
-    private GraphJenaImpl getIntegratedGraphToJena(edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.GraphJenaImpl integratedGraph) {
+    private GraphJenaImpl getIntegratedGraphToJena(edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl integratedGraph) {
         edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl g = new edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl();
         g.setGraph(integratedGraph.getGraph());
         return g;

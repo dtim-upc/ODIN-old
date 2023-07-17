@@ -2,7 +2,7 @@ package edu.upc.essi.dtim.odin.project;
 
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.Dataset;
 import edu.upc.essi.dtim.NextiaCore.graph.Graph;
-import edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.GraphJenaImpl;
+import edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl;
 
 import java.util.List;
 

@@ -4,7 +4,7 @@ import edu.upc.essi.dtim.NextiaCore.datasources.dataset.CsvDataset;
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.Dataset;
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.JsonDataset;
 import edu.upc.essi.dtim.NextiaCore.graph.Graph;
-import edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.GraphJenaImpl;
+import edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

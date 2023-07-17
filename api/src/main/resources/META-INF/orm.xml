@@ -46,7 +46,7 @@
                 </cascade>
             </one-to-many>
 
-            <one-to-one name="integratedGraph" target-entity="edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.GraphJenaImpl">
+            <one-to-one name="integratedGraph" target-entity="edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl">
                 <cascade>
                     <cascade-all/>
                 </cascade>
@@ -57,7 +57,7 @@
     </entity>
 
     <!--> MAPPING CLASS GRAPH<-->
-    <entity class="edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.GraphJenaImpl">
+    <entity class="edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl">
         <table name="GraphJenaImpl">
             <unique-constraint>
                 <column-name>graphName</column-name>
@@ -91,7 +91,7 @@
                 <temporal>TIMESTAMP</temporal>
             </basic>
 
-            <one-to-one name="localGraph" target-entity="edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.GraphJenaImpl">
+            <one-to-one name="localGraph" target-entity="edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl">
                 <cascade><cascade-all/></cascade>
             </one-to-one>
         </attributes>

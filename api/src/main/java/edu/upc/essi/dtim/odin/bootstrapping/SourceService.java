@@ -254,7 +254,7 @@ public class SourceService {
     }
 
     public void setLocalGraphToDataset(Dataset savedDataset, Graph graph) {
-        edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.GraphJenaImpl localGraph = new edu.upc.essi.dtim.NextiaCore.pruebaORMinterface.GraphJenaImpl();
+        GraphJenaImpl localGraph = new GraphJenaImpl();
         localGraph.setGraphName(graph.getGraphName());
         localGraph.setGraphicalSchema(graph.getGraphicalSchema());
         savedDataset.setLocalGraph(localGraph);
