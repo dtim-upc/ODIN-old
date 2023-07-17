@@ -1,39 +1,18 @@
 package edu.upc.essi.dtim.odin.integration;
 
-import edu.upc.essi.dtim.NextiaCore.datasources.dataset.Dataset;
 import edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl;
-import edu.upc.essi.dtim.NextiaDI;
-import edu.upc.essi.dtim.nextiadi.models.Alignment;
-
-import edu.upc.essi.dtim.odin.NextiaGraphy.NextiaGraphy;
-import edu.upc.essi.dtim.odin.bootstrapping.SourceService;
 import edu.upc.essi.dtim.odin.integration.pojos.IntegrationData;
 import edu.upc.essi.dtim.odin.integration.pojos.IntegrationTemporalResponse;
 import edu.upc.essi.dtim.odin.integration.pojos.JoinAlignment;
 import edu.upc.essi.dtim.odin.project.Project;
-import edu.upc.essi.dtim.odin.project.ProjectService;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.vocabulary.RDF;
-import org.apache.jena.vocabulary.RDFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/project/{id}/integration")
@@ -127,7 +106,7 @@ public class IntegrationController {
 
             List<JoinAlignment> joinProperties =  integrationService.generateJoinAlignments(project.getIntegratedGraph(), iData.getDsB().getLocalGraph(), iData);
 
-            return new ResponseEntity(new IntegrationTemporalResponse(project, joinProperties), HttpStatus.OK);
+            return new ResponseEntity<>(new IntegrationTemporalResponse(project, joinProperties), HttpStatus.OK);
         }
         //si no hay suficientes ERROR
         else{
