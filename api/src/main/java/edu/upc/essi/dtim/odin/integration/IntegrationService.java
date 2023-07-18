@@ -26,9 +26,11 @@ public class IntegrationService {
     }
 
     public Graph integrateData(GraphJenaImpl integratedGraph, Dataset dsB, List<Alignment> alignments) {
-        integrationModuleInterface integrationInterface = new integrationModuleImpl();
+        Graph graphA = integratedGraph;
         Graph graphB = dsB.getLocalGraph();
-        Graph newIntegratedGraph = integrationInterface.integrate(integratedGraph, graphB, alignments);
+
+        integrationModuleInterface integrationInterface = new integrationModuleImpl();
+        Graph newIntegratedGraph = integrationInterface.integrate(graphA, graphB, alignments);
 
         //generamos el esquema visual del grafo y lo asignamos
         nextiaGraphyModuleInterface visualLibInterface = new nextiaGraphyModuleImpl();
@@ -101,5 +103,13 @@ public class IntegrationService {
             return res.get(0).get("label").toString();
         }
         return null;
+    }
+
+    public Project updateGraphProject(Project project, Graph integratedGraph) {
+        GraphJenaImpl integratedImpl = new GraphJenaImpl();
+        integratedImpl.setGraph(integratedGraph.getGraph());
+        project.setIntegratedGraph(integratedImpl);
+        project.getIntegratedGraph().setGraphicalSchema(integratedGraph.getGraphicalSchema());
+        return project;
     }
 }

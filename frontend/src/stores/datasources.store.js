@@ -24,14 +24,13 @@ export const useDataSourceStore = defineStore('datasource',{
       },
 
       getGlobalSchema(state){
-
-        if(state.project.graphicalGlobalSchema)
-          return state.project.graphicalGlobalSchema
+        if(state.project.integratedGraph.graphicalSchema)
+          return state.project.integratedGraph.graphicalSchema
         return ""
       },
       getGraphicalSchemaIntegration(state){
-        if(state.project.graphicalSchemaIntegration)
-          return state.project.graphicalSchemaIntegration
+        if(state.project.integratedGraph.graphicalSchema)
+          return state.project.integratedGraph.graphicalSchema
          return ""
       },
     },

@@ -103,12 +103,11 @@ public class IntegrationController {
             //integramos la nueva fuente de datos sobre el grafo integrado existente y lo sobreescrivimos
             Graph integratedGraph = integrationService.integrateData(getIntegratedGraphToJena(project.getIntegratedGraph()), iData.getDsB(), iData.getAlignments());
 
-            GraphJenaImpl integratedImpl = new GraphJenaImpl();
-            integratedImpl.setGraph(integratedGraph.getGraph());
-            project.setIntegratedGraph(integratedImpl);
-            project.getIntegratedGraph().setGraphicalSchema(integratedGraph.getGraphicalSchema());
+            Project projectToSave = integrationService.updateGraphProject(project, integratedGraph);
 
-            Project project1 = integrationService.saveProject(project);
+            checkGraphicalSchema(project, integratedGraph, projectToSave);
+
+            Project project1 = integrationService.saveProject(projectToSave);
             logger.info("PROJECT SAVED WITH THE NEW INTEGRATED GRAPH");
 
             List<JoinAlignment> joinProperties =  integrationService.generateJoinAlignments(project.getIntegratedGraph(), iData.getDsB().getLocalGraph(), iData);
@@ -231,6 +230,29 @@ public class IntegrationController {
         }*/
 
         //return new ResponseEntity(new IntegrationTemporalResponse(project, joinProperties), HttpStatus.OK);
+    }
+
+    private static void checkGraphicalSchema(Project project, Graph integratedGraph, Project projectToSave) {
+        String oldGraphicalSchema = project.getIntegratedGraph().getGraphicalSchema();
+        String newGraphicalSchema = projectToSave.getIntegratedGraph().getGraphicalSchema();
+        String newGeneratedSchema = integratedGraph.getGraphicalSchema();
+
+        if (oldGraphicalSchema.equals(newGraphicalSchema) && newGraphicalSchema.equals(newGeneratedSchema)) {
+            // All three strings are the same
+            logger.warn("All three graphical schemas are the same.");
+        } else if (oldGraphicalSchema.equals(newGraphicalSchema)) {
+            // The oldGraphicalSchema and newGraphicalSchema are the same, while newGeneratedSchema is different
+            logger.warn("The oldGraphicalSchema and newGraphicalSchema are the same, while newGeneratedSchema is different.");
+        } else if (oldGraphicalSchema.equals(newGeneratedSchema)) {
+            // The oldGraphicalSchema and newGeneratedSchema are the same, while newGraphicalSchema is different
+            logger.warn("The oldGraphicalSchema and newGeneratedSchema are the same, while newGraphicalSchema is different.");
+        } else if (newGraphicalSchema.equals(newGeneratedSchema)) {
+            // The newGraphicalSchema and newGeneratedSchema are the same, while oldGraphicalSchema is different
+            logger.warn("The newGraphicalSchema and newGeneratedSchema are the same, while oldGraphicalSchema is different.");
+        } else {
+            // All three strings are different
+            logger.info("All three graphical schemas are different.");
+        }
     }
 
     private GraphJenaImpl getIntegratedGraphToJena(edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl integratedGraph) {
