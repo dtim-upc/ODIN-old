@@ -48,7 +48,6 @@ class SourceControllerTest {
         String filePath = "api/src/test/resources/csvTestFile.csv";
         Dataset extractedData = mock(Dataset.class);
         Dataset savedDataset = mock(Dataset.class);
-        GraphModelPair graph = mock(GraphModelPair.class);
         String visualSchema = "visual schema";
         Graph savedGraph = mock(LocalGraph.class);
 

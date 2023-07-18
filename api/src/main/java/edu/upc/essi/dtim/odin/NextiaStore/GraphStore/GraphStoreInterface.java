@@ -27,5 +27,5 @@ public interface GraphStoreInterface {
      * @param name The URI of the graph to retrieve.
      * @return The retrieved graph.
      */
-    Graph getGraph(URI name);
+    Graph getGraph(String name);
 }

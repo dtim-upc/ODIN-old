@@ -62,13 +62,13 @@ export const useIntegrationStore = defineStore('integration',{
         },
         getGlobalSchema(state){
 
-          if(state.project.integratedGraph.graphicalSchema)
-            return state.project.integratedGraph.graphicalSchema
+          if(state.projectTemporal.integratedGraph.graphicalSchema)
+            return state.projectTemporal.integratedGraph.graphicalSchema
           return ""
         },
         getGraphicalSchemaIntegration(state){
-          if(state.projectTemporal.graphicalSchemaIntegration)
-            return state.projectTemporal.graphicalSchemaIntegration
+          if(state.projectTemporal.integratedGraph.graphicalSchema)
+            return state.projectTemporal.integratedGraph.graphicalSchema
            return ""
         },
         isDSEmpty(state) {

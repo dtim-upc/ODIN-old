@@ -89,6 +89,8 @@ public class SourceController {
         } catch (UnsupportedOperationException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Data source not created successfully");
         } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred while creating the data source");
         }
     }

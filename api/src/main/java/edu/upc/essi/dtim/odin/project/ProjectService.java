@@ -3,8 +3,12 @@ package edu.upc.essi.dtim.odin.project;
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.Dataset;
 import edu.upc.essi.dtim.NextiaCore.graph.Graph;
 import edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl;
+import edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreFactory;
+import edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreInterface;
 import edu.upc.essi.dtim.odin.NextiaStore.RelationalStore.ORMStoreFactory;
 import edu.upc.essi.dtim.odin.NextiaStore.RelationalStore.ORMStoreInterface;
+import edu.upc.essi.dtim.odin.config.AppConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,13 +16,16 @@ import java.util.List;
 @Service
 public class ProjectService {
     ORMStoreInterface ormProject;
+    private AppConfig appConfig;
 
     /**
      * Constructs a new ProjectService.
      */
-    public ProjectService() {
+    public ProjectService(@Autowired AppConfig appConfig) {
+        System.out.println("--------------------------"+appConfig);
         try {
             this.ormProject = ORMStoreFactory.getInstance();
+            this.appConfig = appConfig;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -101,7 +108,20 @@ public class ProjectService {
      * @return The found project, or null if not found.
      */
     public Project findById(String projectId) {
-        return ormProject.findById(Project.class, projectId);
+        Project project = ormProject.findById(Project.class, projectId);
+
+        //debemos cargar también el contenido de las triplas de la relación con el grafo
+        try {
+            if(project.getIntegratedGraph() != null) {
+                GraphStoreInterface graphStoreInterface = GraphStoreFactory.getInstance(appConfig);
+                Graph integratedGraph = graphStoreInterface.getGraph(project.getIntegratedGraph().getGraphName());
+                project.getIntegratedGraph().setGraph(integratedGraph.getGraph());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return project;
     }
 
     /**

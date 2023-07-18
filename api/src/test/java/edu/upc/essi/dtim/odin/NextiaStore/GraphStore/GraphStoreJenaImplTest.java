@@ -14,7 +14,6 @@ import org.mockito.Mockito;
 import java.util.HashSet;
 import java.util.Set;
 
-import static edu.upc.essi.dtim.odin.bootstrapping.GraphModelPairTest.getHardcodedModel;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -24,7 +23,6 @@ class GraphStoreJenaImplTest {
 
     private GraphStoreJenaImpl graphStore;
     private Dataset dataset;
-    private GraphModelPair graphModelPair;
     private URI graphName;
 
     @BeforeEach

@@ -6,11 +6,13 @@ import edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl;
 import edu.upc.essi.dtim.nextiadi.models.Alignment;
 import edu.upc.essi.dtim.odin.NextiaGraphy.nextiaGraphyModuleImpl;
 import edu.upc.essi.dtim.odin.NextiaGraphy.nextiaGraphyModuleInterface;
+import edu.upc.essi.dtim.odin.config.AppConfig;
 import edu.upc.essi.dtim.odin.integration.pojos.IntegrationData;
 import edu.upc.essi.dtim.odin.integration.pojos.JoinAlignment;
 import edu.upc.essi.dtim.odin.project.Project;
 import edu.upc.essi.dtim.odin.project.ProjectService;
 import org.apache.jena.vocabulary.RDFS;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,8 +23,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class IntegrationService {
-    public IntegrationService(){
+    private final AppConfig appConfig;
 
+    public IntegrationService(@Autowired AppConfig appConfig){
+        this.appConfig = appConfig;
+        //this.projec
     }
 
     public Graph integrateData(GraphJenaImpl integratedGraph, Dataset dsB, List<Alignment> alignments) {
@@ -34,18 +39,21 @@ public class IntegrationService {
 
         //generamos el esquema visual del grafo y lo asignamos
         nextiaGraphyModuleInterface visualLibInterface = new nextiaGraphyModuleImpl();
-        newIntegratedGraph.setGraphicalSchema(visualLibInterface.generateVisualGraph(newIntegratedGraph));
+        String newGraphicalSchema = visualLibInterface.generateVisualGraph(newIntegratedGraph);
+        newIntegratedGraph.setGraphicalSchema(newGraphicalSchema);
 
         return newIntegratedGraph;
     }
 
     public Project getProject(String projectId) {
-        ProjectService projectService = new ProjectService();
-        return projectService.findById(projectId);
+        ProjectService projectService = new ProjectService(appConfig);
+        Project project = projectService.findById(projectId);
+
+        return project;
     }
 
     public Project saveProject(Project project) {
-        ProjectService projectService = new ProjectService();
+        ProjectService projectService = new ProjectService(appConfig);
         return projectService.saveProject(project);
     }
 

@@ -15,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
-import static edu.upc.essi.dtim.odin.bootstrapping.GraphModelPairTest.getHardcodedModel;
 
 @SpringBootTest
 class SourceServiceTest {

@@ -29,16 +29,16 @@ public class GraphStoreJenaImpl implements GraphStoreInterface {
      */
     @Override
     public void saveGraph(Graph graph) {
-        /*Model modelToSave = graph.;
+        Model modelToSave = graph.getGraph();
         dataset.begin(ReadWrite.WRITE);
         try {
-            String modelName = graph.getGraph().getName().getURI();
+            String modelName = "http://example.com/"+graph.getGraphName();
             dataset.addNamedModel(modelName, modelToSave);
             dataset.commit();
         } catch (final Exception ex) {
             dataset.abort();
             throw ex;
-        }*/
+        }
     }
 
     /**
@@ -48,17 +48,17 @@ public class GraphStoreJenaImpl implements GraphStoreInterface {
      * @return the retrieved graph
      */
     @Override
-    public Graph getGraph(URI name) {
+    public Graph getGraph(String name) {
         dataset.begin(ReadWrite.READ);
         try {
             //Retrieve Named Graph from Dataset, or use Default Graph.
-            String modelName = name.getURI();
+            String modelName = "http://example.com/"+name;
             if (dataset.containsNamedModel(modelName)) {
                 Model model = dataset.getNamedModel(modelName);
                 //TODO
                 return CoreGraphFactory.createGraphInstance("normal");
             } else {
-                throw getIllegalArgumentException(name);
+                throw getIllegalArgumentException(new URI(name));
             }
         } catch (final Exception ex) {
             dataset.abort();
