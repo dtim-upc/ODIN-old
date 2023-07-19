@@ -1,6 +1,6 @@
 <template>
 
-  
+
     <q-card flat bordered>
       <q-item class="q-py-none">
 
@@ -28,7 +28,7 @@
 
             <q-card-section class="col">
               <div class="row bg-primary justify-center text-white q-pa-xs">
-                Project: {{ integrationStore.project.name }}
+                Project: {{ integrationStore.project.projectName }}
               </div>
               <!-- <q-responsive :ratio="4/3" style="max-height: 53vh">
                 <Webvowl :view="'bdi_manual_alignments'" :id="dsA.id" :minimal-i="dsA.type == 'INTEGRATED'? true: false"/>
@@ -87,7 +87,7 @@
             <div class="col-3">
               <q-btn outline color="primary" label="Close" @click="close"/>
               <q-btn class="q-ml-sm" color="primary" label="Add alignment" @click="addAlignment" :disable="alignment.integratedLabel == ''"/>
-              
+
             </div>
 
           </q-card-section>
@@ -235,7 +235,7 @@ const setAlignmentA = (resource) => {
     // show some error. we can only select same type
 
   }
-            
+
 
 
 
@@ -260,12 +260,12 @@ const setAlignmentB = (resource) => {
 
   } else {
     // show some error. we can only select same type
-  }     
-            
+  }
+
 }
 
 
- 
+
 </script>
 
 <style>

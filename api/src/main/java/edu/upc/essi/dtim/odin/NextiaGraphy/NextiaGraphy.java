@@ -38,7 +38,7 @@ public class NextiaGraphy {
         int conterMember = 1;
         // create nodes
         int nodeId = 1;
-        for( Resource r : model.getSubjects().toList() ) {
+        for( Resource r : model.retrieveSubjects().toList() ) {
 
             Nodes n = new Nodes();
             if(r.getURI().contains("pop")) {

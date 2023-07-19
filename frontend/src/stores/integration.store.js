@@ -116,7 +116,7 @@ export const useIntegrationStore = defineStore('integration',{
           if(p) {
            this.project = p
 
-          } else if (!this.project.name) {
+          } else if (!this.project.projectName) {
 
             const response = await projectAPI.getProjectByID(route.params.id, authStore.user.accessToken)
 
@@ -224,7 +224,8 @@ export const useIntegrationStore = defineStore('integration',{
                 if (response.status == 200) {
 
                   // this should be in temporal landing
-                  this.datasources.push(response.data)
+                  //this.datasources.push(response.data)
+                  this.project.datasets.push(response.data)
 
                   // this.temporalDatasources.push(response.data)
 

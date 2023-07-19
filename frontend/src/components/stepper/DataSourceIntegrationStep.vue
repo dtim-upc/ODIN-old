@@ -179,15 +179,16 @@ const previewGS = ref('Global schema')
             step.value++
           break;
         case 2:
-        if(integrationStore.project.datasets.length == 1  ){
-          // we persist data source
-          console.log("finish preview...")
-         dataSourceStore.finishPreview()
+          console.log(integrationStore.project.datasets.length+" +++++++++++++++++++++++++++++++++ numero de datasets")
+          if(integrationStore.project.datasets.length == 1  ){
+            // we persist data source
+            console.log("finish preview...")
+           dataSourceStore.finishPreview()
 
-        } else {
-          console.log("moving to integrate with project")
-          step.value++
-        }
+          } else {
+            console.log("moving to integrate with project")
+            step.value++
+          }
           break;
         case 3:
 

@@ -6,6 +6,8 @@ import edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl;
 import edu.upc.essi.dtim.nextiadi.models.Alignment;
 import edu.upc.essi.dtim.odin.NextiaGraphy.nextiaGraphyModuleImpl;
 import edu.upc.essi.dtim.odin.NextiaGraphy.nextiaGraphyModuleInterface;
+import edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreFactory;
+import edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreInterface;
 import edu.upc.essi.dtim.odin.config.AppConfig;
 import edu.upc.essi.dtim.odin.integration.pojos.IntegrationData;
 import edu.upc.essi.dtim.odin.integration.pojos.JoinAlignment;
@@ -32,6 +34,16 @@ public class IntegrationService {
 
     public Graph integrateData(GraphJenaImpl integratedGraph, Dataset dsB, List<Alignment> alignments) {
         Graph graphA = integratedGraph;
+        String graphNameB = dsB.getLocalGraph().getGraphName();
+        GraphStoreInterface graphStoreInterface = null;
+        try {
+            graphStoreInterface = GraphStoreFactory.getInstance(appConfig);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        Graph localGraph = graphStoreInterface.getGraph(graphNameB);
+        dsB.setLocalGraph((GraphJenaImpl) localGraph);
+
         Graph graphB = dsB.getLocalGraph();
 
         integrationModuleInterface integrationInterface = new integrationModuleImpl();

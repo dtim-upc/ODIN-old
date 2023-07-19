@@ -50,9 +50,7 @@ public class ProjectService {
         }
 
         // Add the URI of the local graph to the project's list of local graph IDs
-        List<Dataset> datasetList = project.getDatasets();
-        datasetList.add(dataset);
-        project.setDatasets(datasetList);
+        project.getDatasets().add(dataset);
 
         if(project.getDatasets().size() == 1){
             Graph integratedGraph = new GraphJenaImpl();
@@ -145,6 +143,7 @@ public class ProjectService {
                 GraphStoreInterface graphStoreInterface = GraphStoreFactory.getInstance(appConfig);
                 Graph integratedGraph = graphStoreInterface.getGraph(project.getIntegratedGraph().getGraphName());
                 project.setIntegratedGraph((GraphJenaImpl) integratedGraph);
+                //.getIntegratedGraph().setGraph();
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -55,6 +55,7 @@ public class GraphStoreJenaImpl implements GraphStoreInterface {
         return new IllegalArgumentException("Graph " + name.getURI() + " not found");
     }
 
+
     @Override
     public void saveGraph(Graph graph) {
         Model modelToSave = graph.getGraph();
@@ -90,12 +91,13 @@ public class GraphStoreJenaImpl implements GraphStoreInterface {
         return graph;
     }
 
+
+
     /**
      * Saves the given graph.
      *
      * @param graph the graph to save
-     */
-/*
+     *//*
     @Override
     public void saveGraph(Graph graph) {
         Model modelToSave = graph.getGraph();
@@ -104,15 +106,15 @@ public class GraphStoreJenaImpl implements GraphStoreInterface {
             String modelName = "http://example.com/"+graph.getGraphName();
             dataset.addNamedModel(modelName, modelToSave);
             dataset.commit();
-            //dataset.end();
+            dataset.end();
             System.out.println("+++++++++++++++++++GRAFO SALVADOOOOO "+graph.getGraphName());
         } catch (final Exception ex) {
             dataset.abort();
             throw ex;
         }
     }
+    */
 
- */
 
 
     /**
@@ -133,6 +135,11 @@ public class GraphStoreJenaImpl implements GraphStoreInterface {
                 Graph graph = CoreGraphFactory.createGraphInstance("normal");
                 graph.setGraphName(name);
                 graph.setGraph(model);
+
+                nextiaGraphyModuleInterface visualLibInterface = new nextiaGraphyModuleImpl();
+                String graphicalSchema = visualLibInterface.generateVisualGraph(graph);
+                graph.setGraphicalSchema(graphicalSchema);
+
                 return graph;
             } else {
                 System.out.println("??????????????????????DONDE SE LLAMA EL GET GRAPH??????????????????????");

@@ -50,7 +50,7 @@ export const useDataSourceStore = defineStore('datasource',{
           integrationStore.setProject(proj)
 
 
-        } else if(!this.project.name || this.project.projectId != route.params.id) {
+        } else if(!this.project.projectName || this.project.projectId != route.params.id) {
           console.log("dfs", route.params.id)
           const response = await projectAPI.getProjectByID(route.params.id, authStore.user.accessToken)
 
@@ -143,7 +143,7 @@ export const useDataSourceStore = defineStore('datasource',{
       finishPreview(){
         this.updateProjectInfo()
 
-
+        console.log("LLEGAMOS AL MENOS 1 ROUTER+++++++++++++++++++++++++++++")
         // we use go since the user can come from home or table sources pages
         this.router.go(-1)
       },

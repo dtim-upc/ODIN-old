@@ -48,7 +48,8 @@ public class ProjectController {
     public ResponseEntity<Project> getProject(@PathVariable("id") String id) {
         logger.info("GET request received for retrieving project with ID: {}", id);
         Project project = projectService.findById(id);
-        if (project != null) {
+        if (project.getProjectId() != null) {
+            System.out.println("************************************************************************************************controller project");
             return ResponseEntity.ok(project);
         } else {
             return ResponseEntity.notFound().build();
