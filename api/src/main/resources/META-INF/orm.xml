@@ -64,7 +64,7 @@
             </unique-constraint>
         </table>
         <attributes>
-            <id name="graphName"><generated-value strategy="AUTO" /></id>
+            <id name="graphName"><generated-value strategy="AUTO"/></id>
             <basic name="graphicalSchema">
                 <column name="GRAPHICALSCHEMA"/>
             </basic>

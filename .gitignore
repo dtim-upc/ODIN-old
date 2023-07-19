@@ -18,3 +18,4 @@ ODINwhiteboard/odin/src/main/resources/credentials.properties
 api/lib/NextiaBS-1.0-SNAPSHOT-uber.jar
 *.ttl
 *.jar
+*.rdf

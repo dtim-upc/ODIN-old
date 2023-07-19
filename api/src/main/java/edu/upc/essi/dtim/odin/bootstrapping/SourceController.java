@@ -55,37 +55,33 @@ public class SourceController {
 
             // Reconstruct file from Multipart file
             String filePath = sourceService.reconstructFile(attach_file);
-            System.out.println("-----------------filePath "+filePath);
+
             // Extract data from datasource file
             Dataset datasource = sourceService.extractData(filePath, datasetName, datasetDescription);
-            System.out.println("-----------------datasource "+datasource);
 
             //Saving dataset to assign an id
             Dataset savedDataset = sourceService.saveDataset(datasource);
-            System.out.println("-----------------savedDataset "+savedDataset);
+
             // Transform datasource into graph
             Graph graph = sourceService.transformToGraph(savedDataset);
-            System.out.println("-----------------graph "+graph.toString());
 
             //Generating visual schema for frontend
             String visualSchema = sourceService.generateVisualSchema(graph);
-            System.out.println("-----------------visualSchema "+visualSchema);
+            graph.setGraphicalSchema(visualSchema);
+
+            //Create the relation with dataset adding the graph generated to generate an id
+            Dataset datasetWithGraph = sourceService.setLocalGraphToDataset(savedDataset, graph);
+            graph.setGraphName(datasetWithGraph.getLocalGraph().getGraphName());
+            graph.write("C:\\Users\\victo\\Documents\\GitHub\\newODIN\\api\\dbFiles\\ttl\\bootstrap.ttl");
 
             // Save graph into database
             boolean isSaved = sourceService.saveGraphToDatabase(graph);
 
-            if (isSaved) {
-                graph.setGraphicalSchema(visualSchema);
-                //TODO: SEE WHAT HAPPENS WITH ORM
-                //Create the relation with dataset adding the graph generated
-                sourceService.setLocalGraphToDataset(savedDataset, graph);
-
-                //Create the relation with project adding the datasetId
-                sourceService.addDatasetIdToProject(projectId, savedDataset);
-            }
+            //Create the relation with project adding the datasetId
+            sourceService.addDatasetIdToProject(projectId, datasetWithGraph);
 
             // Return success message
-            return new ResponseEntity<>(savedDataset, HttpStatus.OK);
+            return new ResponseEntity<>(datasetWithGraph, HttpStatus.OK);
         } catch (UnsupportedOperationException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Data source not created successfully");
         } catch (Exception e) {

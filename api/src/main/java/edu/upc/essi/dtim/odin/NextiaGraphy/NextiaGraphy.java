@@ -38,8 +38,6 @@ public class NextiaGraphy {
         int conterMember = 1;
         // create nodes
         int nodeId = 1;
-        System.out.println(model.getSubjects().toList());
-        System.out.println("ggggggggggggggggg "+"[http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/dataset.getDatasetId()/carros deportivos, http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/dataset.getDatasetId()/nombre, http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/dataset.getDatasetId()/Object_2, http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/dataset.getDatasetId()/Object_1, http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/dataset.getDatasetId()/marcas, http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/dataset.getDatasetId()/, http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/dataset.getDatasetId()/Array_1, http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/dataset.getDatasetId()/id, http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/dataset.getDatasetId()/modelos, http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/dataset.getDatasetId()/Array_2]\n".equals(model.getSubjects().toList().toString()));
         for( Resource r : model.getSubjects().toList() ) {
 
             Nodes n = new Nodes();

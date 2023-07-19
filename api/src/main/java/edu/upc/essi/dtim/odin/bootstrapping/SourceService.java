@@ -5,7 +5,6 @@ import edu.upc.essi.dtim.NextiaCore.datasources.dataset.Dataset;
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.JsonDataset;
 import edu.upc.essi.dtim.NextiaCore.graph.*;
 import edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl;
-import edu.upc.essi.dtim.odin.NextiaGraphy.NextiaGraphy;
 import edu.upc.essi.dtim.odin.NextiaGraphy.nextiaGraphyModuleImpl;
 import edu.upc.essi.dtim.odin.NextiaGraphy.nextiaGraphyModuleInterface;
 import edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreFactory;
@@ -26,8 +25,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.SecureRandom;
 import java.util.List;
-
-import static org.apache.jena.vocabulary.DCAT.dataset;
 
 
 /**
@@ -253,11 +250,12 @@ public class SourceService {
         return projectService.getDatasetsOfProject(id);
     }
 
-    public void setLocalGraphToDataset(Dataset savedDataset, Graph graph) {
+    public Dataset setLocalGraphToDataset(Dataset savedDataset, Graph graph) {
         GraphJenaImpl localGraph = new GraphJenaImpl();
         localGraph.setGraphName(graph.getGraphName());
         localGraph.setGraphicalSchema(graph.getGraphicalSchema());
         savedDataset.setLocalGraph(localGraph);
+        return saveDataset(savedDataset);
     }
 }
 
