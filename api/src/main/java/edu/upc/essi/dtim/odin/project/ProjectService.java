@@ -64,13 +64,7 @@ public class ProjectService {
                 integratedGraph = graphStore.getGraph(dataset.getLocalGraph().getGraphName());
                 integratedGraph.setGraphName(null);
 
-                integratedGraph.write("C:\\Users\\victo\\Documents\\GitHub\\newODIN\\api\\dbFiles\\ttl\\grafoRecuperadoPalProyecto.ttl");
-                System.out.println("PUES HASTA AQUÍ LLEGAMOS...............................----------------------------");
-
-                GraphJenaImpl graphJena = new GraphJenaImpl();
-                graphJena.setGraph(integratedGraph.getGraph());
-                graphJena.setGraphicalSchema(integratedGraph.getGraphicalSchema());
-                project.setIntegratedGraph(graphJena);
+                project.setIntegratedGraph((GraphJenaImpl) integratedGraph);
                 //saveProject(project);
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -125,7 +119,8 @@ public class ProjectService {
             if(savedProject.getIntegratedGraph().getGraphName() != null) {
                 try {
                     GraphStoreInterface graphStoreInterface = GraphStoreFactory.getInstance(appConfig);
-                    Graph graph = savedProject.getIntegratedGraph();
+                    Graph graph = project.getIntegratedGraph();
+                    graph.setGraphName(savedProject.getIntegratedGraph().getGraphName());
                     graphStoreInterface.saveGraph(graph);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
