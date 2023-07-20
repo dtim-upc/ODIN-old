@@ -120,7 +120,7 @@ task importExternalJar {
 
 		copy {
 			from externalJarPath
-			into "C:\\Users\\victo\\Documents\\GitHub\\newODIN\\api\\lib"
+			into "..\\api\\lib"
 			rename { 'NextiaCore.jar' }
 		}
 	}

@@ -72,7 +72,7 @@ public class SourceController {
             //Create the relation with dataset adding the graph generated to generate an id
             Dataset datasetWithGraph = sourceService.setLocalGraphToDataset(savedDataset, graph);
             graph.setGraphName(datasetWithGraph.getLocalGraph().getGraphName());
-            graph.write("C:\\Users\\victo\\Documents\\GitHub\\newODIN\\api\\dbFiles\\ttl\\bootstrap.ttl");
+            graph.write("..\\api\\dbFiles\\ttl\\bootstrap.ttl");
 
             // Save graph into database
             boolean isSaved = sourceService.saveGraphToDatabase(graph);
@@ -190,11 +190,12 @@ public class SourceController {
             List<Dataset> datasets = sourceService.getDatasetsOfProject(id);
 
             if (datasets.isEmpty()) {
-                return new ResponseEntity<>("No datasets found", HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>("There are no datasets yet",HttpStatus.NO_CONTENT);
             }
 
             return new ResponseEntity<>(datasets, HttpStatus.OK);
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return new ResponseEntity<>("An error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

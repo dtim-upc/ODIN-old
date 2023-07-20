@@ -117,6 +117,9 @@ export const useDataSourceStore = defineStore('datasource',{
               if(response.data === "") { // when no datasources, api answer ""
                 this.datasources = []
                 notify.positive("There are no data sources yet. Add sources to see them.")
+              } else if(response.status === 204){
+                this.datasources = []
+                notify.positive("There are no data sources yet. Add sources to see them.")
               } else {
                 this.datasources = response.data
               }
@@ -131,7 +134,7 @@ export const useDataSourceStore = defineStore('datasource',{
                 notify.negative("Unauthorized access.")
               } else if(err.response && err.response.status === 404){
                 this.datasources = []
-                notify.positive("There are no data sources yet. Add sources to see them.")
+                notify.negative("Datasources not found.")
               }
               else {
                 notify.negative("Cannot connect to the server.")

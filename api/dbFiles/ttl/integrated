@@ -1,113 +1,44 @@
 @prefix j.0:              <http://www.essi.upc.edu/DTIM/NextiaDI/> .
 @prefix json:             <https://www.essi.upc.edu/dtim/json-metamodel#> .
 @prefix nextiaDataSource: <http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/> .
-@prefix nextiaSchema:     <http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1605/> .
+@prefix nextiaSchema:     <http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1801/> .
 @prefix rdf:              <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:             <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd:              <http://www.w3.org/2001/XMLSchema#> .
 
-<http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1602/Object_2>
-        rdf:type         rdfs:Class ;
-        rdfs:label       "Array_1" ;
-        rdfs:subClassOf  j.0:Array_1_q1 .
+nextiaSchema:Object_1
+        rdf:type    rdfs:Class ;
+        rdfs:label  "exam" .
 
-nextiaSchema:options3
-        rdf:type     rdf:Property ;
+nextiaSchema:Object_7
+        rdf:type    rdfs:Class ;
+        rdfs:label  "q2" .
+
+nextiaSchema:answer3  rdf:type  rdf:Property ;
         rdfs:domain  nextiaSchema:Object_7 ;
-        rdfs:label   "has options3" ;
+        rdfs:label   "answer3" ;
         rdfs:range   xsd:string .
+
+<http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1752/nombre>
+        rdf:type     rdf:Property ;
+        rdfs:domain  <http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1752/Object_2> ;
+        rdfs:label   "nombre" ;
+        rdfs:range   xsd:string .
+
+nextiaSchema:Object_6
+        rdf:type         rdfs:Class ;
+        rdfs:label       "q1" ;
+        rdfs:subClassOf  j.0:cars_q1 .
 
 nextiaSchema:answer2  rdf:type  rdf:Property ;
         rdfs:domain  nextiaSchema:Object_6 ;
         rdfs:label   "answer2" ;
         rdfs:range   xsd:string .
 
-nextiaSchema:Object_3
-        rdf:type    rdfs:Class ;
-        rdfs:label  "sport" .
-
-nextiaSchema:question3
-        rdf:type     rdf:Property ;
-        rdfs:domain  nextiaSchema:Object_7 ;
-        rdfs:label   "question3" ;
-        rdfs:range   xsd:string .
-
-<http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1602/Object_1>
-        rdf:type    rdfs:Class ;
-        rdfs:label  "cars" .
-
-<http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1602/modelos>
-        rdf:type     rdf:Property , rdfs:ContainerMembershipProperty ;
-        rdfs:domain  <http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1602/Object_2> ;
-        rdfs:label   "has modelos" ;
-        rdfs:range   xsd:string .
-
-nextiaSchema:options2
-        rdf:type     rdf:Property ;
-        rdfs:domain  nextiaSchema:Object_6 ;
-        rdfs:label   "has options2" ;
-        rdfs:range   xsd:string .
-
-<http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1602/id>
-        rdf:type     rdf:Property ;
-        rdfs:domain  <http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1602/Object_2> ;
-        rdfs:label   "id" ;
-        rdfs:range   xsd:int .
-
-nextiaSchema:Object_2
-        rdf:type    rdfs:Class ;
-        rdfs:label  "quiz" .
-
-j.0:Array_1_q1  rdf:type  j.0:IntegratedClass ;
-        rdfs:label  "Array_1_q1" .
-
-nextiaSchema:question2
-        rdf:type     rdf:Property ;
-        rdfs:domain  nextiaSchema:Object_6 ;
-        rdfs:label   "question2" ;
-        rdfs:range   xsd:string .
-
-nextiaSchema:sport  rdf:type  rdf:Property ;
-        rdfs:domain  nextiaSchema:Object_2 ;
-        rdfs:label   "has sport" ;
-        rdfs:range   nextiaSchema:Object_3 .
-
-nextiaSchema:Object_1
-        rdf:type    rdfs:Class ;
-        rdfs:label  "vdfg" .
-
-nextiaSchema:Object_7
-        rdf:type    rdfs:Class ;
-        rdfs:label  "q2" .
-
-nextiaDataSource:1605
-        rdf:type                  j.0:DataSource ;
-        rdfs:label                "vdfg" ;
-        nextiaDataSource:format   "JSON" ;
-        nextiaDataSource:id       "1605" ;
-        nextiaDataSource:path     "..\\api\\dbFiles\\diskFiles\\vvNND7MFO89pUxsn_exam.json" ;
-        nextiaDataSource:wrapper  "SELECT quiz.sport.q1.question,quiz.sport.q1.answer,quiz.sport.q1.options_view AS options,quiz.maths.q2.question AS question3,quiz.maths.q2.answer AS answer3,quiz.maths.q1.question AS question2,quiz.maths.q1.answer AS answer2,quiz.maths.q1.options_view AS options2,quiz.maths.q2.options_view AS options3 FROM vdfg LATERAL VIEW explode(options) AS options_view\nLATERAL VIEW explode(options) AS options_view\nLATERAL VIEW explode(options) AS options_view" .
-
-nextiaSchema:options  rdf:type  rdf:Property , rdfs:ContainerMembershipProperty ;
-        rdfs:domain  nextiaSchema:Object_4 ;
-        rdfs:label   "has options" ;
-        rdfs:range   xsd:string .
-
-nextiaSchema:Object_6
-        rdf:type         rdfs:Class ;
-        rdfs:label       "q1" ;
-        rdfs:subClassOf  j.0:Array_1_q1 .
-
-<http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1602/nombre>
-        rdf:type     rdf:Property ;
-        rdfs:domain  <http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1602/Object_2> ;
-        rdfs:label   "nombre" ;
-        rdfs:range   xsd:string .
-
-nextiaSchema:q2  rdf:type  rdf:Property ;
-        rdfs:domain  nextiaSchema:Object_5 ;
-        rdfs:label   "has q2" ;
-        rdfs:range   nextiaSchema:Object_7 .
+nextiaSchema:quiz  rdf:type  rdf:Property ;
+        rdfs:domain  nextiaSchema:Object_1 ;
+        rdfs:label   "has quiz" ;
+        rdfs:range   nextiaSchema:Object_2 .
 
 nextiaSchema:question
         rdf:type     rdf:Property ;
@@ -115,54 +46,123 @@ nextiaSchema:question
         rdfs:label   "question" ;
         rdfs:range   xsd:string .
 
+<http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1752/marcas>
+        rdf:type     rdf:Property , rdfs:ContainerMembershipProperty ;
+        rdfs:domain  <http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1752/Object_1> ;
+        rdfs:label   "has marcas" ;
+        rdfs:range   <http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1752/Object_2> .
+
+nextiaDataSource:1752
+        rdf:type                  j.0:DataSource ;
+        rdfs:label                "cars" ;
+        nextiaDataSource:format   "JSON" ;
+        nextiaDataSource:id       "1752" ;
+        nextiaDataSource:path     "..\\api\\dbFiles\\diskFiles\\7ehDLHJMCgDCtE91_cars.json" ;
+        nextiaDataSource:wrapper  "SELECT marcas_view.id,marcas_view.modelos_view AS modelos,marcas_view.nombre FROM cars LATERAL VIEW explode(modelos) AS modelos_view\nLATERAL VIEW explode(marcas) AS marcas_view" .
+
 nextiaSchema:Object_5
         rdf:type    rdfs:Class ;
         rdfs:label  "maths" .
 
-nextiaSchema:quiz  rdf:type  rdf:Property ;
-        rdfs:domain  nextiaSchema:Object_1 ;
-        rdfs:label   "has quiz" ;
-        rdfs:range   nextiaSchema:Object_2 .
-
-nextiaSchema:q1  rdf:type  rdf:Property ;
-        rdfs:domain  nextiaSchema:Object_3 ;
-        rdfs:label   "has q1" ;
-        rdfs:range   nextiaSchema:Object_4 .
-
-<http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1602/marcas>
-        rdf:type     rdf:Property , rdfs:ContainerMembershipProperty ;
-        rdfs:domain  <http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1602/Object_1> ;
-        rdfs:label   "has marcas" ;
-        rdfs:range   <http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1602/Object_2> .
+nextiaSchema:options  rdf:type  rdf:Property , rdfs:ContainerMembershipProperty ;
+        rdfs:domain  nextiaSchema:Object_4 ;
+        rdfs:label   "has options" ;
+        rdfs:range   xsd:string .
 
 nextiaSchema:answer  rdf:type  rdf:Property ;
         rdfs:domain  nextiaSchema:Object_4 ;
         rdfs:label   "answer" ;
         rdfs:range   xsd:string .
 
-nextiaSchema:q12  rdf:type  rdf:Property ;
+nextiaSchema:q2  rdf:type  rdf:Property ;
         rdfs:domain  nextiaSchema:Object_5 ;
-        rdfs:label   "has q12" ;
-        rdfs:range   nextiaSchema:Object_6 .
+        rdfs:label   "has q2" ;
+        rdfs:range   nextiaSchema:Object_7 .
 
-nextiaSchema:maths  rdf:type  rdf:Property ;
-        rdfs:domain  nextiaSchema:Object_2 ;
-        rdfs:label   "has maths" ;
-        rdfs:range   nextiaSchema:Object_5 .
-
-nextiaSchema:answer3  rdf:type  rdf:Property ;
+nextiaSchema:question3
+        rdf:type     rdf:Property ;
         rdfs:domain  nextiaSchema:Object_7 ;
-        rdfs:label   "answer3" ;
+        rdfs:label   "question3" ;
         rdfs:range   xsd:string .
 
 nextiaSchema:Object_4
         rdf:type    rdfs:Class ;
         rdfs:label  "q1" .
 
-nextiaDataSource:1602
+nextiaSchema:maths  rdf:type  rdf:Property ;
+        rdfs:domain  nextiaSchema:Object_2 ;
+        rdfs:label   "has maths" ;
+        rdfs:range   nextiaSchema:Object_5 .
+
+nextiaSchema:q12  rdf:type  rdf:Property ;
+        rdfs:domain  nextiaSchema:Object_5 ;
+        rdfs:label   "has q12" ;
+        rdfs:range   nextiaSchema:Object_6 .
+
+j.0:cars_q1  rdf:type  j.0:IntegratedClass ;
+        rdfs:label  "cars_q1" .
+
+<http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1752/Object_2>
+        rdf:type    rdfs:Class ;
+        rdfs:label  "Array_1" .
+
+nextiaSchema:options3
+        rdf:type     rdf:Property ;
+        rdfs:domain  nextiaSchema:Object_7 ;
+        rdfs:label   "has options3" ;
+        rdfs:range   xsd:string .
+
+nextiaSchema:q1  rdf:type  rdf:Property ;
+        rdfs:domain  nextiaSchema:Object_3 ;
+        rdfs:label   "has q1" ;
+        rdfs:range   nextiaSchema:Object_4 .
+
+nextiaSchema:question2
+        rdf:type     rdf:Property ;
+        rdfs:domain  nextiaSchema:Object_6 ;
+        rdfs:label   "question2" ;
+        rdfs:range   xsd:string .
+
+nextiaSchema:Object_3
+        rdf:type    rdfs:Class ;
+        rdfs:label  "sport" .
+
+<http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1752/id>
+        rdf:type     rdf:Property ;
+        rdfs:domain  <http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1752/Object_2> ;
+        rdfs:label   "id" ;
+        rdfs:range   xsd:int .
+
+<http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1752/Object_1>
+        rdf:type         rdfs:Class ;
+        rdfs:label       "cars" ;
+        rdfs:subClassOf  j.0:cars_q1 .
+
+nextiaSchema:options2
+        rdf:type     rdf:Property ;
+        rdfs:domain  nextiaSchema:Object_6 ;
+        rdfs:label   "has options2" ;
+        rdfs:range   xsd:string .
+
+nextiaSchema:Object_2
+        rdf:type    rdfs:Class ;
+        rdfs:label  "quiz" .
+
+nextiaDataSource:1801
         rdf:type                  j.0:DataSource ;
-        rdfs:label                "cars" ;
+        rdfs:label                "exam" ;
         nextiaDataSource:format   "JSON" ;
-        nextiaDataSource:id       "1602" ;
-        nextiaDataSource:path     "..\\api\\dbFiles\\diskFiles\\HRp6BnMR0Xs8rm4F_cars.json" ;
-        nextiaDataSource:wrapper  "SELECT marcas_view.id,marcas_view.modelos_view AS modelos,marcas_view.nombre FROM cars LATERAL VIEW explode(modelos) AS modelos_view\nLATERAL VIEW explode(marcas) AS marcas_view" .
+        nextiaDataSource:id       "1801" ;
+        nextiaDataSource:path     "..\\api\\dbFiles\\diskFiles\\PKvyRBONxJX282Ng_exam.json" ;
+        nextiaDataSource:wrapper  "SELECT quiz.sport.q1.question,quiz.sport.q1.answer,quiz.sport.q1.options_view AS options,quiz.maths.q2.question AS question3,quiz.maths.q2.answer AS answer3,quiz.maths.q1.question AS question2,quiz.maths.q1.answer AS answer2,quiz.maths.q1.options_view AS options2,quiz.maths.q2.options_view AS options3 FROM exam LATERAL VIEW explode(options) AS options_view\nLATERAL VIEW explode(options) AS options_view\nLATERAL VIEW explode(options) AS options_view" .
+
+nextiaSchema:sport  rdf:type  rdf:Property ;
+        rdfs:domain  nextiaSchema:Object_2 ;
+        rdfs:label   "has sport" ;
+        rdfs:range   nextiaSchema:Object_3 .
+
+<http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1752/modelos>
+        rdf:type     rdf:Property , rdfs:ContainerMembershipProperty ;
+        rdfs:domain  <http://www.essi.upc.edu/DTIM/NextiaDI/DataSource/Schema/1752/Object_2> ;
+        rdfs:label   "has modelos" ;
+        rdfs:range   xsd:string .

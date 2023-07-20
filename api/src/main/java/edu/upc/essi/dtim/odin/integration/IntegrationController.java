@@ -42,7 +42,7 @@ public class IntegrationController {
             //integramos la nueva fuente de datos sobre el grafo integrado existente y lo sobreescrivimos
             Graph integratedGraph = integrationService.integrateData(project.getIntegratedGraph(), iData.getDsB(), iData.getAlignments());
 
-            String path = "C:\\Users\\victo\\Documents\\GitHub\\newODIN\\api\\dbFiles\\ttl\\";
+            String path = "..\\api\\dbFiles\\ttl\\";
             project.getIntegratedGraph().write(path+"graphA.ttl");
             iData.getDsB().getLocalGraph().write(path+"graphB.ttl");
             integratedGraph.write(path+"integrated");
