@@ -45,7 +45,7 @@ public class IntegrationController {
             String path = "..\\api\\dbFiles\\ttl\\";
             project.getIntegratedGraph().write(path+"graphA.ttl");
             iData.getDsB().getLocalGraph().write(path+"graphB.ttl");
-            integratedGraph.write(path+"integrated");
+            integratedGraph.write(path+"integrated.ttl");
 
             Project projectToSave = integrationService.updateGraphProject(project, integratedGraph);
 
