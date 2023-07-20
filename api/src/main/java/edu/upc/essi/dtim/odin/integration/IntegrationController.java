@@ -1,10 +1,12 @@
 package edu.upc.essi.dtim.odin.integration;
 
+import edu.upc.essi.dtim.NextiaCore.datasources.dataset.Dataset;
 import edu.upc.essi.dtim.NextiaCore.graph.Graph;
 import edu.upc.essi.dtim.odin.integration.pojos.IntegrationData;
 import edu.upc.essi.dtim.odin.integration.pojos.IntegrationTemporalResponse;
 import edu.upc.essi.dtim.odin.integration.pojos.JoinAlignment;
 import edu.upc.essi.dtim.odin.project.Project;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,6 +94,12 @@ public class IntegrationController {
     public ResponseEntity<Project> acceptIntegration(@PathVariable("id") String id) {
         System.out.println("entering saving integration persistent");
         //todo: delete this call
-        return new ResponseEntity(integrationService.getProject(id), HttpStatus.CREATED);
+        return new ResponseEntity(integrationService.getProject(id), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/project/{id}/datasources/persist")
+    public ResponseEntity<Dataset> persistDataSource(@PathVariable("id") String id, @RequestBody Dataset dataSource) {
+        //Dataset dataset = new Datase
+        return new ResponseEntity<>(dataSource, HttpStatus.CREATED);
     }
 }
