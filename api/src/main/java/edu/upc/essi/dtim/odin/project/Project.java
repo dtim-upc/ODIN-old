@@ -17,6 +17,7 @@ public class Project {
     private String createdBy;
     private List<Dataset> datasets;
     private GraphJenaImpl integratedGraph;
+    private GraphJenaImpl globalGraph;
 
     public String getProjectId() {
         return projectId;
@@ -77,7 +78,15 @@ public class Project {
         return integratedGraph;
     }
 
-    public void setIntegratedGraph(GraphJenaImpl globalGraph) {
-        this.integratedGraph = globalGraph;
+    public void setIntegratedGraph(GraphJenaImpl integratedGraph) {
+        this.integratedGraph = integratedGraph;
+    }
+
+    public GraphJenaImpl getGlobalGraph() {
+        return globalGraph;
+    }
+
+    public void setGlobalGraph(GraphJenaImpl globalGraph) {
+        this.globalGraph = globalGraph;
     }
 }

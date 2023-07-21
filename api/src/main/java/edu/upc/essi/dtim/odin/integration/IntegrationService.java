@@ -33,9 +33,8 @@ public class IntegrationService {
     }
 
     public Graph integrateData(GraphJenaImpl integratedGraph, Dataset dsB, List<Alignment> alignments) {
-        Graph graphA = integratedGraph;
         String graphNameB = dsB.getLocalGraph().getGraphName();
-        GraphStoreInterface graphStoreInterface = null;
+        GraphStoreInterface graphStoreInterface;
         try {
             graphStoreInterface = GraphStoreFactory.getInstance(appConfig);
         } catch (Exception e) {
@@ -47,7 +46,7 @@ public class IntegrationService {
         Graph graphB = dsB.getLocalGraph();
 
         integrationModuleInterface integrationInterface = new integrationModuleImpl();
-        Graph newIntegratedGraph = integrationInterface.integrate(graphA, graphB, alignments);
+        Graph newIntegratedGraph = integrationInterface.integrate(integratedGraph, graphB, alignments);
 
         //generamos el esquema visual del grafo y lo asignamos
         nextiaGraphyModuleInterface visualLibInterface = new nextiaGraphyModuleImpl();
@@ -59,9 +58,8 @@ public class IntegrationService {
 
     public Project getProject(String projectId) {
         ProjectService projectService = new ProjectService(appConfig);
-        Project project = projectService.findById(projectId);
 
-        return project;
+        return projectService.findById(projectId);
     }
 
     public Project saveProject(Project project) {
@@ -125,11 +123,47 @@ public class IntegrationService {
         return null;
     }
 
-    public Project updateGraphProject(Project project, Graph integratedGraph) {
+    public Project updateIntegratedGraphProject(Project project, Graph integratedGraph) {
         GraphJenaImpl integratedImpl = new GraphJenaImpl();
         integratedImpl.setGraph(integratedGraph.getGraph());
         project.setIntegratedGraph(integratedImpl);
         project.getIntegratedGraph().setGraphicalSchema(integratedGraph.getGraphicalSchema());
         return project;
+    }
+
+    public Project updateGlobalGraphProject(Project project, Graph globalGraph) {
+        GraphJenaImpl globalImpl = new GraphJenaImpl();
+        globalImpl.setGraph(globalGraph.getGraph());
+        project.setGlobalGraph(globalImpl);
+        project.getGlobalGraph().setGraphicalSchema(globalGraph.getGraphicalSchema());
+        return project;
+    }
+
+    public Graph generateGlobalGraph(GraphJenaImpl integratedGraph, Dataset dsB, List<Alignment> alignments) {
+        //PARTE DE LA INTEGRACIÓN PARA PODER GENERAR EL GLOBAL POR CONTEXTO
+        String graphNameB = dsB.getLocalGraph().getGraphName();
+        GraphStoreInterface graphStoreInterface;
+        try {
+            graphStoreInterface = GraphStoreFactory.getInstance(appConfig);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        Graph localGraph = graphStoreInterface.getGraph(graphNameB);
+        dsB.setLocalGraph((GraphJenaImpl) localGraph);
+
+        Graph graphB = dsB.getLocalGraph();
+        /////////////////////////////////////////////////////////////////////
+
+        integrationModuleInterface integrationInterface = new integrationModuleImpl();
+        Graph globalGraph = integrationInterface.globalGraph(integratedGraph, graphB, alignments);
+        globalGraph.write("..\\api\\dbFiles\\ttl"+"/globalGraph.ttl");
+        System.out.println("+++++++++++++++++++++++++++++++++++++++ GLOBAL GRAPH GENERATED");
+
+        //generamos el esquema visual del grafo y lo asignamos
+        nextiaGraphyModuleInterface visualLibInterface = new nextiaGraphyModuleImpl();
+        String newGraphicalSchema = visualLibInterface.generateVisualGraph(globalGraph);
+        globalGraph.setGraphicalSchema(newGraphicalSchema);
+
+        return globalGraph;
     }
 }

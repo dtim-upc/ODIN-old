@@ -9,4 +9,6 @@ public interface integrationModuleInterface {
     Graph integrate(Graph graphA, Graph graphB, List<Alignment> alignments);
 
     List<Alignment> getUnused();
+
+    Graph globalGraph(Graph graphA, Graph graphB, List<Alignment> alignments);
 }

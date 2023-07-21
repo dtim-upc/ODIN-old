@@ -49,10 +49,10 @@ public class IntegrationController {
             iData.getDsB().getLocalGraph().write(path+"graphB.ttl");
             integratedGraph.write(path+"integrated.ttl");
 
-            Project projectToSave = integrationService.updateGraphProject(project, integratedGraph);
+            Project projectToSave = integrationService.updateIntegratedGraphProject(project, integratedGraph);
 
-            checkGraphicalSchema(project.getIntegratedGraph().getGraphicalSchema(), integratedGraph.getGraphicalSchema(), projectToSave.getIntegratedGraph().getGraphicalSchema());
-            checkGraphicalSchema(project.getIntegratedGraph().getGraphicalSchema(), integratedGraph.getGraphicalSchema(), iData.getDsB().getLocalGraph().getGraphicalSchema());
+            Graph globalGraph = integrationService.generateGlobalGraph(project.getIntegratedGraph(), iData.getDsB(), iData.getAlignments());
+            projectToSave=integrationService.updateGlobalGraphProject(projectToSave, globalGraph);
 
             Project project1 = integrationService.saveProject(projectToSave);
             logger.info("PROJECT SAVED WITH THE NEW INTEGRATED GRAPH");
@@ -64,29 +64,6 @@ public class IntegrationController {
         //si no hay suficientes ERROR
         else{
             return new ResponseEntity<>(new IntegrationTemporalResponse(null,null), HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    private static void checkGraphicalSchema(String project, String integratedGraph, String projectToSave) {
-        String oldGraphicalSchema = project;
-        String newGraphicalSchema = integratedGraph;
-        String newGeneratedSchema = projectToSave;
-
-        if (oldGraphicalSchema.equals(newGraphicalSchema) && newGraphicalSchema.equals(newGeneratedSchema)) {
-            // All three strings are the same
-            logger.warn("All three graphical schemas are the same.");
-        } else if (oldGraphicalSchema.equals(newGraphicalSchema)) {
-            // The oldGraphicalSchema and newGraphicalSchema are the same, while newGeneratedSchema is different
-            logger.warn("The oldGraphicalSchema and newGraphicalSchema are the same, while newGeneratedSchema is different.");
-        } else if (oldGraphicalSchema.equals(newGeneratedSchema)) {
-            // The oldGraphicalSchema and newGeneratedSchema are the same, while newGraphicalSchema is different
-            logger.warn("The oldGraphicalSchema and newGeneratedSchema are the same, while newGraphicalSchema is different.");
-        } else if (newGraphicalSchema.equals(newGeneratedSchema)) {
-            // The newGraphicalSchema and newGeneratedSchema are the same, while oldGraphicalSchema is different
-            logger.warn("The newGraphicalSchema and newGeneratedSchema are the same, while oldGraphicalSchema is different.");
-        } else {
-            // All three strings are different
-            logger.info("All three graphical schemas are different.");
         }
     }
 
