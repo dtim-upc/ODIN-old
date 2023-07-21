@@ -8,7 +8,7 @@ import java.util.List;
 public interface integrationModuleInterface {
     Graph integrate(Graph graphA, Graph graphB, List<Alignment> alignments);
 
-    List<Alignment> getUnused();
+    List<Alignment> getUnused(Graph graphA, Graph graphB, List<Alignment> alignments);
 
     Graph globalGraph(Graph graphA, Graph graphB, List<Alignment> alignments);
 }

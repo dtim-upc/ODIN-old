@@ -27,8 +27,9 @@ public class integrationModuleImpl implements integrationModuleInterface{
     }
 
     @Override
-    public List<Alignment> getUnused() {
+    public List<Alignment> getUnused(Graph graphA, Graph graphB, List<Alignment> alignments) {
         NextiaDI n = new NextiaDI();
+        n.Integrate(retrieveSourceGraph(alignments, graphA), retrieveSourceGraph(alignments, graphB), alignments);
         return n.getUnused();
     }
 

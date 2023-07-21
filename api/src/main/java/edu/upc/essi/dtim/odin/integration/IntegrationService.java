@@ -70,7 +70,7 @@ public class IntegrationService {
     public List<JoinAlignment> generateJoinAlignments(Graph graphA, Graph graphB, IntegrationData iData) {
         integrationModuleInterface integrationInterface = new integrationModuleImpl();
 
-        List<Alignment> unusedAlignments = integrationInterface.getUnused();
+        List<Alignment> unusedAlignments = integrationInterface.getUnused(graphA, graphB, iData.getAlignments());
 
         Set<String> alignmentsAB = iData.getAlignments().stream()
                 .filter(a -> a.getType().equals("datatype"))
