@@ -2,11 +2,17 @@ package edu.upc.essi.dtim.odin.integration;
 
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.Dataset;
 import edu.upc.essi.dtim.NextiaCore.graph.Graph;
+import edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl;
+import edu.upc.essi.dtim.NextiaDI;
 import edu.upc.essi.dtim.odin.integration.pojos.IntegrationData;
 import edu.upc.essi.dtim.odin.integration.pojos.IntegrationTemporalResponse;
 import edu.upc.essi.dtim.odin.integration.pojos.JoinAlignment;
 import edu.upc.essi.dtim.odin.project.Project;
 
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -65,6 +72,20 @@ public class IntegrationController {
         else{
             return new ResponseEntity<>(new IntegrationTemporalResponse(null,null), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PostMapping(value = "/project/{id}/integration/join")
+    public ResponseEntity<Project> integrateJoins(@PathVariable("id") String id, @RequestBody List<JoinAlignment> joinA){
+
+        logger.info("INTEGRATING joins...");
+
+        Project project = integrationService.getProject(id);
+
+        Graph integratedSchema = integrationService.joinIntegration(project.getIntegratedGraph(), joinA);
+
+        project.setIntegratedGraph((GraphJenaImpl) integratedSchema);
+
+        return new ResponseEntity(project, HttpStatus.OK);
     }
 
     @PostMapping(value = "/project/{id}/integration/persist")

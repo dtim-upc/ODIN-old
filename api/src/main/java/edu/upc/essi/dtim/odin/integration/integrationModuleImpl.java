@@ -5,6 +5,7 @@ import edu.upc.essi.dtim.NextiaCore.graph.Graph;
 import edu.upc.essi.dtim.NextiaDI;
 import edu.upc.essi.dtim.nextiadi.models.Alignment;
 import edu.upc.essi.dtim.odin.NextiaGraphy.vocabulary.Namespaces;
+import edu.upc.essi.dtim.odin.integration.pojos.JoinAlignment;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.RDFS;
@@ -43,6 +44,27 @@ public class integrationModuleImpl implements integrationModuleInterface{
 
         globalGraph.setGraph(
                 n.getMinimalGraph2()
+        );
+
+        return globalGraph;
+    }
+
+    @Override
+    public Graph joinIntegration(Graph integratedGraph, List<JoinAlignment> joinAlignments) {
+        Graph globalGraph = CoreGraphFactory.createGraphInstance("normal");
+        Graph schemaIntegration = CoreGraphFactory.createGraphInstance("normal");
+        NextiaDI n = new NextiaDI();
+
+        for(JoinAlignment a : joinAlignments) {
+
+            if(a.getRightArrow())
+                schemaIntegration.setGraph(n.JoinIntegration(integratedGraph.getGraph(), a.getIriA(), a.getIriB(), a.getL(), a.getRelationship(), a.getDomainA(), a.getDomainB()));
+            else
+                schemaIntegration.setGraph(n.JoinIntegration(integratedGraph.getGraph(), a.getIriA(), a.getIriB(), a.getL(), a.getRelationship(), a.getDomainB(), a.getDomainA()));
+        }
+
+        globalGraph.setGraph(
+                schemaIntegration.getGraph()
         );
 
         return globalGraph;

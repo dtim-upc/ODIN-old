@@ -166,4 +166,16 @@ public class IntegrationService {
 
         return globalGraph;
     }
+
+    public Graph joinIntegration(Graph integratedGraph, List<JoinAlignment> joinAlignments) {
+        integrationModuleInterface integrationInterface = new integrationModuleImpl();
+        Graph globalGraph = integrationInterface.joinIntegration(integratedGraph, joinAlignments);
+
+        //generamos el esquema visual del grafo y lo asignamos
+        nextiaGraphyModuleInterface visualLibInterface = new nextiaGraphyModuleImpl();
+        String newGraphicalSchema = visualLibInterface.generateVisualGraph(globalGraph);
+        globalGraph.setGraphicalSchema(newGraphicalSchema);
+
+        return globalGraph;
+    }
 }
