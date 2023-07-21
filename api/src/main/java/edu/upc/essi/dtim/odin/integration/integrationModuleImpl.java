@@ -51,7 +51,7 @@ public class integrationModuleImpl implements integrationModuleInterface{
 
     @Override
     public Graph joinIntegration(Graph integratedGraph, List<JoinAlignment> joinAlignments) {
-        Graph globalGraph = CoreGraphFactory.createGraphInstance("normal");
+        Graph joinGraph = CoreGraphFactory.createGraphInstance("normal");
         Graph schemaIntegration = CoreGraphFactory.createGraphInstance("normal");
         NextiaDI n = new NextiaDI();
 
@@ -63,11 +63,11 @@ public class integrationModuleImpl implements integrationModuleInterface{
                 schemaIntegration.setGraph(n.JoinIntegration(integratedGraph.getGraph(), a.getIriA(), a.getIriB(), a.getL(), a.getRelationship(), a.getDomainB(), a.getDomainA()));
         }
 
-        globalGraph.setGraph(
+        joinGraph.setGraph(
                 schemaIntegration.getGraph()
         );
 
-        return globalGraph;
+        return joinGraph;
     }
 
     public Model retrieveSourceGraph(List<Alignment> alignments, Graph graph) {

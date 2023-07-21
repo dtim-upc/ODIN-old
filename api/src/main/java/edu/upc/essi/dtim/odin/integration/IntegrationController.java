@@ -9,10 +9,6 @@ import edu.upc.essi.dtim.odin.integration.pojos.IntegrationTemporalResponse;
 import edu.upc.essi.dtim.odin.integration.pojos.JoinAlignment;
 import edu.upc.essi.dtim.odin.project.Project;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +81,14 @@ public class IntegrationController {
 
         project.setIntegratedGraph((GraphJenaImpl) integratedSchema);
 
-        return new ResponseEntity(project, HttpStatus.OK);
+        Graph globalSchema = integrationService.joinIntegration(project.getIntegratedGraph(), joinA);
+
+        project.setGlobalGraph((GraphJenaImpl) globalSchema);
+
+        //todo save Project
+        Project savedProject = integrationService.saveProject(project);
+
+        return new ResponseEntity(savedProject, HttpStatus.OK);
     }
 
     @PostMapping(value = "/project/{id}/integration/persist")

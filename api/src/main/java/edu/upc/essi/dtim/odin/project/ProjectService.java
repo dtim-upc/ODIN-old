@@ -125,6 +125,20 @@ public class ProjectService {
                 }
             }
         }
+
+        if(savedProject.getGlobalGraph() != null){
+            if(savedProject.getGlobalGraph().getGraphName() != null) {
+                try {
+                    GraphStoreInterface graphStoreInterface = GraphStoreFactory.getInstance(appConfig);
+                    Graph graph = project.getGlobalGraph();
+                    graph.setGraphName(savedProject.getGlobalGraph().getGraphName());
+                    graphStoreInterface.saveGraph(graph);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
         return savedProject;
     }
 
@@ -143,7 +157,11 @@ public class ProjectService {
                 GraphStoreInterface graphStoreInterface = GraphStoreFactory.getInstance(appConfig);
                 Graph integratedGraph = graphStoreInterface.getGraph(project.getIntegratedGraph().getGraphName());
                 project.setIntegratedGraph((GraphJenaImpl) integratedGraph);
-                //.getIntegratedGraph().setGraph();
+            }
+            if(project.getGlobalGraph() != null) {
+                GraphStoreInterface graphStoreInterface = GraphStoreFactory.getInstance(appConfig);
+                Graph globalGraph = graphStoreInterface.getGraph(project.getGlobalGraph().getGraphName());
+                project.setGlobalGraph((GraphJenaImpl) globalGraph);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
