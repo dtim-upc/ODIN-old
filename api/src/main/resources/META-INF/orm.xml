@@ -64,7 +64,7 @@
 
     <!--> MAPPING CLASS GRAPH<-->
     <entity class="edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl">
-        <table name="GraphJenaImpl">
+        <table name="GRAPH">
             <unique-constraint>
                 <column-name>graphName</column-name>
             </unique-constraint>
