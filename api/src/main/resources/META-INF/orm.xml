@@ -46,7 +46,7 @@
                 </cascade>
             </one-to-many>
 
-            <one-to-one name="integratedGraph" target-entity="edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl">
+            <one-to-one name="integratedGraph" target-entity="edu.upc.essi.dtim.NextiaCore.graph.jena.IntegratedGraphJenaImpl">
                 <cascade>
                     <cascade-all/>
                 </cascade>
@@ -82,6 +82,7 @@
     <entity class="edu.upc.essi.dtim.NextiaCore.graph.jena.IntegratedGraphJenaImpl">
         <table name="INTEGRATEDGRAPH"/>
         <attributes>
+            <transient name="globalGraph"/>
         </attributes>
     </entity>
 

@@ -102,7 +102,6 @@ public class GraphStoreJenaImpl implements GraphStoreInterface {
             graph.setGraphicalSchema(graphicalSchema);
 
             if (graph.getClass().equals(IntegratedGraphJenaImpl.class)){
-                System.out.println("++++++++++++++++++++++++++++++++++************** " + "RE CALCULANDO GRAFO GLOBAL");
                 integrationModuleInterface integrationInterface = new integrationModuleImpl();
                 Graph globalGraph = integrationInterface.generateGlobalGraph(graph);
                 ((IntegratedGraphJenaImpl) graph).setGlobalGraph((GlobalGraphJenaImpl) globalGraph);
@@ -166,7 +165,6 @@ public class GraphStoreJenaImpl implements GraphStoreInterface {
 
                 return graph;
             } else {
-                System.out.println("??????????????????????DONDE SE LLAMA EL GET GRAPH??????????????????????");
                 throw getIllegalArgumentException(new URI(name));
             }
         } catch (final Exception ex) {

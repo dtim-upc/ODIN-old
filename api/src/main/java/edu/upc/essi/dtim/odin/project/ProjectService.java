@@ -26,7 +26,6 @@ public class ProjectService {
      * Constructs a new ProjectService.
      */
     public ProjectService(@Autowired AppConfig appConfig) {
-        System.out.println("--------------------------"+appConfig);
         try {
             this.ormProject = ORMStoreFactory.getInstance();
             this.appConfig = appConfig;
@@ -76,7 +75,6 @@ public class ProjectService {
 
         //saving the updated project
         Project projectWithDatasetAndGraph = saveProject(project);
-        //System.out.println("+++++++++++++++++++++++++++++++++FROM PROJECT AFTER SAVING"+projectWithDatasetAndGraph.getIntegratedGraph().getGraphName());
     }
 
     /**

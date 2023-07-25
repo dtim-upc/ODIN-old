@@ -90,7 +90,6 @@ public class IntegrationController {
 
         project.getIntegratedGraph().setGlobalGraph((GlobalGraphJenaImpl) globalSchema);
 
-        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"+project.getIntegratedGraph().getGlobalGraph().getGraphicalSchema()+"++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 
         Project savedProject = integrationService.saveProject(project);
 
@@ -99,7 +98,6 @@ public class IntegrationController {
 
     @PostMapping(value = "/project/{id}/integration/persist")
     public ResponseEntity<Project> acceptIntegration(@PathVariable("id") String id) {
-        System.out.println("entering saving integration persistent");
         //todo: delete this call
         return new ResponseEntity(integrationService.getProject(id), HttpStatus.OK);
     }
