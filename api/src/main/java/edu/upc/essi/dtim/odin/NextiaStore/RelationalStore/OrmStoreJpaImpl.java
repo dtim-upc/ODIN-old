@@ -39,7 +39,7 @@ public class OrmStoreJpaImpl implements ORMStoreInterface {
         try {
             object = em.find(entityClass, id);
         } catch (Exception e) {
-            logger.error("Error finding object {}: {}", entityClass.getSimpleName(), e.getMessage(), e);
+            logger.warn("Error finding object {}: {}", entityClass.getSimpleName(), e.getMessage(), e);
         } finally {
             em.close();
         }

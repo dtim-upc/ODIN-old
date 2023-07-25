@@ -2,8 +2,11 @@ package edu.upc.essi.dtim.odin.NextiaStore.GraphStore;
 
 
 import edu.upc.essi.dtim.NextiaCore.graph.*;
+import edu.upc.essi.dtim.NextiaCore.graph.jena.LocalGraphJenaImpl;
 import edu.upc.essi.dtim.odin.NextiaGraphy.nextiaGraphyModuleImpl;
 import edu.upc.essi.dtim.odin.NextiaGraphy.nextiaGraphyModuleInterface;
+import edu.upc.essi.dtim.odin.NextiaStore.RelationalStore.ORMStoreFactory;
+import edu.upc.essi.dtim.odin.NextiaStore.RelationalStore.ORMStoreInterface;
 import edu.upc.essi.dtim.odin.config.AppConfig;
 import org.apache.hadoop.shaded.javax.xml.bind.SchemaOutputResolver;
 import org.apache.jena.query.Dataset;
@@ -73,7 +76,17 @@ public class GraphStoreJenaImpl implements GraphStoreInterface {
     public Graph getGraph(String modelName) {
         String filePath = directory + modelName + ".rdf";
         Model model = ModelFactory.createDefaultModel();
-        Graph graph = CoreGraphFactory.createGraphInstance("normal");
+        Graph graph;
+
+        //miramos qué tipo de grafo es para constuir la interficie
+        ORMStoreInterface ormInterface = ORMStoreFactory.getInstance();
+        if(ormInterface.findById(LocalGraphJenaImpl.class, modelName) != null){
+            graph = CoreGraphFactory.createLocalGraph();
+        } else if (ormInterface.findById(IntegratedGraph.class, modelName) != null) {
+            graph = CoreGraphFactory.createIntegratedGraph();
+        } else {
+            graph = CoreGraphFactory.createGraphInstance("normal");
+        }
 
         try {
             model.read(new FileInputStream(filePath), "RDF/XML");

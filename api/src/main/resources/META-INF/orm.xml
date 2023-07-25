@@ -69,6 +69,7 @@
                 <column-name>graphName</column-name>
             </unique-constraint>
         </table>
+        <inheritance strategy="JOINED"/>
         <attributes>
             <id name="graphName"><generated-value strategy="AUTO"/></id>
             <basic name="graphicalSchema">
@@ -78,6 +79,17 @@
         </attributes>
     </entity>
 
+    <entity class="edu.upc.essi.dtim.NextiaCore.graph.jena.LocalGraphJenaImpl">
+        <table name="LOCALGRAPH"/>
+        <attributes>
+        </attributes>
+    </entity>
+
+    <entity class="edu.upc.essi.dtim.NextiaCore.graph.jena.IntegratedGraphJenaImpl">
+        <table name="INTEGRATEDGRAPH"/>
+        <attributes>
+        </attributes>
+    </entity>
 
     <!--> MAPPING DATASET CLASS<-->
     <entity class="edu.upc.essi.dtim.NextiaCore.datasources.dataset.Dataset">

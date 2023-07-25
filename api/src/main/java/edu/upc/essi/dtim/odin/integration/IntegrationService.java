@@ -2,7 +2,9 @@ package edu.upc.essi.dtim.odin.integration;
 
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.Dataset;
 import edu.upc.essi.dtim.NextiaCore.graph.Graph;
+import edu.upc.essi.dtim.NextiaCore.graph.LocalGraph;
 import edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl;
+import edu.upc.essi.dtim.NextiaCore.graph.jena.LocalGraphJenaImpl;
 import edu.upc.essi.dtim.nextiadi.models.Alignment;
 import edu.upc.essi.dtim.odin.NextiaGraphy.nextiaGraphyModuleImpl;
 import edu.upc.essi.dtim.odin.NextiaGraphy.nextiaGraphyModuleInterface;
@@ -41,7 +43,7 @@ public class IntegrationService {
             throw new RuntimeException(e);
         }
         Graph localGraph = graphStoreInterface.getGraph(graphNameB);
-        dsB.setLocalGraph((GraphJenaImpl) localGraph);
+        dsB.setLocalGraph((LocalGraphJenaImpl) localGraph);
 
         Graph graphB = dsB.getLocalGraph();
 
@@ -149,7 +151,7 @@ public class IntegrationService {
             throw new RuntimeException(e);
         }
         Graph localGraph = graphStoreInterface.getGraph(graphNameB);
-        dsB.setLocalGraph((GraphJenaImpl) localGraph);
+        dsB.setLocalGraph((LocalGraphJenaImpl) localGraph);
 
         Graph graphB = dsB.getLocalGraph();
         /////////////////////////////////////////////////////////////////////

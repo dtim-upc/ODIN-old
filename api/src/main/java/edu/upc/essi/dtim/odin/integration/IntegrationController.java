@@ -48,9 +48,11 @@ public class IntegrationController {
             Graph integratedGraph = integrationService.integrateData(project.getIntegratedGraph(), iData.getDsB(), iData.getAlignments());
 
             String path = "..\\api\\dbFiles\\ttl\\";
+            /*
             project.getIntegratedGraph().write(path+"graphA.ttl");
             iData.getDsB().getLocalGraph().write(path+"graphB.ttl");
             integratedGraph.write(path+"integrated.ttl");
+             */
 
             Project projectToSave = integrationService.updateIntegratedGraphProject(project, integratedGraph);
 
@@ -60,7 +62,7 @@ public class IntegrationController {
             Project project1 = integrationService.saveProject(projectToSave);
             logger.info("PROJECT SAVED WITH THE NEW INTEGRATED GRAPH");
 
-            List<JoinAlignment> joinProperties =  integrationService.generateJoinAlignments(project.getIntegratedGraph(), iData.getDsB().getLocalGraph(), iData);
+            List<JoinAlignment> joinProperties =  integrationService.generateJoinAlignments(project.getIntegratedGraph(), (Graph) iData.getDsB().getLocalGraph(), iData);
 
             return new ResponseEntity<>(new IntegrationTemporalResponse(project1, joinProperties), HttpStatus.OK);
         }
