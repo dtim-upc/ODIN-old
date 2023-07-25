@@ -1,8 +1,10 @@
 package edu.upc.essi.dtim.odin.project;
 
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.Dataset;
+import edu.upc.essi.dtim.NextiaCore.graph.CoreGraphFactory;
 import edu.upc.essi.dtim.NextiaCore.graph.Graph;
 import edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl;
+import edu.upc.essi.dtim.NextiaCore.graph.jena.IntegratedGraphJenaImpl;
 import edu.upc.essi.dtim.odin.NextiaGraphy.nextiaGraphyModuleImpl;
 import edu.upc.essi.dtim.odin.NextiaGraphy.nextiaGraphyModuleInterface;
 import edu.upc.essi.dtim.odin.NextiaStore.GraphStore.GraphStoreFactory;
@@ -53,16 +55,19 @@ public class ProjectService {
         project.getDatasets().add(dataset);
 
         if(project.getDatasets().size() == 1){
-            Graph integratedGraph = new GraphJenaImpl();
+            Graph integratedGraph = CoreGraphFactory.createIntegratedGraph();
 
             GraphStoreInterface graphStore;
             try {
                 graphStore = GraphStoreFactory.getInstance(appConfig);
 
-                integratedGraph = graphStore.getGraph(dataset.getLocalGraph().getGraphName());
-                integratedGraph.setGraphName(null);
+                Graph datasetGraph = graphStore.getGraph(dataset.getLocalGraph().getGraphName());
 
-                project.setIntegratedGraph((GraphJenaImpl) integratedGraph);
+                integratedGraph.setGraphName(null);
+                integratedGraph.setGraph(datasetGraph.getGraph());
+                integratedGraph.setGraphicalSchema(datasetGraph.getGraphicalSchema());
+
+                project.setIntegratedGraph((IntegratedGraphJenaImpl) integratedGraph);
                 //saveProject(project);
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -126,19 +131,6 @@ public class ProjectService {
             }
         }
 
-        if(savedProject.getGlobalGraph() != null){
-            if(savedProject.getGlobalGraph().getGraphName() != null) {
-                try {
-                    GraphStoreInterface graphStoreInterface = GraphStoreFactory.getInstance(appConfig);
-                    Graph graph = project.getGlobalGraph();
-                    graph.setGraphName(savedProject.getGlobalGraph().getGraphName());
-                    graphStoreInterface.saveGraph(graph);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-
         return savedProject;
     }
 
@@ -156,12 +148,7 @@ public class ProjectService {
             if(project.getIntegratedGraph() != null) {
                 GraphStoreInterface graphStoreInterface = GraphStoreFactory.getInstance(appConfig);
                 Graph integratedGraph = graphStoreInterface.getGraph(project.getIntegratedGraph().getGraphName());
-                project.setIntegratedGraph((GraphJenaImpl) integratedGraph);
-            }
-            if(project.getGlobalGraph() != null) {
-                GraphStoreInterface graphStoreInterface = GraphStoreFactory.getInstance(appConfig);
-                Graph globalGraph = graphStoreInterface.getGraph(project.getGlobalGraph().getGraphName());
-                project.setGlobalGraph((GraphJenaImpl) globalGraph);
+                project.setIntegratedGraph((IntegratedGraphJenaImpl) integratedGraph);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

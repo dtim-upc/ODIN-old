@@ -14,4 +14,6 @@ public interface integrationModuleInterface {
     Graph globalGraph(Graph graphA, Graph graphB, List<Alignment> alignments);
 
     Graph joinIntegration(Graph integratedGraph, List<JoinAlignment> joinAlignments);
+
+    Graph generateGlobalGraph(Graph graph);
 }

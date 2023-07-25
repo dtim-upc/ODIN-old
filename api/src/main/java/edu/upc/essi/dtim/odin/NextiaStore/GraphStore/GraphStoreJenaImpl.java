@@ -2,12 +2,16 @@ package edu.upc.essi.dtim.odin.NextiaStore.GraphStore;
 
 
 import edu.upc.essi.dtim.NextiaCore.graph.*;
+import edu.upc.essi.dtim.NextiaCore.graph.jena.GlobalGraphJenaImpl;
+import edu.upc.essi.dtim.NextiaCore.graph.jena.IntegratedGraphJenaImpl;
 import edu.upc.essi.dtim.NextiaCore.graph.jena.LocalGraphJenaImpl;
 import edu.upc.essi.dtim.odin.NextiaGraphy.nextiaGraphyModuleImpl;
 import edu.upc.essi.dtim.odin.NextiaGraphy.nextiaGraphyModuleInterface;
 import edu.upc.essi.dtim.odin.NextiaStore.RelationalStore.ORMStoreFactory;
 import edu.upc.essi.dtim.odin.NextiaStore.RelationalStore.ORMStoreInterface;
 import edu.upc.essi.dtim.odin.config.AppConfig;
+import edu.upc.essi.dtim.odin.integration.integrationModuleImpl;
+import edu.upc.essi.dtim.odin.integration.integrationModuleInterface;
 import org.apache.hadoop.shaded.javax.xml.bind.SchemaOutputResolver;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.ReadWrite;
@@ -82,7 +86,7 @@ public class GraphStoreJenaImpl implements GraphStoreInterface {
         ORMStoreInterface ormInterface = ORMStoreFactory.getInstance();
         if(ormInterface.findById(LocalGraphJenaImpl.class, modelName) != null){
             graph = CoreGraphFactory.createLocalGraph();
-        } else if (ormInterface.findById(IntegratedGraph.class, modelName) != null) {
+        } else if (ormInterface.findById(IntegratedGraphJenaImpl.class, modelName) != null) {
             graph = CoreGraphFactory.createIntegratedGraph();
         } else {
             graph = CoreGraphFactory.createGraphInstance("normal");
@@ -96,6 +100,13 @@ public class GraphStoreJenaImpl implements GraphStoreInterface {
             nextiaGraphyModuleInterface visualLibInterface = new nextiaGraphyModuleImpl();
             String graphicalSchema = visualLibInterface.generateVisualGraph(graph);
             graph.setGraphicalSchema(graphicalSchema);
+
+            if (graph.getClass().equals(IntegratedGraphJenaImpl.class)){
+                System.out.println("++++++++++++++++++++++++++++++++++************** " + "RE CALCULANDO GRAFO GLOBAL");
+                integrationModuleInterface integrationInterface = new integrationModuleImpl();
+                Graph globalGraph = integrationInterface.generateGlobalGraph(graph);
+                ((IntegratedGraphJenaImpl) graph).setGlobalGraph((GlobalGraphJenaImpl) globalGraph);
+            }
 
             System.out.println("Modelo cargado exitosamente desde: " + filePath);
         } catch (FileNotFoundException e) {

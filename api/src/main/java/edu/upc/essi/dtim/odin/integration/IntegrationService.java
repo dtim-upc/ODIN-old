@@ -1,9 +1,12 @@
 package edu.upc.essi.dtim.odin.integration;
 
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.Dataset;
+import edu.upc.essi.dtim.NextiaCore.graph.CoreGraphFactory;
 import edu.upc.essi.dtim.NextiaCore.graph.Graph;
 import edu.upc.essi.dtim.NextiaCore.graph.LocalGraph;
+import edu.upc.essi.dtim.NextiaCore.graph.jena.GlobalGraphJenaImpl;
 import edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl;
+import edu.upc.essi.dtim.NextiaCore.graph.jena.IntegratedGraphJenaImpl;
 import edu.upc.essi.dtim.NextiaCore.graph.jena.LocalGraphJenaImpl;
 import edu.upc.essi.dtim.nextiadi.models.Alignment;
 import edu.upc.essi.dtim.odin.NextiaGraphy.nextiaGraphyModuleImpl;
@@ -126,18 +129,18 @@ public class IntegrationService {
     }
 
     public Project updateIntegratedGraphProject(Project project, Graph integratedGraph) {
-        GraphJenaImpl integratedImpl = new GraphJenaImpl();
+        Graph integratedImpl = CoreGraphFactory.createIntegratedGraph();
         integratedImpl.setGraph(integratedGraph.getGraph());
-        project.setIntegratedGraph(integratedImpl);
+        project.setIntegratedGraph((IntegratedGraphJenaImpl) integratedImpl);
         project.getIntegratedGraph().setGraphicalSchema(integratedGraph.getGraphicalSchema());
         return project;
     }
 
     public Project updateGlobalGraphProject(Project project, Graph globalGraph) {
-        GraphJenaImpl globalImpl = new GraphJenaImpl();
+        Graph globalImpl = CoreGraphFactory.createGlobalGraph();
         globalImpl.setGraph(globalGraph.getGraph());
-        project.setGlobalGraph(globalImpl);
-        project.getGlobalGraph().setGraphicalSchema(globalGraph.getGraphicalSchema());
+        project.getIntegratedGraph().setGlobalGraph((GlobalGraphJenaImpl) globalImpl);
+        project.getIntegratedGraph().getGlobalGraph().setGraphicalSchema(globalGraph.getGraphicalSchema());
         return project;
     }
 

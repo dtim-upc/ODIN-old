@@ -2,7 +2,9 @@ package edu.upc.essi.dtim.odin.integration;
 
 import edu.upc.essi.dtim.NextiaCore.datasources.dataset.Dataset;
 import edu.upc.essi.dtim.NextiaCore.graph.Graph;
+import edu.upc.essi.dtim.NextiaCore.graph.jena.GlobalGraphJenaImpl;
 import edu.upc.essi.dtim.NextiaCore.graph.jena.GraphJenaImpl;
+import edu.upc.essi.dtim.NextiaCore.graph.jena.IntegratedGraphJenaImpl;
 import edu.upc.essi.dtim.NextiaDI;
 import edu.upc.essi.dtim.odin.integration.pojos.IntegrationData;
 import edu.upc.essi.dtim.odin.integration.pojos.IntegrationTemporalResponse;
@@ -61,10 +63,11 @@ public class IntegrationController {
 
             Project project1 = integrationService.saveProject(projectToSave);
             logger.info("PROJECT SAVED WITH THE NEW INTEGRATED GRAPH");
+            Project project2 = integrationService.getProject(project1.getProjectId());
 
             List<JoinAlignment> joinProperties =  integrationService.generateJoinAlignments(project.getIntegratedGraph(), (Graph) iData.getDsB().getLocalGraph(), iData);
 
-            return new ResponseEntity<>(new IntegrationTemporalResponse(project1, joinProperties), HttpStatus.OK);
+            return new ResponseEntity<>(new IntegrationTemporalResponse(project2, joinProperties), HttpStatus.OK);
         }
         //si no hay suficientes ERROR
         else{
@@ -81,13 +84,14 @@ public class IntegrationController {
 
         Graph integratedSchema = integrationService.joinIntegration(project.getIntegratedGraph(), joinA);
 
-        project.setIntegratedGraph((GraphJenaImpl) integratedSchema);
+        project.setIntegratedGraph((IntegratedGraphJenaImpl) integratedSchema);
 
         Graph globalSchema = integrationService.joinIntegration(project.getIntegratedGraph(), joinA);
 
-        project.setGlobalGraph((GraphJenaImpl) globalSchema);
+        project.getIntegratedGraph().setGlobalGraph((GlobalGraphJenaImpl) globalSchema);
 
-        //todo save Project
+        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"+project.getIntegratedGraph().getGlobalGraph().getGraphicalSchema()+"++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+
         Project savedProject = integrationService.saveProject(project);
 
         return new ResponseEntity(savedProject, HttpStatus.OK);
