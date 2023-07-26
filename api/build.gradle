@@ -63,14 +63,20 @@ dependencies {
 	runtimeOnly(fileTree(dir: 'lib', include: ['NextiaCore.jar']))
 	////////////////////////////////////////////////////////////////////////////////////////////////
 
+	////////////////////////////////////////// NextiaDI //////////////////////////////////////////
+	implementation fileTree(dir: 'lib', include: ['nextiadi.jar'])
+	runtimeOnly(fileTree(dir: 'lib', include: ['nextiadi.jar']))
+
+	//implementation 'edu.upc.essi.dtim:nextiadi:0.1.0-SNAPSHOT'
+
+	////////////////////////////////////////////////////////////////////////////////////////////////
+
 	////////////////////////////////////////// NextiaGraphy //////////////////////////////////////////
 	// https://mvnrepository.com/artifact/com.google.code.gson/gson
 	implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.9'
 	////////////////////////////////////////////////////////////////////////////////////////////////
 
 	////////////////////////////////////////// OLD BOOTSTRAPPING LIB //////////////////////////////////////////
-	implementation 'edu.upc.essi.dtim:nextiadi:0.1.0-SNAPSHOT'
-
 	implementation fileTree(dir: 'lib', include: ['NextiaBS-1.0-SNAPSHOT-uber.jar'])
 	runtimeOnly(fileTree(dir: 'lib', include: ['NextiaBS-1.0-SNAPSHOT-uber.jar']))
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -112,16 +118,26 @@ tasks['sonarqube'].dependsOn test
 
 
 //para copiar la versión actualizada de NextiaCore
-def externalJarPath = 'C:\\Users\\victo\\Documents\\GitHub\\NextiaCore\\build\\libs\\nextiacore-0.0.2-SNAPSHOT-uber.jar'
-
+def nextiaCoreJarPath = 'C:\\Users\\victo\\Documents\\GitHub\\NextiaCore\\build\\libs\\nextiacore-0.0.2-SNAPSHOT-uber.jar'
+def nextiaDIJarPath ='C:\\Users\\victo\\Documents\\GitHub\\NextiaDI\\source\\build\\libs\\nextiadi-0.1.0-SNAPSHOT-uber.jar'
 task importExternalJar {
 	doLast {
 		configurations.compileClasspath.files.find { it.name == 'nextiacore-0.0.2-SNAPSHOT-uber.jar' }?.delete()
+		configurations.compileClasspath.files.find { it.name == 'NextiaCore.jar' }?.delete()
 
 		copy {
-			from externalJarPath
+			from nextiaCoreJarPath
 			into "..\\api\\lib"
 			rename { 'NextiaCore.jar' }
+		}
+
+		configurations.compileClasspath.files.find { it.name == 'nextiadi-0.1.0-SNAPSHOT-uber.jar' }?.delete()
+		configurations.compileClasspath.files.find { it.name == 'nextiadi.jar' }?.delete()
+
+		copy {
+			from nextiaDIJarPath
+			into "..\\api\\lib"
+			rename { 'nextiadi.jar' }
 		}
 	}
 }
